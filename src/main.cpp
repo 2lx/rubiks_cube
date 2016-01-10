@@ -4,6 +4,7 @@
 SDL_Window * gWindow = NULL;
 SDL_Surface * screen;
 bool isReversePerspective = false;
+bool isMoveUp = false;
 
 struct MyCube
 {
@@ -11,6 +12,24 @@ struct MyCube
 };
 
 MyCube cubes[ CUBE_COUNT ][ CUBE_COUNT ][ CUBE_COUNT ];
+
+void setPerspective( const bool newPerspective )
+{
+	isReversePerspective = newPerspective;
+
+	glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
+	glClearDepth( 1.0 );
+	glDepthFunc( GL_LESS );
+	glEnable( GL_DEPTH_TEST );
+	glShadeModel( GL_SMOOTH );
+	glMatrixMode( GL_PROJECTION );
+	//	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glLoadIdentity();
+	if ( !isReversePerspective )
+		gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 100.0f );
+	else gluPerspective( 10.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 100.0f, 0.1f );
+	glMatrixMode( GL_MODELVIEW );
+}
 
 bool init()
 {
@@ -42,16 +61,7 @@ bool init()
 	}
 
 	// Init OpenGL
-	glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
-	glClearDepth( 1.0 );
-	glDepthFunc( GL_LESS );
-	glEnable( GL_DEPTH_TEST );
-	glShadeModel( GL_SMOOTH );
-	glMatrixMode( GL_PROJECTION );
-	//	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	glLoadIdentity();
-	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 100.0f );
-	glMatrixMode( GL_MODELVIEW );
+	setPerspective( false );
 
 	return true;
 }
@@ -86,9 +96,10 @@ void display()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	static float cubeAngle = 0;
-	static float cubeEdge = 0.8;
+	static float cubeMoveAngle = 0;
+	static float cubeEdge = 1.0;
 	static int cubeSizeSign = -1;
-	const float angleDiff = 2;
+	const float angleDiff = 7;
 
 	glLoadIdentity();
 
@@ -100,13 +111,23 @@ void display()
 
 //	drawAxis();
 
-//	glRotatef( cubeAngle, 1.0f, 1.0f, 0.0f );
-//	cubeAngle = ( cubeAngle > 360 ) ? cubeAngle - 360 + angleDiff : cubeAngle + angleDiff;
+	if ( isMoveUp )
+	{
+		glRotatef( cubeAngle + cubeMoveAngle, 1.0f, 0.0f, 0.0f );
+		cubeMoveAngle = ( cubeMoveAngle > 360 ) ? cubeMoveAngle - 360 + angleDiff : cubeMoveAngle + angleDiff;
+		if ( cubeMoveAngle >= 90 )
+		{
+			isMoveUp = false;
+			cubeAngle = cubeAngle + 90;
+			cubeMoveAngle = 0 ;
+		}
+	}
+	else glRotatef( cubeAngle, 1.0f, 0.0f, 0.0f );
 
-	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
-	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
-	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
-	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
+//	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
+//	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
+//	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
+//	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
 
 	for ( int x = 0; x < CUBE_COUNT; ++x )
 		for ( int y = 0; y < CUBE_COUNT; ++y )
@@ -127,8 +148,6 @@ int main( int argc, char * args[] )
 	bool running = true;
 	Uint32 start;
 	SDL_Event event;
-
-	bool isMove = false;
 
 	if( !init() )
 	{
@@ -157,24 +176,16 @@ int main( int argc, char * args[] )
 					break;
 
 				case SDLK_UP:
-					if ( !isMove )
-						isMove = true;
+					if ( !isMoveUp )
+					{
+						setPerspective( false );
+						isMoveUp = true;
+					}
 					break;
 
 				case SDLK_SPACE:
-					isReversePerspective = !isReversePerspective;
-					glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
-					glClearDepth( 1.0 );
-					glDepthFunc( GL_LESS );
-					glEnable( GL_DEPTH_TEST );
-					glShadeModel( GL_SMOOTH );
-					glMatrixMode( GL_PROJECTION );
-
-					glLoadIdentity();
-					if ( !isReversePerspective )
-						gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 100.0f );
-					else gluPerspective( 10.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 100.0f, 0.1f );
-					glMatrixMode( GL_MODELVIEW );
+					if ( !isMoveUp )
+						setPerspective( !isReversePerspective );
 					break;
 				}
 				break;
