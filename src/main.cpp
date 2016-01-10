@@ -18,7 +18,7 @@ bool init()
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		return false;
-    }
+	}
 
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
@@ -26,7 +26,7 @@ bool init()
 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
 
 	gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
-            SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL );
+								SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL );
 	if( gWindow == NULL )
 	{
 		printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -47,7 +47,7 @@ bool init()
 	glEnable( GL_DEPTH_TEST );
 	glShadeModel( GL_SMOOTH );
 	glMatrixMode( GL_PROJECTION );
-//	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	//	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glLoadIdentity();
 	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 100.0f );
 	glMatrixMode( GL_MODELVIEW );
@@ -65,17 +65,17 @@ void close( )
 
 void drawAxis()
 {
-    glColor3f( 1.0f, 1.0f, 1.0f );
-    glBegin( GL_LINES );
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( 5, 0, 0 );
+	glColor3f( 1.0f, 1.0f, 1.0f );
+	glBegin( GL_LINES );
+	glVertex3f( 0, 0, 0 );
+	glVertex3f( 5, 0, 0 );
 
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( 0, 5, 0 );
+	glVertex3f( 0, 0, 0 );
+	glVertex3f( 0, 5, 0 );
 
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( 0, 0, 5 );
-    glEnd();
+	glVertex3f( 0, 0, 0 );
+	glVertex3f( 0, 0, 5 );
+	glEnd();
 }
 
 void drawCube( const float pX, const float pY, const float pZ, const float cubeSize, const int colInd );
@@ -90,14 +90,14 @@ void display()
 	const float angleDiff = 2;
 
 	glLoadIdentity();
-	glTranslatef( 0.0f, 0.0f, -7.0f);
+	glTranslatef( 0.0f, 0.0f, -7.0f );
 
-//	glRotatef( 45, 1.0f, 1.0f, 1.0f );
+	//	glRotatef( 45, 1.0f, 1.0f, 1.0f );
 
-//	drawAxis();
+	//	drawAxis();
 
-//	glRotatef( cubeAngle, 1.0f, 1.0f, 0.0f );
-//	cubeAngle = ( cubeAngle > 360 ) ? cubeAngle - 360 + angleDiff : cubeAngle + angleDiff;
+	//	glRotatef( cubeAngle, 1.0f, 1.0f, 0.0f );
+	//	cubeAngle = ( cubeAngle > 360 ) ? cubeAngle - 360 + angleDiff : cubeAngle + angleDiff;
 
 	cubeSize = cubeSize + cubeSizeSign * 0.01;
 	if ( cubeSize > 1.1 ) cubeSizeSign = -1;
@@ -110,17 +110,17 @@ void display()
 				drawCube( x - 1, y - 1, z - 1, ( cubeSize > 1.0 ) ? 1.0 : cubeSize, cubes[ x ][ y ][ z ].colInd );
 }
 
-int main( int argc, char* args[] )
+int main( int argc, char * args[] )
 {
 	srand( time( 0 ) );
 
-    for( int x = 0; x < CUBE_EDGE; ++x )
+	for( int x = 0; x < CUBE_EDGE; ++x )
 		for( int y = 0; y < CUBE_EDGE; ++y )
 			for( int z = 0; z < CUBE_EDGE; ++z )
 				cubes[ x ][ y ][ z ].colInd = rand() % MAX_COLORS;
 
-    bool running = true;
-    Uint32 start;
+	bool running = true;
+	Uint32 start;
 	SDL_Event event;
 
 	bool isMove = false;
@@ -140,22 +140,22 @@ int main( int argc, char* args[] )
 		{
 			switch( event.type )
 			{
-				case SDL_QUIT:
-					running = false;
+			case SDL_QUIT:
+				running = false;
 				break;
 
-				case SDL_KEYDOWN:
-					switch( event.key.keysym.sym )
-					{
-						case SDLK_ESCAPE:
-							running = false;
-						break;
+			case SDL_KEYDOWN:
+				switch( event.key.keysym.sym )
+				{
+				case SDLK_ESCAPE:
+					running = false;
+					break;
 
-						case SDLK_UP:
-							if ( !isMove )
-								isMove = true;
-						break;
-					}
+				case SDLK_UP:
+					if ( !isMove )
+						isMove = true;
+					break;
+				}
 				break;
 			}
 		}
@@ -169,17 +169,16 @@ int main( int argc, char* args[] )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
 	}
 
-    close();
+	close();
 
 	return 0;
 }
 
-
 void vertexCube( const float pX, const float pY, const float pZ, const float cubeSize )
 {
-	glBegin(GL_QUADS);
+	glBegin( GL_QUADS );
 
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );  // Up
+	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );  // Top
 	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
 	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
 	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
@@ -217,7 +216,7 @@ void drawCube( const float pX, const float pY, const float pZ, const float cubeS
 	if ( cubeSize < 1.0 )
 	{
 		glLineWidth( 1.5 );
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE ); // Borders
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); // Borders
 
 		glColor3f( 0.1F, 0.1F, 0.1F );
 		vertexCube( pX, pY, pZ, cubeSize );

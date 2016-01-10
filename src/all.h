@@ -25,15 +25,16 @@ const uint MAX_COLORS = 6;
 const uint CUBE_EDGE = 3;
 
 const float COLOR_MATR[ MAX_COLORS ][ 3 ] =
-	{ 	{  52 / 255.0, 152 / 255.0, 219 / 255.0 }, //Peter river
-		{  46 / 255.0, 204 / 255.0, 113 / 255.0 }, //Emerald
-		{ 155 / 255.0,  89 / 255.0, 182 / 255.0 }, //Amethyst
-		{ 241 / 255.0, 196 / 255.0,  15 / 255.0 }, //Sum flower
-		{ 231 / 255.0,  76 / 255.0,  60 / 255.0 }, //Alizarin
-		{ 236 / 255.0, 240 / 255.0, 241 / 255.0 }  //Clouds
-	};
+{
+	{  52 / 255.0, 152 / 255.0, 219 / 255.0 }, //Peter river
+	{  46 / 255.0, 204 / 255.0, 113 / 255.0 }, //Emerald
+	{ 155 / 255.0,  89 / 255.0, 182 / 255.0 }, //Amethyst
+	{ 241 / 255.0, 196 / 255.0,  15 / 255.0 }, //Sum flower
+	{ 231 / 255.0,  76 / 255.0,  60 / 255.0 }, //Alizarin
+	{ 236 / 255.0, 240 / 255.0, 241 / 255.0 }  //Clouds
+};
 
 const float COLOR_DARKGRAY[ 3 ] = 	{  52 / 255.0,  73 / 255.0,  94 / 255.0 }; // Wet asphalt
-const float COLOR_LIGHTGRAY[ 3 ] = 	{  149 / 255.0,  165 / 255.0,  166 / 255.0 }; // Concrete
+const float COLOR_LIGHTGRAY[ 3 ] = 	{ 149 / 255.0, 165 / 255.0, 166 / 255.0 }; // Concrete
 
 #endif // ALL_H_INCLUDED
