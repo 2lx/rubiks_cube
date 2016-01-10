@@ -3,13 +3,14 @@
 
 SDL_Window * gWindow = NULL;
 SDL_Surface * screen;
+bool isReversePerspective = false;
 
 struct MyCube
 {
 	uint colInd;
 };
 
-MyCube cubes[ CUBE_EDGE ][ CUBE_EDGE ][ CUBE_EDGE ];
+MyCube cubes[ CUBE_COUNT ][ CUBE_COUNT ][ CUBE_COUNT ];
 
 bool init()
 {
@@ -85,39 +86,43 @@ void display()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	static float cubeAngle = 0;
-	static float cubeSize = 0.7;
+	static float cubeEdge = 0.8;
 	static int cubeSizeSign = -1;
 	const float angleDiff = 2;
 
 	glLoadIdentity();
-	glTranslatef( 0.0f, 0.0f, -7.0f );
 
-	//	glRotatef( 45, 1.0f, 1.0f, 1.0f );
+	if ( !isReversePerspective )
+		glTranslatef( 0.0f, 0.0f, -7.0f );
+	else glTranslatef( 0.0f, 0.0f, -22.0f );
 
-	//	drawAxis();
+//	glRotatef( 45, 1.0f, 1.0f, 1.0f );
 
-	//	glRotatef( cubeAngle, 1.0f, 1.0f, 0.0f );
-	//	cubeAngle = ( cubeAngle > 360 ) ? cubeAngle - 360 + angleDiff : cubeAngle + angleDiff;
+//	drawAxis();
 
-	cubeSize = cubeSize + cubeSizeSign * 0.01;
-	if ( cubeSize > 1.1 ) cubeSizeSign = -1;
-	if ( cubeSize < 0.7 ) cubeSizeSign = 1;
-	cubeSize = cubeSize + cubeSizeSign * 0.01;
+//	glRotatef( cubeAngle, 1.0f, 1.0f, 0.0f );
+//	cubeAngle = ( cubeAngle > 360 ) ? cubeAngle - 360 + angleDiff : cubeAngle + angleDiff;
 
-	for ( int x = 0; x < CUBE_EDGE; ++x )
-		for ( int y = 0; y < CUBE_EDGE; ++y )
-			for ( int z = 0; z < CUBE_EDGE; ++z )
-				drawCube( x - 1, y - 1, z - 1, ( cubeSize > 1.0 ) ? 1.0 : cubeSize, cubes[ x ][ y ][ z ].colInd );
+	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
+	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
+	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
+	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
+
+	for ( int x = 0; x < CUBE_COUNT; ++x )
+		for ( int y = 0; y < CUBE_COUNT; ++y )
+			for ( int z = 0; z < CUBE_COUNT; ++z )
+				drawCube( x - 1, y - 1, z - 1, ( cubeEdge > 1.0 ) ? 1.0 : cubeEdge,
+						  cubes[ x ][ y ][ ( isReversePerspective ) ? CUBE_COUNT - z - 1 : z  ].colInd );
 }
 
 int main( int argc, char * args[] )
 {
 	srand( time( 0 ) );
 
-	for( int x = 0; x < CUBE_EDGE; ++x )
-		for( int y = 0; y < CUBE_EDGE; ++y )
-			for( int z = 0; z < CUBE_EDGE; ++z )
-				cubes[ x ][ y ][ z ].colInd = rand() % MAX_COLORS;
+	for( int x = 0; x < CUBE_COUNT; ++x )
+		for( int y = 0; y < CUBE_COUNT; ++y )
+			for( int z = 0; z < CUBE_COUNT; ++z )
+				cubes[ x ][ y ][ z ].colInd = rand() % COLOR_COUNT;
 
 	bool running = true;
 	Uint32 start;
@@ -155,6 +160,22 @@ int main( int argc, char * args[] )
 					if ( !isMove )
 						isMove = true;
 					break;
+
+				case SDLK_SPACE:
+					isReversePerspective = !isReversePerspective;
+					glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
+					glClearDepth( 1.0 );
+					glDepthFunc( GL_LESS );
+					glEnable( GL_DEPTH_TEST );
+					glShadeModel( GL_SMOOTH );
+					glMatrixMode( GL_PROJECTION );
+
+					glLoadIdentity();
+					if ( !isReversePerspective )
+						gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 100.0f );
+					else gluPerspective( 10.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 100.0f, 0.1f );
+					glMatrixMode( GL_MODELVIEW );
+					break;
 				}
 				break;
 			}
@@ -174,11 +195,12 @@ int main( int argc, char * args[] )
 	return 0;
 }
 
+
 void vertexCube( const float pX, const float pY, const float pZ, const float cubeSize )
 {
 	glBegin( GL_QUADS );
 
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );  // Top
+	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );  // Up
 	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
 	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
 	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
