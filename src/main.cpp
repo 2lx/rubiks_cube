@@ -4,7 +4,16 @@
 SDL_Window * gWindow = NULL;
 SDL_Surface * screen;
 bool isReversePerspective = false;
-bool isMoveUp = false;
+bool isMoveX = false;
+bool isMoveY = false;
+
+enum MoveDirection
+{
+	MD_UP, MD_DOWN, MD_LEFT, MD_RIGHT
+};
+
+MoveDirection moveDirX;
+MoveDirection moveDirY;
 
 struct MyCube
 {
@@ -95,8 +104,11 @@ void display()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	static float cubeAngle = 0;
-	static float cubeMoveAngle = 0;
+	static float cubeXAngle = 0;
+	static float cubeXMoveAngle = 0;
+	static float cubeYAngle = 0;
+	static float cubeYMoveAngle = 0;
+
 	static float cubeEdge = 1.0;
 	static int cubeSizeSign = -1;
 	const float angleDiff = 7;
@@ -111,29 +123,67 @@ void display()
 
 //	drawAxis();
 
-	if ( isMoveUp )
+	if ( isMoveX )
 	{
-		glRotatef( cubeAngle + cubeMoveAngle, 1.0f, 0.0f, 0.0f );
-		cubeMoveAngle = ( cubeMoveAngle > 360 ) ? cubeMoveAngle - 360 + angleDiff : cubeMoveAngle + angleDiff;
-		if ( cubeMoveAngle >= 90 )
+		switch ( moveDirX )
 		{
-			isMoveUp = false;
-			cubeAngle = cubeAngle + 90;
-			cubeMoveAngle = 0 ;
+		case MD_UP:
+			glRotatef( cubeXAngle + cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
+			break;
+		case MD_DOWN:
+			glRotatef( cubeXAngle - cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
+			break;
+		}
+
+		cubeXMoveAngle = ( cubeXMoveAngle > 360 ) ? cubeXMoveAngle - 360 + angleDiff : cubeXMoveAngle + angleDiff;
+		if ( cubeXMoveAngle >= 90 )
+		{
+			isMoveX = false;
+			if ( moveDirX == MD_UP )
+				cubeXAngle += 90;
+			else cubeXAngle -= 90;
+
+			cubeXMoveAngle = 0 ;
 		}
 	}
-	else glRotatef( cubeAngle, 1.0f, 0.0f, 0.0f );
+	else glRotatef( cubeXAngle, 1.0f, 0.0f, 0.0f );
 
-//	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
-//	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
-//	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
-//	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
+	if ( isMoveY )
+	{
+		switch ( moveDirY )
+		{
+		case MD_RIGHT:
+			glRotatef( cubeYAngle + cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
+			break;
+		case MD_LEFT:
+			glRotatef( cubeYAngle - cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
+			break;
+		}
+
+		cubeYMoveAngle = ( cubeYMoveAngle > 360 ) ? cubeYMoveAngle - 360 + angleDiff : cubeYMoveAngle + angleDiff;
+		if ( cubeYMoveAngle >= 90 )
+		{
+			isMoveY = false;
+			if ( moveDirY == MD_RIGHT )
+				cubeYAngle += 90;
+			else cubeYAngle -= 90;
+
+			cubeYMoveAngle = 0 ;
+		}
+	}
+	else glRotatef( cubeYAngle, 0.0f, 1.0f, 0.0f );
+
+
+	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
+	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
+	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
+	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
 
 	for ( int x = 0; x < CUBE_COUNT; ++x )
 		for ( int y = 0; y < CUBE_COUNT; ++y )
 			for ( int z = 0; z < CUBE_COUNT; ++z )
 				drawCube( x - 1, y - 1, z - 1, ( cubeEdge > 1.0 ) ? 1.0 : cubeEdge,
-						  cubes[ x ][ y ][ ( isReversePerspective ) ? CUBE_COUNT - z - 1 : z  ].colInd );
+						  cubes[ x ][ y ][ /*( isReversePerspective ) ? CUBE_COUNT - z - 1 :*/ z  ].colInd );
 }
 
 int main( int argc, char * args[] )
@@ -176,15 +226,43 @@ int main( int argc, char * args[] )
 					break;
 
 				case SDLK_UP:
-					if ( !isMoveUp )
+					if ( !isMoveX )
 					{
 						setPerspective( false );
-						isMoveUp = true;
+						isMoveX = true;
+						moveDirX = MD_UP;
+					}
+					break;
+
+				case SDLK_DOWN:
+					if ( !isMoveX )
+					{
+						setPerspective( false );
+						isMoveX = true;
+						moveDirX = MD_DOWN;
+					}
+					break;
+
+				case SDLK_LEFT:
+					if ( !isMoveY )
+					{
+						setPerspective( false );
+						isMoveY = true;
+						moveDirY = MD_LEFT;
+					}
+					break;
+
+				case SDLK_RIGHT:
+					if ( !isMoveY )
+					{
+						setPerspective( false );
+						isMoveY = true;
+						moveDirY = MD_RIGHT;
 					}
 					break;
 
 				case SDLK_SPACE:
-					if ( !isMoveUp )
+					if ( !isMoveX )
 						setPerspective( !isReversePerspective );
 					break;
 				}
