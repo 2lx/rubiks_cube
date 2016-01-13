@@ -4,16 +4,17 @@
 SDL_Window * gWindow = NULL;
 SDL_Surface * screen;
 bool isReversePerspective = false;
-bool isMoveX = false;
-bool isMoveY = false;
+//bool isMoveX = false;
+//bool isMoveY = false;
 
 enum MoveDirection
 {
-	MD_UP, MD_DOWN, MD_LEFT, MD_RIGHT
+	MD_NONE, MD_POSITIVE, MD_NEGATIVE
 };
 
-MoveDirection moveDirX;
-MoveDirection moveDirY;
+MoveDirection moveDirX = MD_NONE;
+MoveDirection moveDirY = MD_NONE;
+MoveDirection moveDirZ = MD_NONE;
 
 struct MyCube
 {
@@ -43,7 +44,7 @@ void setPerspective( const bool newPerspective )
 bool init()
 {
 	// Init SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) //SDL_INIT_EVERYTHING ??
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		return false;
@@ -86,6 +87,7 @@ void close( )
 void drawAxis()
 {
 	glColor3f( 1.0f, 1.0f, 1.0f );
+
 	glBegin( GL_LINES );
 	glVertex3f( 0, 0, 0 );
 	glVertex3f( 5, 0, 0 );
@@ -123,61 +125,43 @@ void display()
 
 //	drawAxis();
 
-	if ( isMoveX )
-	{
-		switch ( moveDirX )
-		{
-		case MD_UP:
-			glRotatef( cubeXAngle + cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
-			break;
-		case MD_DOWN:
-			glRotatef( cubeXAngle - cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
-			break;
-		}
+	glRotatef( cubeXAngle, 1.0f, 0.0f, 0.0f );
+	glRotatef( cubeYAngle, 0.0f, 1.0f, 0.0f );
 
-		cubeXMoveAngle = ( cubeXMoveAngle > 360 ) ? cubeXMoveAngle - 360 + angleDiff : cubeXMoveAngle + angleDiff;
+	float moveSign = 0;
+
+	if ( moveDirX != MD_NONE )
+	{
+		moveSign = ( moveDirX = MD_POSITIVE ) ? 1 : -1;
+		cubeXMoveAngle += angleDiff;
+		glRotatef( moveSign * cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
+
 		if ( cubeXMoveAngle >= 90 )
 		{
-			isMoveX = false;
-			if ( moveDirX == MD_UP )
-				cubeXAngle += 90;
-			else cubeXAngle -= 90;
-
-			cubeXMoveAngle = 0 ;
+			cubeXAngle += moveSign * 90;
+			moveDirX = MD_NONE;
+			cubeXMoveAngle = 0;
 		}
 	}
-	else glRotatef( cubeXAngle, 1.0f, 0.0f, 0.0f );
 
-	if ( isMoveY )
+	if ( moveDirY != MD_NONE )
 	{
-		switch ( moveDirY )
-		{
-		case MD_RIGHT:
-			glRotatef( cubeYAngle + cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
-			break;
-		case MD_LEFT:
-			glRotatef( cubeYAngle - cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
-			break;
-		}
+		moveSign = ( moveDirY = MD_POSITIVE ) ? 1 : -1;
+		cubeYMoveAngle += angleDiff;
+		glRotatef( moveSign * cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
 
-		cubeYMoveAngle = ( cubeYMoveAngle > 360 ) ? cubeYMoveAngle - 360 + angleDiff : cubeYMoveAngle + angleDiff;
 		if ( cubeYMoveAngle >= 90 )
 		{
-			isMoveY = false;
-			if ( moveDirY == MD_RIGHT )
-				cubeYAngle += 90;
-			else cubeYAngle -= 90;
-
+			cubeYAngle += moveSign * 90;
+			moveDirY = MD_NONE;
 			cubeYMoveAngle = 0 ;
 		}
 	}
-	else glRotatef( cubeYAngle, 0.0f, 1.0f, 0.0f );
 
-
-	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
-	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
-	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
-	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
+//	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
+//	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
+//	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
+//	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
 
 	for ( int x = 0; x < CUBE_COUNT; ++x )
 		for ( int y = 0; y < CUBE_COUNT; ++y )
@@ -226,46 +210,42 @@ int main( int argc, char * args[] )
 					break;
 
 				case SDLK_UP:
-					if ( !isMoveX )
+					if ( moveDirX == MD_NONE )
 					{
-						setPerspective( false );
-						isMoveX = true;
-						moveDirX = MD_UP;
+	//					setPerspective( false );
+						moveDirX = MD_POSITIVE;
 					}
 					break;
 
 				case SDLK_DOWN:
-					if ( !isMoveX )
+					if ( moveDirX == MD_NONE )
 					{
-						setPerspective( false );
-						isMoveX = true;
-						moveDirX = MD_DOWN;
+	//					setPerspective( false );
+						moveDirX = MD_NEGATIVE;
 					}
 					break;
 
 				case SDLK_LEFT:
-					if ( !isMoveY )
+					if ( moveDirY == MD_NONE )
 					{
-						setPerspective( false );
-						isMoveY = true;
-						moveDirY = MD_LEFT;
+	//					setPerspective( false );
+						moveDirY = MD_POSITIVE;
 					}
 					break;
 
 				case SDLK_RIGHT:
-					if ( !isMoveY )
+					if ( moveDirY == MD_NONE )
 					{
-						setPerspective( false );
-						isMoveY = true;
-						moveDirY = MD_RIGHT;
+	//					setPerspective( false );
+						moveDirY = MD_NEGATIVE;
 					}
 					break;
 
-				case SDLK_SPACE:
+/*				case SDLK_SPACE:
 					if ( !isMoveX )
 						setPerspective( !isReversePerspective );
 					break;
-				}
+*/				}
 				break;
 			}
 		}
