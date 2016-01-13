@@ -123,40 +123,36 @@ void display()
 
 //	glRotatef( 45, 1.0f, 1.0f, 1.0f );
 
-//	drawAxis();
-
-	glRotatef( cubeXAngle, 1.0f, 0.0f, 0.0f );
-	glRotatef( cubeYAngle, 0.0f, 1.0f, 0.0f );
-
-	float moveSign = 0;
+	drawAxis();
 
 	if ( moveDirX != MD_NONE )
 	{
-		moveSign = ( moveDirX = MD_POSITIVE ) ? 1 : -1;
-		cubeXMoveAngle += angleDiff;
-		glRotatef( moveSign * cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
+		cubeXMoveAngle += ( moveDirX == MD_POSITIVE ) ? angleDiff : -angleDiff;
 
-		if ( cubeXMoveAngle >= 90 )
+		if ( abs( cubeXMoveAngle ) >= 90 )
 		{
-			cubeXAngle += moveSign * 90;
-			moveDirX = MD_NONE;
+			cubeXAngle += ( moveDirX == MD_POSITIVE ) ? 90 : -90;
 			cubeXMoveAngle = 0;
+
+			moveDirX = MD_NONE;
 		}
 	}
 
 	if ( moveDirY != MD_NONE )
 	{
-		moveSign = ( moveDirY = MD_POSITIVE ) ? 1 : -1;
-		cubeYMoveAngle += angleDiff;
-		glRotatef( moveSign * cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
+		cubeYMoveAngle += ( moveDirY == MD_POSITIVE ) ? angleDiff : -angleDiff;
 
-		if ( cubeYMoveAngle >= 90 )
+		if ( abs( cubeYMoveAngle ) >= 90 )
 		{
-			cubeYAngle += moveSign * 90;
-			moveDirY = MD_NONE;
+			cubeYAngle += ( moveDirY == MD_POSITIVE ) ? 90 : -90;
 			cubeYMoveAngle = 0 ;
+
+			moveDirY = MD_NONE;
 		}
 	}
+
+	glRotatef( cubeXAngle + cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
+	glRotatef( cubeYAngle + cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
 
 //	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
 //	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
