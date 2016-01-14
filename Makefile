@@ -1,7 +1,7 @@
 # Pre-compiled header
 CORE_PCH_FILENAME = src/all.h
 
-OBJS = src/main.cpp
+OBJS = src/main.cpp src/myquaternion.cpp
 
 CC = g++
 

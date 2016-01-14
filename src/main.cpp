@@ -1,5 +1,7 @@
 #include "all.h"
 #include <iostream>
+//#include "glm/gtc/quaternion.hpp"
+#include "myquaternion.h"
 
 SDL_Window * gWindow = NULL;
 SDL_Surface * screen;
@@ -117,13 +119,16 @@ void display()
 
 	glLoadIdentity();
 
-	if ( !isReversePerspective )
+//	if ( !isReversePerspective )
 		glTranslatef( 0.0f, 0.0f, -7.0f );
-	else glTranslatef( 0.0f, 0.0f, -22.0f );
+//	else glTranslatef( 0.0f, 0.0f, -22.0f );
 
 //	glRotatef( 45, 1.0f, 1.0f, 1.0f );
 
-	drawAxis();
+//	drawAxis();
+
+//	glm::fquat quatX;
+//	quatX->angle
 
 	if ( moveDirX != MD_NONE )
 	{
@@ -151,8 +156,22 @@ void display()
 		}
 	}
 
-	glRotatef( cubeXAngle + cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
-	glRotatef( cubeYAngle + cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
+	GLfloat Matrix[16];
+//	GLfloat Matrix[16];
+//	glGetFloatv( GL_MODELVIEW_MATRIX, Matrix );
+
+	MyQuaternion quatX;
+	MyQuaternion quatY;
+	MyQuaternion quatResult;
+    quatX.fromAxisAngle( 1.0, 0.0, 0.0, cubeXAngle + cubeXMoveAngle );
+    quatY.fromAxisAngle( 0.0, 1.0, 0.0, cubeYAngle + cubeYMoveAngle );
+
+	quatResult = quatX * quatY;
+	quatResult.getMatrix( Matrix );
+	glMultMatrixf( Matrix );
+
+//	glRotatef( cubeXAngle + cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
+//	glRotatef( cubeYAngle + cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
 
 //	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
 //	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
