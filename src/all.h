@@ -16,8 +16,8 @@
 #include <fstream>
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 640;
 
 // Screen FPS
 const int SCREEN_FPS = 40;
@@ -38,5 +38,10 @@ const float COLOR_MATR[ COLOR_COUNT ][ 3 ] =
 
 const float COLOR_DARKGRAY[ 3 ] = 	{  52 / 255.0,  73 / 255.0,  94 / 255.0 }; // Wet asphalt
 const float COLOR_LIGHTGRAY[ 3 ] = 	{ 149 / 255.0, 165 / 255.0, 166 / 255.0 }; // Concrete
+
+enum MoveDirection
+{
+	MD_NONE, MD_POSITIVE, MD_NEGATIVE
+};
 
 #endif // ALL_H_INCLUDED
