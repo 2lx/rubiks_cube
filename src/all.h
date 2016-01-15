@@ -1,9 +1,11 @@
 #ifndef ALL_H_INCLUDED
 #define ALL_H_INCLUDED
 
+#if defined(NDEBUG)
+#define MY_DEBUG
+#endif
+
 #include <SDL2/SDL.h>
-//#include <SDL2/SDL_image.h>
-//#include <SDL2/SDL_ttf.h>
 
 #include <GL/gl.h>
 #include <GL/glu.h>

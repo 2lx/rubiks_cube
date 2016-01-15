@@ -6,8 +6,6 @@
 SDL_Window * gWindow = NULL;
 SDL_Surface * screen;
 bool isReversePerspective = false;
-//bool isMoveX = false;
-//bool isMoveY = false;
 
 enum MoveDirection
 {
@@ -104,6 +102,25 @@ void drawAxis()
 
 void drawCube( const float pX, const float pY, const float pZ, const float cubeSize, const int colInd );
 
+#ifdef MY_DEBUG
+void writeMatrix( GLfloat * Matrix, const int length )
+{
+	for ( int i = 0; i < length; i++ )
+	{
+		if ( Matrix[ i ] >= 0 )
+			std::cout << " ";
+
+		std::cout << round( Matrix[ i ] * 1000000 ) / 1000000 << " ";
+
+		if ( ( i % 4 ) == 3 )
+			std::cout << std::endl;
+	}
+	std::cout << std::endl;
+
+	std::cout.flush();
+}
+#endif
+
 void display()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -117,6 +134,8 @@ void display()
 	static int cubeSizeSign = -1;
 	const float angleDiff = 7;
 
+	static MyQuaternion quatCur;
+
 	glLoadIdentity();
 
 //	if ( !isReversePerspective )
@@ -124,54 +143,53 @@ void display()
 //	else glTranslatef( 0.0f, 0.0f, -22.0f );
 
 //	glRotatef( 45, 1.0f, 1.0f, 1.0f );
-
 //	drawAxis();
 
-//	glm::fquat quatX;
-//	quatX->angle
+	MyQuaternion quatTemp;
+	MyQuaternion quatTemp2;
+	GLfloat Matrix[16];
 
 	if ( moveDirX != MD_NONE )
 	{
-		cubeXMoveAngle += ( moveDirX == MD_POSITIVE ) ? angleDiff : -angleDiff;
+	/*	cubeXMoveAngle += ( moveDirX == MD_POSITIVE ) ? angleDiff : -angleDiff;
 
 		if ( abs( cubeXMoveAngle ) >= 90 )
 		{
-			cubeXAngle += ( moveDirX == MD_POSITIVE ) ? 90 : -90;
+
+//
 			cubeXMoveAngle = 0;
 
 			moveDirX = MD_NONE;
 		}
+
+		quatTemp.fromAxisAngle( 1.0, 0.0, 0.0, cubeXMoveAngle );
+		quatTemp2 = quatCur * quatTemp;
+		cubeXAngle += ( moveDirX == MD_POSITIVE ) ? 90 : -90;
+*/
+		quatTemp.fromAxisAngle( 1.0, 0.0, 0.0, ( moveDirX == MD_POSITIVE ) ? - 90 : 90 );
+		quatCur = quatCur * quatTemp;
+
+		moveDirX = MD_NONE;
+#ifdef MY_DEBUG
+		quatCur.getTrMatrix( Matrix );
+		writeMatrix( Matrix, 16 );
+#endif
 	}
 
 	if ( moveDirY != MD_NONE )
 	{
-		cubeYMoveAngle += ( moveDirY == MD_POSITIVE ) ? angleDiff : -angleDiff;
-
-		if ( abs( cubeYMoveAngle ) >= 90 )
-		{
-			cubeYAngle += ( moveDirY == MD_POSITIVE ) ? 90 : -90;
-			cubeYMoveAngle = 0 ;
-
-			moveDirY = MD_NONE;
-		}
+		quatTemp.fromAxisAngle( 0.0, 1.0, 0.0, ( moveDirY == MD_POSITIVE ) ? - 90 : 90 );
+		quatCur = quatCur * quatTemp;
+		moveDirY = MD_NONE;
+#ifdef MY_DEBUG
+		quatCur.getTrMatrix( Matrix );
+		writeMatrix( Matrix, 16 );
+#endif
 	}
 
-	GLfloat Matrix[16];
-//	GLfloat Matrix[16];
-//	glGetFloatv( GL_MODELVIEW_MATRIX, Matrix );
-
-	MyQuaternion quatX;
-	MyQuaternion quatY;
-	MyQuaternion quatResult;
-    quatX.fromAxisAngle( 1.0, 0.0, 0.0, cubeXAngle + cubeXMoveAngle );
-    quatY.fromAxisAngle( 0.0, 1.0, 0.0, cubeYAngle + cubeYMoveAngle );
-
-	quatResult = quatX * quatY;
-	quatResult.getMatrix( Matrix );
-	glMultMatrixf( Matrix );
-
-//	glRotatef( cubeXAngle + cubeXMoveAngle, 1.0f, 0.0f, 0.0f );
-//	glRotatef( cubeYAngle + cubeYMoveAngle, 0.0f, 1.0f, 0.0f );
+	GLfloat MatrixRes[16];
+	quatCur.getTrMatrix( MatrixRes );
+	glMultMatrixf( MatrixRes );
 
 //	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
 //	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
