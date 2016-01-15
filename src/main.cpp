@@ -125,13 +125,13 @@ void display()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	static float cubeXMoveAngle = 0;
-	static float cubeYMoveAngle = 0;
-	static float cubeZMoveAngle = 0;
+	static float cubeXSmoothAngle = 0;
+	static float cubeYSmoothAngle = 0;
+	static float cubeZSmoothAngle = 0;
 
 	static float cubeEdge = 1.0;
 	static int cubeSizeSign = -1;
-	const float angleDiff = 12;
+	const float angleDiff = 8;
 
 	static MyQuaternion quatCur;
 
@@ -148,14 +148,14 @@ void display()
 	MyQuaternion quatTempY;
 	MyQuaternion quatTempZ;
 
-	if ( moveDirX != MD_NONE )
+	if ( ( moveDirX != MD_NONE ) && ( ( ( moveDirY == MD_NONE ) && ( moveDirZ == MD_NONE ) ) || ( cubeXSmoothAngle > 0 ) ) )
 	{
-		if ( cubeXMoveAngle >= 90 )
+		if ( cubeXSmoothAngle >= 90 - angleDiff )
 		{
-			quatTempX.fromAxisAngle( 1.0, 0.0, 0.0, ( moveDirX == MD_POSITIVE ) ? -( 90 - cubeXMoveAngle ) : ( 90 - cubeXMoveAngle ) );
+			quatTempX.fromAxisAngle( 1.0, 0.0, 0.0, ( moveDirX == MD_POSITIVE ) ? -( 90 - cubeXSmoothAngle ) : ( 90 - cubeXSmoothAngle ) );
 			quatCur = quatCur * quatTempX;
 
-			cubeXMoveAngle = 0;
+			cubeXSmoothAngle = 0;
 			moveDirX = MD_NONE;
 		}
 		else
@@ -163,7 +163,7 @@ void display()
 			quatTempX.fromAxisAngle( 1.0, 0.0, 0.0, ( moveDirX == MD_POSITIVE ) ? -angleDiff : angleDiff );
 			quatCur = quatCur * quatTempX;
 
-			cubeXMoveAngle += angleDiff;
+			cubeXSmoothAngle += angleDiff;
 		}
 
 #ifdef MY_DEBUG
@@ -172,15 +172,14 @@ void display()
 		writeMatrix( Matrix, 16 );
 #endif
 	}
-
-	if ( moveDirY != MD_NONE )
+	else if ( ( moveDirY != MD_NONE ) && ( ( moveDirZ == MD_NONE ) || ( cubeYSmoothAngle > 0 ) ) )
 	{
-		if ( cubeYMoveAngle >= 90 )
+		if ( cubeYSmoothAngle >= 90 - angleDiff )
 		{
-			quatTempY.fromAxisAngle( 0.0, 1.0, 0.0, ( moveDirY == MD_POSITIVE ) ? -( 90 - cubeYMoveAngle ) : ( 90 - cubeYMoveAngle ) );
+			quatTempY.fromAxisAngle( 0.0, 1.0, 0.0, ( moveDirY == MD_POSITIVE ) ? -( 90 - cubeYSmoothAngle ) : ( 90 - cubeYSmoothAngle ) );
 			quatCur = quatCur * quatTempY;
 
-			cubeYMoveAngle = 0;
+			cubeYSmoothAngle = 0;
 			moveDirY = MD_NONE;
 		}
 		else
@@ -188,7 +187,7 @@ void display()
 			quatTempY.fromAxisAngle( 0.0, 1.0, 0.0, ( moveDirY == MD_POSITIVE ) ? -angleDiff : angleDiff );
 			quatCur = quatCur * quatTempY;
 
-			cubeYMoveAngle += angleDiff;
+			cubeYSmoothAngle += angleDiff;
 		}
 #ifdef MY_DEBUG
 		GLfloat Matrix[16];
@@ -196,15 +195,14 @@ void display()
 		writeMatrix( Matrix, 16 );
 #endif
 	}
-
-	if ( moveDirZ != MD_NONE )
+	else if ( moveDirZ != MD_NONE )
 	{
-		if ( cubeZMoveAngle >= 90 )
+		if ( cubeZSmoothAngle >= 90 - angleDiff )
 		{
-			quatTempZ.fromAxisAngle( 0.0, 0.0, 1.0, ( moveDirZ == MD_POSITIVE ) ? -( 90 - cubeZMoveAngle ) : ( 90 - cubeZMoveAngle ) );
+			quatTempZ.fromAxisAngle( 0.0, 0.0, 1.0, ( moveDirZ == MD_POSITIVE ) ? -( 90 - cubeZSmoothAngle ) : ( 90 - cubeZSmoothAngle ) );
 			quatCur = quatCur * quatTempZ;
 
-			cubeZMoveAngle = 0;
+			cubeZSmoothAngle = 0;
 			moveDirZ = MD_NONE;
 		}
 		else
@@ -212,7 +210,7 @@ void display()
 			quatTempZ.fromAxisAngle( 0.0, 0.0, 1.0, ( moveDirZ == MD_POSITIVE ) ? -angleDiff : angleDiff );
 			quatCur = quatCur * quatTempZ;
 
-			cubeZMoveAngle += angleDiff;
+			cubeZSmoothAngle += angleDiff;
 		}
 #ifdef MY_DEBUG
 		GLfloat Matrix[16];
