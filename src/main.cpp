@@ -125,14 +125,13 @@ void display()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	static float cubeXAngle = 0;
 	static float cubeXMoveAngle = 0;
-	static float cubeYAngle = 0;
 	static float cubeYMoveAngle = 0;
+	static float cubeZMoveAngle = 0;
 
 	static float cubeEdge = 1.0;
 	static int cubeSizeSign = -1;
-	const float angleDiff = 7;
+	const float angleDiff = 12;
 
 	static MyQuaternion quatCur;
 
@@ -145,32 +144,30 @@ void display()
 //	glRotatef( 45, 1.0f, 1.0f, 1.0f );
 //	drawAxis();
 
-	MyQuaternion quatTemp;
-	MyQuaternion quatTemp2;
-	GLfloat Matrix[16];
+	MyQuaternion quatTempX;
+	MyQuaternion quatTempY;
+	MyQuaternion quatTempZ;
 
 	if ( moveDirX != MD_NONE )
 	{
-	/*	cubeXMoveAngle += ( moveDirX == MD_POSITIVE ) ? angleDiff : -angleDiff;
-
-		if ( abs( cubeXMoveAngle ) >= 90 )
+		if ( cubeXMoveAngle >= 90 )
 		{
+			quatTempX.fromAxisAngle( 1.0, 0.0, 0.0, ( moveDirX == MD_POSITIVE ) ? -( 90 - cubeXMoveAngle ) : ( 90 - cubeXMoveAngle ) );
+			quatCur = quatCur * quatTempX;
 
-//
 			cubeXMoveAngle = 0;
-
 			moveDirX = MD_NONE;
 		}
+		else
+		{
+			quatTempX.fromAxisAngle( 1.0, 0.0, 0.0, ( moveDirX == MD_POSITIVE ) ? -angleDiff : angleDiff );
+			quatCur = quatCur * quatTempX;
 
-		quatTemp.fromAxisAngle( 1.0, 0.0, 0.0, cubeXMoveAngle );
-		quatTemp2 = quatCur * quatTemp;
-		cubeXAngle += ( moveDirX == MD_POSITIVE ) ? 90 : -90;
-*/
-		quatTemp.fromAxisAngle( 1.0, 0.0, 0.0, ( moveDirX == MD_POSITIVE ) ? - 90 : 90 );
-		quatCur = quatCur * quatTemp;
+			cubeXMoveAngle += angleDiff;
+		}
 
-		moveDirX = MD_NONE;
 #ifdef MY_DEBUG
+		GLfloat Matrix[16];
 		quatCur.getTrMatrix( Matrix );
 		writeMatrix( Matrix, 16 );
 #endif
@@ -178,10 +175,47 @@ void display()
 
 	if ( moveDirY != MD_NONE )
 	{
-		quatTemp.fromAxisAngle( 0.0, 1.0, 0.0, ( moveDirY == MD_POSITIVE ) ? - 90 : 90 );
-		quatCur = quatCur * quatTemp;
-		moveDirY = MD_NONE;
+		if ( cubeYMoveAngle >= 90 )
+		{
+			quatTempY.fromAxisAngle( 0.0, 1.0, 0.0, ( moveDirY == MD_POSITIVE ) ? -( 90 - cubeYMoveAngle ) : ( 90 - cubeYMoveAngle ) );
+			quatCur = quatCur * quatTempY;
+
+			cubeYMoveAngle = 0;
+			moveDirY = MD_NONE;
+		}
+		else
+		{
+			quatTempY.fromAxisAngle( 0.0, 1.0, 0.0, ( moveDirY == MD_POSITIVE ) ? -angleDiff : angleDiff );
+			quatCur = quatCur * quatTempY;
+
+			cubeYMoveAngle += angleDiff;
+		}
 #ifdef MY_DEBUG
+		GLfloat Matrix[16];
+		quatCur.getTrMatrix( Matrix );
+		writeMatrix( Matrix, 16 );
+#endif
+	}
+
+	if ( moveDirZ != MD_NONE )
+	{
+		if ( cubeZMoveAngle >= 90 )
+		{
+			quatTempZ.fromAxisAngle( 0.0, 0.0, 1.0, ( moveDirZ == MD_POSITIVE ) ? -( 90 - cubeZMoveAngle ) : ( 90 - cubeZMoveAngle ) );
+			quatCur = quatCur * quatTempZ;
+
+			cubeZMoveAngle = 0;
+			moveDirZ = MD_NONE;
+		}
+		else
+		{
+			quatTempZ.fromAxisAngle( 0.0, 0.0, 1.0, ( moveDirZ == MD_POSITIVE ) ? -angleDiff : angleDiff );
+			quatCur = quatCur * quatTempZ;
+
+			cubeZMoveAngle += angleDiff;
+		}
+#ifdef MY_DEBUG
+		GLfloat Matrix[16];
 		quatCur.getTrMatrix( Matrix );
 		writeMatrix( Matrix, 16 );
 #endif
@@ -243,6 +277,7 @@ int main( int argc, char * args[] )
 					break;
 
 				case SDLK_UP:
+				case SDLK_w:
 					if ( moveDirX == MD_NONE )
 					{
 	//					setPerspective( false );
@@ -251,6 +286,7 @@ int main( int argc, char * args[] )
 					break;
 
 				case SDLK_DOWN:
+				case SDLK_s:
 					if ( moveDirX == MD_NONE )
 					{
 	//					setPerspective( false );
@@ -259,6 +295,7 @@ int main( int argc, char * args[] )
 					break;
 
 				case SDLK_LEFT:
+				case SDLK_a:
 					if ( moveDirY == MD_NONE )
 					{
 	//					setPerspective( false );
@@ -267,10 +304,29 @@ int main( int argc, char * args[] )
 					break;
 
 				case SDLK_RIGHT:
+				case SDLK_d:
 					if ( moveDirY == MD_NONE )
 					{
 	//					setPerspective( false );
 						moveDirY = MD_NEGATIVE;
+					}
+					break;
+
+				case SDLK_PAGEDOWN:
+				case SDLK_e:
+					if ( moveDirZ == MD_NONE )
+					{
+	//					setPerspective( false );
+						moveDirZ = MD_NEGATIVE;
+					}
+					break;
+
+				case SDLK_DELETE:
+				case SDLK_q:
+					if ( moveDirZ == MD_NONE )
+					{
+	//					setPerspective( false );
+						moveDirZ = MD_POSITIVE;
 					}
 					break;
 

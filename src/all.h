@@ -20,7 +20,7 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 // Screen FPS
-const int SCREEN_FPS = 30;
+const int SCREEN_FPS = 40;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
 const uint CUBE_COUNT = 3;
