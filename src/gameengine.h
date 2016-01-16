@@ -34,7 +34,7 @@ private:
 	SDL_Window * gWindow;
 
 	bool m_running;
-	bool m_fullscreen;
+//	bool m_fullscreen;
 };
 
 #endif

@@ -33,36 +33,27 @@ void CGameEngine::Init(const char* title, int width, int height,
 		return;
 	}
 
-//	m_fullscreen = fullscreen;
 	m_running = true;
 
-	printf("CGameEngine Init\n");
+	printf( "CGameEngine Init\n" );
 }
 
 void CGameEngine::Cleanup()
 {
-	// cleanup the all states
 	while ( !states.empty() ) {
 		states.back()->Cleanup();
 		states.pop_back();
 	}
 
-	// switch back to windowed mode so other
-	// programs won't get accidentally resized
-/*	if ( m_fullscreen ) {
-		screen = SDL_SetVideoMode(640, 480, 0, 0);
-	}
-*/
-	printf("CGameEngine Cleanup\n");
+	printf( "CGameEngine Cleanup\n" );
 
-	// shutdown SDL
 	SDL_DestroyWindow( gWindow );
 	gWindow = NULL;
 
 	SDL_Quit();
 }
 
-void CGameEngine::ChangeState(CGameState* state)
+void CGameEngine::ChangeState( CGameState * state )
 {
 	// cleanup the current state
 	if ( !states.empty() ) {
@@ -75,40 +66,43 @@ void CGameEngine::ChangeState(CGameState* state)
 	states.back()->Init();
 }
 
-void CGameEngine::PushState(CGameState* state)
+void CGameEngine::PushState( CGameState * state )
 {
 	// pause current state
-	if ( !states.empty() ) {
+	if ( !states.empty() )
+	{
 		states.back()->Pause();
 	}
 
 	// store and init the new state
-	states.push_back(state);
+	states.push_back( state );
 	states.back()->Init();
 }
 
 void CGameEngine::PopState()
 {
 	// cleanup the current state
-	if ( !states.empty() ) {
+	if ( !states.empty() )
+	{
 		states.back()->Cleanup();
 		states.pop_back();
 	}
 
 	// resume previous state
-	if ( !states.empty() ) {
+	if ( !states.empty() )
+	{
 		states.back()->Resume();
 	}
 }
 
 void CGameEngine::HandleEvents()
 {
-	states.back()->HandleEvents(this);
+	states.back()->HandleEvents( this );
 }
 
 void CGameEngine::Update()
 {
-	states.back()->Update(this);
+	states.back()->Update( this );
 }
 
 void CGameEngine::Draw()
@@ -116,7 +110,7 @@ void CGameEngine::Draw()
 	Uint32 start;
 	start = SDL_GetTicks();
 
-	states.back()->Draw(this);
+	states.back()->Draw( this );
 	SDL_GL_SwapWindow( gWindow );
 
 	if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )

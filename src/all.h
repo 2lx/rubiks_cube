@@ -17,13 +17,12 @@
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 640;
+const int SCREEN_HEIGHT = 600;
 
 // Screen FPS
 const int SCREEN_FPS = 40;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
-const uint CUBE_COUNT = 3;
 const uint COLOR_COUNT = 6;
 
 const float COLOR_MATR[ COLOR_COUNT ][ 3 ] =
@@ -38,10 +37,5 @@ const float COLOR_MATR[ COLOR_COUNT ][ 3 ] =
 
 const float COLOR_DARKGRAY[ 3 ] = 	{  52 / 255.0,  73 / 255.0,  94 / 255.0 }; // Wet asphalt
 const float COLOR_LIGHTGRAY[ 3 ] = 	{ 149 / 255.0, 165 / 255.0, 166 / 255.0 }; // Concrete
-
-enum MoveDirection
-{
-	MD_NONE, MD_POSITIVE, MD_NEGATIVE
-};
 
 #endif // ALL_H_INCLUDED

@@ -3,12 +3,12 @@
 
 #include "SDL2/SDL.h"
 #include "gamestate.h"
+#include "rubikscube.h"
 
-struct MyCube
+enum MoveDirection
 {
-	uint colInd;
+	MD_NONE, MD_POSITIVE, MD_NEGATIVE
 };
-
 
 class CPlayState : public CGameState
 {
@@ -29,18 +29,13 @@ protected:
 	CPlayState() { }
 
 private:
-	void vertexCube( const float pX, const float pY, const float pZ, const float cubeSize );
-	void drawCube( const float pX, const float pY, const float pZ, const float cubeSize, const int colInd );
-
 	static CPlayState m_PlayState;
+	RubiksCube m_RCube;
+//	SDL_Surface * bg;
 
-	MoveDirection moveDirX = MD_NONE;
-	MoveDirection moveDirY = MD_NONE;
-	MoveDirection moveDirZ = MD_NONE;
-
-	MyCube cubes[ CUBE_COUNT ][ CUBE_COUNT ][ CUBE_COUNT ];
-
-	SDL_Surface * bg;
+	MoveDirection moveDirX = { MD_NONE };
+	MoveDirection moveDirY = { MD_NONE };
+	MoveDirection moveDirZ = { MD_NONE };
 };
 
 #endif

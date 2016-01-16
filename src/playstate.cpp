@@ -4,6 +4,7 @@
 #include "playstate.h"
 #include "gameengine.h"
 #include "myquaternion.h"
+#include "rubikscube.h"
 
 CPlayState CPlayState::m_PlayState;
 
@@ -20,18 +21,11 @@ void CPlayState::Init()
 	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 20.0f );
 
 	glMatrixMode( GL_MODELVIEW );
-
-	srand( time( 0 ) );
-
-	for( int x = 0; x < CUBE_COUNT; ++x )
-		for( int y = 0; y < CUBE_COUNT; ++y )
-			for( int z = 0; z < CUBE_COUNT; ++z )
-				cubes[ x ][ y ][ z ].colInd = rand() % COLOR_COUNT;
 }
 
 void CPlayState::Cleanup()
 {
-	SDL_FreeSurface(bg);
+//	SDL_FreeSurface(bg);
 
 	printf("CPlayState Cleanup\n");
 }
@@ -124,80 +118,6 @@ void CPlayState::Update(CGameEngine* game)
 
 }
 
-#ifdef MY_DEBUG
-void writeMatrix( GLfloat * Matrix, const int length )
-{
-	for ( int i = 0; i < length; i++ )
-	{
-		if ( Matrix[ i ] >= 0 )
-			std::cout << " ";
-
-		std::cout << round( Matrix[ i ] * 1000000 ) / 1000000 << " ";
-
-		if ( ( i % 4 ) == 3 )
-			std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
-	std::cout.flush();
-}
-#endif
-
-void CPlayState::vertexCube( const float pX, const float pY, const float pZ, const float cubeSize )
-{
-	glBegin( GL_QUADS );
-
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );  // Up
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
-
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );	// Front
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
-
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );	// Bottom
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
-
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );	// Back
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
-
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );	// Left
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
-
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );	// Right
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
-
-	glEnd();
-}
-
-void CPlayState::drawCube( const float pX, const float pY, const float pZ, const float cubeSize, const int colInd )
-{
-	if ( cubeSize < 1.0 )
-	{
-		glLineWidth( 1.5 );
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); // Borders
-
-		glColor3f( 0.1F, 0.1F, 0.1F );
-		vertexCube( pX, pY, pZ, cubeSize );
-	}
-
-	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ); // Fill
-
-	glColor3f( COLOR_MATR[ colInd ][ 0 ], COLOR_MATR[ colInd ][ 1 ], COLOR_MATR[ colInd ][ 2 ] );
-	vertexCube( pX, pY, pZ, cubeSize );
-}
-
-
 void CPlayState::Draw(CGameEngine* game)
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -206,8 +126,6 @@ void CPlayState::Draw(CGameEngine* game)
 	static float cubeYSmoothAngle = 0;
 	static float cubeZSmoothAngle = 0;
 
-	static float cubeEdge = 1.0;
-	static int cubeSizeSign = -1;
 	const float angleDiff = 8;
 
 	static MyQuaternion quatCur;
@@ -298,16 +216,7 @@ void CPlayState::Draw(CGameEngine* game)
 	quatCur.getTrMatrix( MatrixRes );
 	glMultMatrixf( MatrixRes );
 
-	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
-	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
-	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
-	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
-
-	for ( int x = 0; x < CUBE_COUNT; ++x )
-		for ( int y = 0; y < CUBE_COUNT; ++y )
-			for ( int z = 0; z < CUBE_COUNT; ++z )
-				drawCube( x - 1, y - 1, z - 1, ( cubeEdge > 1.0 ) ? 1.0 : cubeEdge,
-						  cubes[ x ][ y ][ /*( isReversePerspective ) ? CUBE_COUNT - z - 1 :*/ z  ].colInd );
+	m_RCube.drawCube();
 
 	glFlush();
 
