@@ -5,6 +5,7 @@
 RubiksCube::RubiksCube()
 {
 	srand( time( 0 ) );
+
 	for( int x = 0; x < PIECE_COUNT; ++x )
 		for( int y = 0; y < PIECE_COUNT; ++y )
 			for( int z = 0; z < PIECE_COUNT; ++z )
@@ -16,44 +17,46 @@ RubiksCube::~RubiksCube()
 	//dtor
 }
 
-void RubiksCube::vertexCube( const float pX, const float pY, const float pZ, const float cubeSize )
+void RubiksCube::vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize )
 {
+	const GLfloat halfSize = cubeSize / 2;
+
 	glBegin( GL_QUADS );
 
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );  // Up
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );  // Up
+	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
+	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
 
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );	// Front
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
+	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );	// Front
+	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
+	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );	// Bottom
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );	// Bottom
+	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
+	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
 
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );	// Back
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );	// Back
+	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
+	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );
 
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );	// Left
-	glVertex3f( pX - cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
-	glVertex3f( pX - cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
+	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );	// Left
+	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
+	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
+	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
 
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ - cubeSize / 2 );	// Right
-	glVertex3f( pX + cubeSize / 2, pY + cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ + cubeSize / 2 );
-	glVertex3f( pX + cubeSize / 2, pY - cubeSize / 2, pZ - cubeSize / 2 );
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );	// Right
+	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
 
 	glEnd();
 }
 
-void RubiksCube::drawPiece( const float pX, const float pY, const float pZ, const float cubeSize, const int colInd )
+void RubiksCube::drawPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int colInd )
 {
 	if ( cubeSize < 1.0 )
 	{
@@ -70,26 +73,7 @@ void RubiksCube::drawPiece( const float pX, const float pY, const float pZ, cons
 	vertexCube( pX, pY, pZ, cubeSize );
 }
 
-#ifdef MY_DEBUG
-void writeMatrix( GLfloat * Matrix, const int length )
-{
-	for ( int i = 0; i < length; i++ )
-	{
-		if ( Matrix[ i ] >= 0 )
-			std::cout << " ";
-
-		std::cout << round( Matrix[ i ] * 1000000 ) / 1000000 << " ";
-
-		if ( ( i % 4 ) == 3 )
-			std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
-	std::cout.flush();
-}
-#endif
-
-void RubiksCube::drawCube()
+void RubiksCube::drawObject()
 {
 	static float cubeEdge = 1.0;
 	static int cubeSizeSign = -1;

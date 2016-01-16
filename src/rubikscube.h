@@ -1,26 +1,25 @@
 #ifndef RUBIKSCUBE_H
 #define RUBIKSCUBE_H
 
+#include <GL/gl.h>
+#include "gameobject.h"
+#include "shapes.h"
+
 const unsigned int PIECE_COUNT = 3;
 
-struct CubePiece
-{
-	unsigned int colInd;
-};
-
-class RubiksCube
+class RubiksCube : public GameObject
 {
 	public:
 		RubiksCube();
 		virtual ~RubiksCube();
 
-		void drawCube();
+		void drawObject();
 	protected:
 	private:
 		CubePiece m_pieces[ PIECE_COUNT ][ PIECE_COUNT ][ PIECE_COUNT ];
 
-		void vertexCube( const float pX, const float pY, const float pZ, const float cubeSize );
-		void drawPiece( const float pX, const float pY, const float pZ, const float cubeSize, const int colInd );
+		void vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize );
+		void drawPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int colInd );
 };
 
 #endif // RUBIKSCUBE_H

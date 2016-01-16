@@ -4,11 +4,7 @@
 #include "SDL2/SDL.h"
 #include "gamestate.h"
 #include "rubikscube.h"
-
-enum MoveDirection
-{
-	MD_NONE, MD_POSITIVE, MD_NEGATIVE
-};
+#include "shapes.h"
 
 class CPlayState : public CGameState
 {

@@ -18,7 +18,7 @@ void CGameEngine::Init(const char* title, int width, int height,
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 6 );
 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
 
-	gWindow = SDL_CreateWindow( "Rubik's cube game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
+	gWindow = SDL_CreateWindow( title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
 								SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL );
 	if( gWindow == NULL )
 	{
@@ -35,7 +35,9 @@ void CGameEngine::Init(const char* title, int width, int height,
 
 	m_running = true;
 
+#ifdef MY_DEBUG
 	printf( "CGameEngine Init\n" );
+#endif
 }
 
 void CGameEngine::Cleanup()
@@ -44,8 +46,9 @@ void CGameEngine::Cleanup()
 		states.back()->Cleanup();
 		states.pop_back();
 	}
-
+#ifdef MY_DEBUG
 	printf( "CGameEngine Cleanup\n" );
+#endif
 
 	SDL_DestroyWindow( gWindow );
 	gWindow = NULL;

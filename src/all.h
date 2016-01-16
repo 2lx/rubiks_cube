@@ -6,14 +6,10 @@
 #endif
 
 #include <SDL2/SDL.h>
-
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include <stdio.h>
-#include <string>
-#include <sstream>
-#include <fstream>
+#include <iostream>
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 800;
