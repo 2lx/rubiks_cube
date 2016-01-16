@@ -11,11 +11,25 @@ int main( int argc, char * args[] )
 
 	game.ChangeState( CPlayState::Instance() );
 
+	Uint32 startHE;
+	Uint32 startDR;
+	Uint32 endAll;
+
 	while ( game.Running() )
 	{
+		startHE = SDL_GetTicks();
 		game.HandleEvents();
-//		game.Update();
+
+		game.Update();
+
+		startDR = SDL_GetTicks();
 		game.Draw();
+
+		endAll = SDL_GetTicks();
+#ifdef MY_DEBUG
+		if ( startDR - startHE > 0 )
+			std::cout << "Handles: " << startDR - startHE << "    Draw: " << endAll - startDR << std::endl;
+#endif // MY_DEBUG
 	}
 
 	game.Cleanup();
