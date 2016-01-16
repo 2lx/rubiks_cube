@@ -4,7 +4,7 @@
 
 GameObject::GameObject()
 {
-	//ctor
+
 }
 
 GameObject::~GameObject()

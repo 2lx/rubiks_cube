@@ -76,13 +76,13 @@ void RubiksCube::drawPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ
 void RubiksCube::drawObject()
 {
 	static float cubeEdge = 1.0;
-	static int cubeSizeSign = -1;
+/*	static int cubeSizeSign = -1;
 
 	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
 	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
 	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
 	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
-
+*/
 	for ( int x = 0; x < PIECE_COUNT; ++x )
 		for ( int y = 0; y < PIECE_COUNT; ++y )
 			for ( int z = 0; z < PIECE_COUNT; ++z )

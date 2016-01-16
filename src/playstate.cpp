@@ -18,7 +18,23 @@ void CPlayState::Init()
 	glMatrixMode( GL_PROJECTION );
 	//	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glLoadIdentity();
-	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 20.0f );
+
+//	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 20.0f );
+
+//	const float margin = 0.1;
+//	glFrustum( -margin * wdh * 1.2, margin* wdh, -margin, margin* 1.2, 0.1, 20.0 );
+
+	const float wdh = ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT;
+	const float margin = 3;
+	GLfloat cavalierPMatrix[ 16 ] = {
+		1 , 0 , 0 , 0,
+		0 , 1 , 0 , 0,
+		0.355, -0.355, 1 , 0,
+		0 , 0 , 0 , 1
+	};
+
+	glOrtho( -margin * wdh, margin * wdh, -margin, margin, 0.0, 20.0 );
+	glMultMatrixf( cavalierPMatrix );
 
 	glMatrixMode( GL_MODELVIEW );
 }
@@ -45,7 +61,7 @@ void CPlayState::Resume()
 #endif
 }
 
-void CPlayState::HandleEvents(CGameEngine* game)
+void CPlayState::HandleEvents( CGameEngine* game )
 {
 	SDL_Event event;
 
@@ -130,11 +146,10 @@ void CPlayState::Draw( CGameEngine * game )
 	const float angleDiff = 8;
 
 	glLoadIdentity();
+//	glTranslatef( 0.0f, 0.0f, -7.0 );
+	glTranslatef( 2.0f, -2.0f, -5.0 );
 
-	glTranslatef( 0.0f, 0.0f, -7.0 );
-
-//	glRotatef( 15, 1.0f, 1.0f, 0.0f );
-//	drawAxis();
+//	glRotatef( 15, 1.0f, 0.0f, 0.0f );
 
 	m_RCube.rotateObject( moveDirX, moveDirY, moveDirZ );
 	moveDirX = MD_NONE;
@@ -144,8 +159,5 @@ void CPlayState::Draw( CGameEngine * game )
 	m_RCube.drawObject();
 
 	glFlush();
-
-//	SDL_BlitSurface(bg, NULL, game->screen, NULL);
-//	SDL_UpdateRect(game->screen, 0, 0, 0, 0);
 }
 
