@@ -141,23 +141,26 @@ void CPlayState::Update( CGameEngine * game )
 
 void CPlayState::Draw( CGameEngine * game )
 {
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	if ( moveDirX != MD_NONE ||	moveDirY != MD_NONE || moveDirZ != MD_NONE || m_RCube.isMoved() )
+	{
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	const float angleDiff = 8;
+		const float angleDiff = 8;
 
-	glLoadIdentity();
-//	glTranslatef( 0.0f, 0.0f, -7.0 );
-	glTranslatef( 3.0f, -3.0f, -8.0 );
+		glLoadIdentity();
+//		glTranslatef( 0.0f, 0.0f, -7.0 );
+		glTranslatef( 3.0f, -3.0f, -8.0 );
 
-//	glRotatef( 15, 1.0f, 0.0f, 0.0f );
+//		glRotatef( 15, 1.0f, 0.0f, 0.0f );
 
-	m_RCube.rotateObject( moveDirX, moveDirY, moveDirZ );
-	moveDirX = MD_NONE;
-	moveDirY = MD_NONE;
-	moveDirZ = MD_NONE;
+		m_RCube.rotateObject( moveDirX, moveDirY, moveDirZ );
+		moveDirX = MD_NONE;
+		moveDirY = MD_NONE;
+		moveDirZ = MD_NONE;
 
-	m_RCube.drawObject();
+		m_RCube.drawObject();
 
-	glFlush();
+		glFlush();
+	}
 }
 

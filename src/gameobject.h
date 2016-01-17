@@ -13,6 +13,8 @@ class GameObject
 
 		virtual void drawObject() = 0;
 		void rotateObject( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ );
+		bool isMoved() const { if ( m_moveDirX == MD_NONE && m_moveDirY == MD_NONE && m_moveDirZ == MD_NONE ) return false; else return true; };
+
 	protected:
 
 	private:
