@@ -50,8 +50,6 @@ void GameObject::setRotates( const RotateDirection newDirX, const RotateDirectio
 
 void GameObject::rotateObject( )
 {
-	const GLfloat angleDiff = 8.0;
-
 	MyQuaternion quatTemp[ 3 ];
 	GLfloat aX[ 3 ] = { 1.0, 0.0, 0.0 };
 	GLfloat aY[ 3 ] = { 0.0, 1.0, 0.0 };
@@ -61,25 +59,25 @@ void GameObject::rotateObject( )
 	{
 		if ( m_rotateDir[ i ] != RD_NONE )
 		{
-			if ( m_SmoothAngle[ i ] >= 90 - angleDiff )
+			if ( m_rotateAngle[ i ] >= 90 - ANGLE_DIFF )
 			{
 				GLfloat newAngle;
 				if ( m_rotateDir[ i ] == RD_POSITIVE )
-					newAngle = m_SmoothAngle[ i ] - 90;
-				else newAngle = 90 - m_SmoothAngle[ i ];
+					newAngle = m_rotateAngle[ i ] - 90;
+				else newAngle = 90 - m_rotateAngle[ i ];
 
 				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], newAngle );
 				m_rotateQuat = m_rotateQuat * quatTemp[ i ];
 
-				m_SmoothAngle[ i ] = 0;
+				m_rotateAngle[ i ] = 0;
 				m_rotateDir[ i ] = RD_NONE;
 			}
 			else
 			{
-				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], ( m_rotateDir[ i ] == RD_POSITIVE ) ? -angleDiff : angleDiff );
+				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], ( m_rotateDir[ i ] == RD_POSITIVE ) ? -ANGLE_DIFF : ANGLE_DIFF );
 				m_rotateQuat = m_rotateQuat * quatTemp[ i ];
 
-				m_SmoothAngle[ i ] += angleDiff;
+				m_rotateAngle[ i ] += ANGLE_DIFF;
 			}
 
 #ifdef MY_DEBUG

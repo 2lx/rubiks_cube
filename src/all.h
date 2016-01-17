@@ -19,6 +19,9 @@ const int SCREEN_HEIGHT = 600;
 const int SCREEN_FPS = 40;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
+// rotation speed
+const float ANGLE_DIFF = 11.0;
+
 const uint COLOR_COUNT = 6;
 
 const float COLOR_MATR[ COLOR_COUNT + 2 ][ 3 ] =

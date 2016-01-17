@@ -27,7 +27,7 @@ protected:
 private:
 	Point3D m_pos;
 
-	float m_SmoothAngle[ 3 ] = { 0, 0, 0 };
+	float m_rotateAngle[ 3 ] = { 0, 0, 0 };
 	RotateDirection m_rotateDir[ 3 ] = { RD_NONE, RD_NONE, RD_NONE };
 };
 

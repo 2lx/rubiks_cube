@@ -122,6 +122,10 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				m_gkStates[ GK_MOVEFRONT ].setDown();
 				break;
 
+			case SDLK_i:
+				m_gkStates[ GK_MOVEFRONTINV ].setDown();
+				break;
+
 			}
 			break;
 		default:
@@ -148,44 +152,44 @@ void CPlayState::Update( CGameEngine * game )
 			m_RCube->setRotates( GameObject::RD_NEGATIVE, GameObject::RD_NONE, GameObject::RD_NONE );
 			m_gkStates[ GK_ROTATEEUP ].releaseNewDown();
 		}
-
-        if ( m_gkStates[ GK_ROTATEDOWN ].isNewDown() )
+		else if ( m_gkStates[ GK_ROTATEDOWN ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_POSITIVE, GameObject::RD_NONE, GameObject::RD_NONE );
 			m_gkStates[ GK_ROTATEDOWN ].releaseNewDown();
 		}
-
-        if ( m_gkStates[ GK_ROTATELEFT ].isNewDown() )
+		else if ( m_gkStates[ GK_ROTATELEFT ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NEGATIVE, GameObject::RD_NONE );
 			m_gkStates[ GK_ROTATELEFT ].releaseNewDown();
 		}
-
-        if ( m_gkStates[ GK_ROTATERIGHT ].isNewDown() )
+		else if ( m_gkStates[ GK_ROTATERIGHT ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_POSITIVE, GameObject::RD_NONE );
 			m_gkStates[ GK_ROTATERIGHT ].releaseNewDown();
 		}
-
-        if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
+		else if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NONE, GameObject::RD_NEGATIVE );
 			m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].releaseNewDown();
 		}
-
-        if ( m_gkStates[ GK_ROTATECLOCKWISE ].isNewDown() )
+		else if ( m_gkStates[ GK_ROTATECLOCKWISE ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NONE, GameObject::RD_POSITIVE );
 			m_gkStates[ GK_ROTATECLOCKWISE ].releaseNewDown();
 		}
-   	}
+	}
 
- 	if ( !m_RCube->isMoving() )
+	if ( !m_RCube->isMoving() )
 	{
-   	     if ( m_gkStates[ GK_MOVEFRONT ].isNewDown() )
+		if ( m_gkStates[ GK_MOVEFRONT ].isNewDown() )
 		{
 			m_RCube->setMove( MT_FRONT );
 			m_gkStates[ GK_MOVEFRONT ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVEFRONTINV ].isNewDown() )
+		{
+			m_RCube->setMove( MT_FRONTINV );
+			m_gkStates[ GK_MOVEFRONTINV ].releaseNewDown();
 		}
 	}
 }

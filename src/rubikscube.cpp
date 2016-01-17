@@ -52,6 +52,24 @@ void RubiksCube::movePieces( const RCMoveType rt )
 			for ( int j = 0; j < PIECE_COUNT; ++j )
 				m_pieces[ i ][ j ][ k ].rotatePiece( rt );
 	}
+	else if ( rt == MT_FRONTINV )
+	{
+		tmpPiece1 = m_pieces[ 0 ][ 0 ][ k ];
+		tmpPiece2 = m_pieces[ 0 ][ 1 ][ k ];
+		m_pieces[ 0 ][ 0 ][ k ] = m_pieces[ 0 ][ 2 ][ k ];
+		m_pieces[ 0 ][ 1 ][ k ] = m_pieces[ 1 ][ 2 ][ k ];
+		m_pieces[ 0 ][ 2 ][ k ] = m_pieces[ 2 ][ 2 ][ k ];
+		m_pieces[ 1 ][ 2 ][ k ] = m_pieces[ 2 ][ 1 ][ k ];
+		m_pieces[ 2 ][ 2 ][ k ] = m_pieces[ 2 ][ 0 ][ k ];
+		m_pieces[ 2 ][ 1 ][ k ] = m_pieces[ 1 ][ 0 ][ k ];
+		m_pieces[ 2 ][ 0 ][ k ] = tmpPiece1;
+		m_pieces[ 1 ][ 0 ][ k ] = tmpPiece2;
+
+		for ( int i = 0; i < PIECE_COUNT; ++i )
+			for ( int j = 0; j < PIECE_COUNT; ++j )
+				m_pieces[ i ][ j ][ k ].rotatePiece( rt );
+	}
+
 }
 
 void RubiksCube::drawObject()
@@ -59,18 +77,16 @@ void RubiksCube::drawObject()
 	const GLfloat centerDiff = ( -1 * PIECE_COUNT ) / 2.0 + 0.5;
 	vertexCube( 0, 0, 0, 2 );
 
-	const GLfloat angleDiff = 8.0;
-
 	MyQuaternion quatTemp;
 	GLfloat aX[ 3 ] = { 1.0, 0.0, 0.0 };
 	GLfloat aY[ 3 ] = { 0.0, 1.0, 0.0 };
 	GLfloat aZ[ 3 ] = { 0.0, 0.0, 1.0 };
 
-//	m_moveQuat = m_rotateQuat;
+//	m_moveQuat = m_rotateQuat.inverse();
 
 	if ( m_moveType != MT_NONE )
 	{
-		if ( m_moveAngle >= 90 - angleDiff )
+		if ( m_moveAngle >= 90 - ANGLE_DIFF )
 		{
 			GLfloat newAngle;
 			if ( m_moveType == MT_FRONT )
@@ -82,15 +98,16 @@ void RubiksCube::drawObject()
 
 			m_moveAngle = 0;
 			movePieces( m_moveType );
+
 			m_moveType = MT_NONE;
 			m_moveQuat.reset();
 		}
 		else
 		{
-			quatTemp.fromAxisAngle( aX[ 2 ], aY[ 2 ], aZ[ 2 ], ( m_moveType == MT_FRONT ) ? angleDiff : -angleDiff );
+			quatTemp.fromAxisAngle( aX[ 2 ], aY[ 2 ], aZ[ 2 ], ( m_moveType == MT_FRONT ) ? ANGLE_DIFF : -ANGLE_DIFF );
 			m_moveQuat = m_moveQuat * quatTemp;
 
-			m_moveAngle += angleDiff;
+			m_moveAngle += ANGLE_DIFF;
 		}
 	}
 
@@ -98,7 +115,7 @@ void RubiksCube::drawObject()
 		for ( int y = 0; y < PIECE_COUNT; ++y )
 			for ( int z = 0; z < PIECE_COUNT; ++z )
 			{
-				if ( z == 2 && m_moveType == MT_FRONT )
+				if ( z == 2 && ( m_moveType == MT_FRONT  || m_moveType == MT_FRONTINV ) )
 				{
 					glPushMatrix();
 
