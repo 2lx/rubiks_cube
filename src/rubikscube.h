@@ -5,7 +5,7 @@
 #include "gameobject.h"
 #include "shapes.h"
 
-const unsigned int PIECE_COUNT = 3;
+const int PIECE_COUNT = 3;
 
 class RubiksCube : public GameObject
 {
@@ -20,7 +20,6 @@ class RubiksCube : public GameObject
 
 		void vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize );
 		void vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int x, const int y, const int z );
-//		void borderRCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize );
 };
 
 #endif // RUBIKSCUBE_H

@@ -37,11 +37,14 @@ void CPlayState::Init()
 	glMultMatrixf( cavalierPMatrix );
 
 	glMatrixMode( GL_MODELVIEW );
+
+	m_RCube = new RubiksCube;
 }
 
 void CPlayState::Cleanup()
 {
 //	SDL_FreeSurface(bg);
+	delete m_RCube;
 #ifdef MY_DEBUG
 	printf("CPlayState Cleanup\n");
 #endif
@@ -145,7 +148,7 @@ void CPlayState::Draw( CGameEngine * game )
 	static int drCount = 0;
 #endif // MY_DEBUG
 
-	if ( moveDirX != MD_NONE ||	moveDirY != MD_NONE || moveDirZ != MD_NONE || m_RCube.isMoved() || !m_firstDraw )
+	if ( moveDirX != MD_NONE ||	moveDirY != MD_NONE || moveDirZ != MD_NONE || m_RCube->isMoved() || !m_firstDraw )
 	{
 		glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -154,16 +157,16 @@ void CPlayState::Draw( CGameEngine * game )
 
 		glLoadIdentity();
 //		glTranslatef( 0.0f, 0.0f, -7.0 );
-		glTranslatef( 3.0f, -3.0f, -8.0 );
+		glTranslatef( 2.7f, -2.7f, -8.0 );
 
 //		glRotatef( 15, 1.0f, 0.0f, 0.0f );
 
-		m_RCube.rotateObject( moveDirX, moveDirY, moveDirZ );
+		m_RCube->rotateObject( moveDirX, moveDirY, moveDirZ );
 		moveDirX = MD_NONE;
 		moveDirY = MD_NONE;
 		moveDirZ = MD_NONE;
 
-		m_RCube.drawObject();
+		m_RCube->drawObject();
 
 		glFlush();
 

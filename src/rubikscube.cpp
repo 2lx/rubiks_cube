@@ -9,12 +9,12 @@ RubiksCube::RubiksCube()
 	for( int i = 0; i < PIECE_COUNT; ++i )
 		for( int j = 0; j < PIECE_COUNT; ++j )
 		{
-			m_pieces[ i ][ j ][ 2 ].colFront = 0;
-			m_pieces[ i ][ 2 ][ j ].colTop = 1;
+			m_pieces[ i ][ j ][ PIECE_COUNT - 1 ].colFront = 0;
+			m_pieces[ i ][ PIECE_COUNT - 1 ][ j ].colTop = 1;
 			m_pieces[ i ][ j ][ 0 ].colBack = 2;
 			m_pieces[ i ][ 0 ][ j ].colBottom = 3;
 			m_pieces[ 0 ][ i ][ j ].colLeft = 4;
-			m_pieces[ 2 ][ i ][ j ].colRight = 5;
+			m_pieces[ PIECE_COUNT - 1 ][ i ][ j ].colRight = 5;
 		}
 }
 
@@ -25,7 +25,7 @@ RubiksCube::~RubiksCube()
 
 void RubiksCube::vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize )
 {
-	const GLfloat halfSize = cubeSize * 3.0 / 2.0 - 0.1;
+	const GLfloat halfSize = cubeSize * PIECE_COUNT / 2.0 - 0.1;
 
 	glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
@@ -149,7 +149,8 @@ void RubiksCube::vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat 
 
 void RubiksCube::drawObject()
 {
-	static float cubeEdge = 1.0;
+	static GLfloat cubeEdge = 1.0;
+	const GLfloat centerDiff = ( -1 * PIECE_COUNT ) / 2.0 + 0.5;
 
 	vertexCube( 0, 0, 0, 1 );
 
@@ -157,6 +158,6 @@ void RubiksCube::drawObject()
 		for ( int y = 0; y < PIECE_COUNT; ++y )
 			for ( int z = 0; z < PIECE_COUNT; ++z )
 			{
-				vertexPiece( x- 1, y - 1, z - 1, cubeEdge, x, y, z );
+				vertexPiece( x + centerDiff, y + centerDiff, z + centerDiff, cubeEdge, x, y, z );
 			}
 }

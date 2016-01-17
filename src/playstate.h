@@ -26,7 +26,7 @@ protected:
 
 private:
 	static CPlayState m_PlayState;
-	RubiksCube m_RCube;
+	RubiksCube * m_RCube;
 //	SDL_Surface * bg;
 
 	bool m_firstDraw = { false };
