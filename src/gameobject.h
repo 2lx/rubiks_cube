@@ -5,6 +5,11 @@
 #include "shapes.h"
 #include "myquaternion.h"
 
+enum MoveDirection
+{
+	MD_NONE, MD_POSITIVE, MD_NEGATIVE
+};
+
 class GameObject
 {
 	public:
@@ -21,14 +26,9 @@ class GameObject
 	private:
 		Point3D m_pos;
 
+		float m_SmoothAngle[ 3 ] = { 0, 0, 0 };
+		MoveDirection m_moveDir[ 3 ] = { MD_NONE, MD_NONE, MD_NONE };
 		MyQuaternion m_quatCurrent;
-		float m_XSmoothAngle = 0;
-		float m_YSmoothAngle = 0;
-		float m_ZSmoothAngle = 0;
-
-		MoveDirection m_moveDirX = { MD_NONE };
-		MoveDirection m_moveDirY = { MD_NONE };
-		MoveDirection m_moveDirZ = { MD_NONE };
 };
 
 #endif // GAMEOBJECT_H

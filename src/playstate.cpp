@@ -14,7 +14,7 @@ void CPlayState::Init()
 	glDepthFunc( GL_LESS );
 	glEnable( GL_DEPTH_TEST );
 	glShadeModel( GL_SMOOTH );
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
@@ -70,9 +70,9 @@ void CPlayState::HandleEvents( CGameEngine* game )
 	SDL_Event event;
 
 	const Uint32 start = SDL_GetTicks();
-	bool breakWhile = false;
+	bool allEventsRunOut = false;
 
-	while ( SDL_PollEvent( &event ) && !breakWhile && ( SDL_GetTicks() - start ) < 15 )
+	while ( SDL_PollEvent( &event ) && !allEventsRunOut && ( SDL_GetTicks() - start ) < 15 )
 	{
 		switch( event.type )
 		{
@@ -127,7 +127,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 					m_gkStates[ i ].releasePress();
 
 				lastEvent = false;
-				breakWhile = true;
+				allEventsRunOut = true;
 			}
 
 			break;
@@ -179,9 +179,7 @@ void CPlayState::Update( CGameEngine * game )
 
 void CPlayState::Draw( CGameEngine * game )
 {
-#ifdef MY_DEBUG
 	static int drCount = 0;
-#endif // MY_DEBUG
 
 	if ( m_RCube->isMoved() || !m_firstDraw )
 	{
@@ -203,13 +201,13 @@ void CPlayState::Draw( CGameEngine * game )
 
 		glFlush();
 
-		if ( !m_firstDraw ) m_firstDraw = true;
+		if ( !m_firstDraw && drCount > 1 ) m_firstDraw = true;
 
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
 
-#ifdef MY_DEBUG
 		drCount++;
+#ifdef MY_DEBUG
 		if ( drCount % 5 == 0 )
 			std::cout << "DrawCount: " << drCount << std::endl;
 #endif // MY_DEBUG

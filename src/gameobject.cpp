@@ -33,7 +33,7 @@ void writeMatrix( GLfloat * Matrix, const int length )
 
 bool GameObject::isMoved() const
 {
-	if ( m_moveDirX == MD_NONE && m_moveDirY == MD_NONE && m_moveDirZ == MD_NONE )
+	if ( m_moveDir[ 0 ] == MD_NONE && m_moveDir[ 1 ] == MD_NONE && m_moveDir[ 2 ] == MD_NONE )
 		return false;
 	else return true;
 };
@@ -42,9 +42,9 @@ void GameObject::setMoves( const MoveDirection newDirX, const MoveDirection newD
 {
 	if ( !isMoved() )
 	{
-		m_moveDirX = newDirX;
-		m_moveDirY = newDirY;
-		m_moveDirZ = newDirZ;
+		m_moveDir[ 0 ] = newDirX;
+		m_moveDir[ 1 ] = newDirY;
+		m_moveDir[ 2 ] = newDirZ;
 	}
 }
 
@@ -52,81 +52,42 @@ void GameObject::moveObject( )
 {
 	const GLfloat angleDiff = 8.0;
 
-	MyQuaternion quatTempX;
-	MyQuaternion quatTempY;
-	MyQuaternion quatTempZ;
+	MyQuaternion quatTemp[ 3 ];
+	GLfloat aX[ 3 ] = { 1.0, 0.0, 0.0 };
+	GLfloat aY[ 3 ] = { 0.0, 1.0, 0.0 };
+	GLfloat aZ[ 3 ] = { 0.0, 0.0, 1.0 };
 
-	if ( m_moveDirX != MD_NONE )
+	for ( int i = 0; i < 3; i++ )
 	{
-		if ( m_XSmoothAngle >= 90 - angleDiff )
+		if ( m_moveDir[ i ] != MD_NONE )
 		{
-			quatTempX.fromAxisAngle( 1.0, 0.0, 0.0, ( m_moveDirX == MD_POSITIVE ) ? -( 90 - m_XSmoothAngle ) : ( 90 - m_XSmoothAngle ) );
-			m_quatCurrent = m_quatCurrent * quatTempX;
+			if ( m_SmoothAngle[ i ] >= 90 - angleDiff )
+			{
+				GLfloat newAngle;
+				if ( m_moveDir[ i ] == MD_POSITIVE )
+					newAngle = m_SmoothAngle[ i ] - 90;
+				else newAngle = 90 - m_SmoothAngle[ i ];
 
-			m_XSmoothAngle = 0;
-			m_moveDirX = MD_NONE;
-		}
-		else
-		{
-			quatTempX.fromAxisAngle( 1.0, 0.0, 0.0, ( m_moveDirX == MD_POSITIVE ) ? -angleDiff : angleDiff );
-			m_quatCurrent = m_quatCurrent * quatTempX;
+				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], newAngle );
+				m_quatCurrent = m_quatCurrent * quatTemp[ i ];
 
-			m_XSmoothAngle += angleDiff;
-		}
+				m_SmoothAngle[ i ] = 0;
+				m_moveDir[ i ] = MD_NONE;
+			}
+			else
+			{
+				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], ( m_moveDir[ i ] == MD_POSITIVE ) ? -angleDiff : angleDiff );
+				m_quatCurrent = m_quatCurrent * quatTemp[ i ];
+
+				m_SmoothAngle[ i ] += angleDiff;
+			}
 
 #ifdef MY_DEBUG
 //		GLfloat Matrix[16];
 //		m_quatCurrent.getTrMatrix( Matrix );
 //		writeMatrix( Matrix, 16 );
 #endif
-	}
-
-	if ( m_moveDirY != MD_NONE )
-	{
-		if ( m_YSmoothAngle >= 90 - angleDiff )
-		{
-			quatTempY.fromAxisAngle( 0.0, 1.0, 0.0, ( m_moveDirY == MD_POSITIVE ) ? -( 90 - m_YSmoothAngle ) : ( 90 - m_YSmoothAngle ) );
-			m_quatCurrent = m_quatCurrent * quatTempY;
-
-			m_YSmoothAngle = 0;
-			m_moveDirY = MD_NONE;
 		}
-		else
-		{
-			quatTempY.fromAxisAngle( 0.0, 1.0, 0.0, ( m_moveDirY == MD_POSITIVE ) ? -angleDiff : angleDiff );
-			m_quatCurrent = m_quatCurrent * quatTempY;
-
-			m_YSmoothAngle += angleDiff;
-		}
-#ifdef MY_DEBUG
-//		GLfloat Matrix[16];
-//		m_quatCurrent.getTrMatrix( Matrix );
-//		writeMatrix( Matrix, 16 );
-#endif
-	}
-
-	if ( m_moveDirZ != MD_NONE )
-	{
-		if ( m_ZSmoothAngle >= 90 - angleDiff )
-		{
-			quatTempZ.fromAxisAngle( 0.0, 0.0, 1.0, ( m_moveDirZ == MD_POSITIVE ) ? -( 90 - m_ZSmoothAngle ) : ( 90 - m_ZSmoothAngle ) );
-			m_quatCurrent = m_quatCurrent * quatTempZ;
-
-			m_ZSmoothAngle = 0;
-			m_moveDirZ = MD_NONE;
-		}
-		else
-		{
-			quatTempZ.fromAxisAngle( 0.0, 0.0, 1.0, ( m_moveDirZ == MD_POSITIVE ) ? -angleDiff : angleDiff );
-			m_quatCurrent = m_quatCurrent * quatTempZ;
-
-			m_ZSmoothAngle += angleDiff;
-		}
-#ifdef MY_DEBUG
-//		GLfloat Matrix[16];
-//		m_quatCurrent.getTrMatrix( Matrix );
-//		writeMatrix( Matrix, 16 );
-#endif
 	}
 
 	GLfloat MatrixRes[16];
