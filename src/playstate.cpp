@@ -118,6 +118,10 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				m_gkStates[ GK_ROTATECLOCKWISE ].setDown();
 				break;
 
+			case SDLK_u:
+				m_gkStates[ GK_MOVEFRONT ].setDown();
+				break;
+
 			}
 			break;
 		default:
@@ -141,38 +145,47 @@ void CPlayState::Update( CGameEngine * game )
 	{
         if ( m_gkStates[ GK_ROTATEEUP ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::MD_NEGATIVE, GameObject::MD_NONE, GameObject::MD_NONE );
+			m_RCube->setRotates( GameObject::RD_NEGATIVE, GameObject::RD_NONE, GameObject::RD_NONE );
 			m_gkStates[ GK_ROTATEEUP ].releaseNewDown();
 		}
 
         if ( m_gkStates[ GK_ROTATEDOWN ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::MD_POSITIVE, GameObject::MD_NONE, GameObject::MD_NONE );
+			m_RCube->setRotates( GameObject::RD_POSITIVE, GameObject::RD_NONE, GameObject::RD_NONE );
 			m_gkStates[ GK_ROTATEDOWN ].releaseNewDown();
 		}
 
         if ( m_gkStates[ GK_ROTATELEFT ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::MD_NONE, GameObject::MD_NEGATIVE, GameObject::MD_NONE );
+			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NEGATIVE, GameObject::RD_NONE );
 			m_gkStates[ GK_ROTATELEFT ].releaseNewDown();
 		}
 
         if ( m_gkStates[ GK_ROTATERIGHT ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::MD_NONE, GameObject::MD_POSITIVE, GameObject::MD_NONE );
+			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_POSITIVE, GameObject::RD_NONE );
 			m_gkStates[ GK_ROTATERIGHT ].releaseNewDown();
 		}
 
         if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::MD_NONE, GameObject::MD_NONE, GameObject::MD_NEGATIVE );
+			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NONE, GameObject::RD_NEGATIVE );
 			m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].releaseNewDown();
 		}
 
         if ( m_gkStates[ GK_ROTATECLOCKWISE ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::MD_NONE, GameObject::MD_NONE, GameObject::MD_POSITIVE );
+			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NONE, GameObject::RD_POSITIVE );
 			m_gkStates[ GK_ROTATECLOCKWISE ].releaseNewDown();
+		}
+   	}
+
+ 	if ( !m_RCube->isMoving() )
+	{
+   	     if ( m_gkStates[ GK_MOVEFRONT ].isNewDown() )
+		{
+			m_RCube->setMove( MT_FRONT );
+			m_gkStates[ GK_MOVEFRONT ].releaseNewDown();
 		}
 	}
 }
@@ -181,7 +194,7 @@ void CPlayState::Draw( CGameEngine * game )
 {
 	static int drCount = 0;
 
-	if ( m_RCube->isRotating() || !m_firstDraw )
+	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() )
 	{
 		Uint32 start = SDL_GetTicks();
 
@@ -201,12 +214,11 @@ void CPlayState::Draw( CGameEngine * game )
 
 		glFlush();
 
-		if ( !m_firstDraw && drCount > 1 ) m_firstDraw = true;
-
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
 
 		drCount++;
+		if ( drCount > 1 ) m_needRedraw = false;
 #ifdef MY_DEBUG
 		if ( drCount % 5 == 0 )
 			std::cout << "DrawCount: " << drCount << std::endl;

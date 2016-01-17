@@ -9,6 +9,7 @@
 enum GameKeys
 {
     GK_ROTATEEUP, GK_ROTATEDOWN, GK_ROTATELEFT, GK_ROTATERIGHT, GK_ROTATECLOCKWISE, GK_ROTATECOUNTERCLOCKWISE,
+    GK_MOVEFRONT, GK_MOVEFRONTINV,
     GK_COUNT
 };
 
@@ -54,7 +55,7 @@ private:
 	RubiksCube * m_RCube;
 //	SDL_Surface * bg;
 
-	bool m_firstDraw = { false };
+	bool m_needRedraw = { true };
 	GameKeysStates m_gkStates[ GK_COUNT ];
 };
 

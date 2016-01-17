@@ -5,24 +5,6 @@
 #include "gameobject.h"
 #include "shapes.h"
 
-enum RCRotateType
-{
-	RT_LEFT,
-	RT_LEFTI, // I (inverse) - counter-clockwise move
-	RT_RIGHT,
-	RT_RIGHTI,
-	RT_BACK,
-	RT_BACKI,
-	RT_FRONT,
-	RT_FRONTI,
-	RT_UP,
-	RT_UPI,
-	RT_DOWN,
-	RT_DOWNI,
-
-	RT_COUNT
-};
-
 const int PIECE_COUNT = 3;
 const float CUBE_EDGE = 1.0;
 
@@ -33,10 +15,17 @@ class RubiksCube : public GameObject
 		virtual ~RubiksCube();
 
 		void drawObject();
-		void moveCube( const RCRotateType rt );
+		void movePieces( const RCMoveType rt );
+		void setMove( const RCMoveType newRT );
+		bool isMoving() const { return m_moveType != MT_NONE; }
+
 	protected:
 	private:
 		CubePiece m_pieces[ PIECE_COUNT ][ PIECE_COUNT ][ PIECE_COUNT ];
+
+		MyQuaternion m_moveQuat;
+		GLfloat m_moveAngle = { 0 };
+		RCMoveType m_moveType = { MT_NONE };
 
 		void vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize );
 		void vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int x, const int y, const int z );

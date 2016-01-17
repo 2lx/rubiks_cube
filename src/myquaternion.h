@@ -11,6 +11,7 @@ class MyQuaternion
 		MyQuaternion( const GLfloat wi, const GLfloat xi, const GLfloat yi, const GLfloat zi );
 		virtual ~MyQuaternion();
 
+		void reset() { m_w = 1; m_x = 0; m_y = 0; m_z = 0; }
 		MyQuaternion operator + ( const MyQuaternion & q ) const;
 		MyQuaternion operator * ( const MyQuaternion & q ) const;
 		MyQuaternion operator = ( const MyQuaternion & q );

@@ -8,9 +8,9 @@
 class GameObject
 {
 public:
-	enum MoveDirection
+	enum RotateDirection
 	{
-		MD_NONE, MD_POSITIVE, MD_NEGATIVE
+		RD_NONE, RD_POSITIVE, RD_NEGATIVE
 	};
 
 	GameObject();
@@ -18,17 +18,17 @@ public:
 
 	virtual void drawObject() = 0;
 	void rotateObject();
-	void setRotates( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ );
+	void setRotates( const RotateDirection newDirX, const RotateDirection newDirY, const RotateDirection newDirZ );
 	bool isRotating() const;
 
 protected:
+	MyQuaternion m_rotateQuat;
 
 private:
 	Point3D m_pos;
 
 	float m_SmoothAngle[ 3 ] = { 0, 0, 0 };
-	MoveDirection m_moveDir[ 3 ] = { MD_NONE, MD_NONE, MD_NONE };
-	MyQuaternion m_quatCurrent;
+	RotateDirection m_rotateDir[ 3 ] = { RD_NONE, RD_NONE, RD_NONE };
 };
 
 #endif // GAMEOBJECT_H

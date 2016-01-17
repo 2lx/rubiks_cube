@@ -24,28 +24,98 @@ RubiksCube::~RubiksCube()
 	//dtor
 }
 
-void moveCube( const RCRotateType rt )
+void RubiksCube::setMove( const RCMoveType newRT )
 {
+	m_moveType = newRT;
+}
 
+void RubiksCube::movePieces( const RCMoveType rt )
+{
+	CubePiece tmpPiece1;
+	CubePiece tmpPiece2;
+	const int k = PIECE_COUNT - 1;
+
+	if ( rt == MT_FRONT )
+	{
+		tmpPiece1 = m_pieces[ 0 ][ 0 ][ k ];
+		tmpPiece2 = m_pieces[ 1 ][ 0 ][ k ];
+		m_pieces[ 0 ][ 0 ][ k ] = m_pieces[ 2 ][ 0 ][ k ];
+		m_pieces[ 1 ][ 0 ][ k ] = m_pieces[ 2 ][ 1 ][ k ];
+		m_pieces[ 2 ][ 0 ][ k ] = m_pieces[ 2 ][ 2 ][ k ];
+		m_pieces[ 2 ][ 1 ][ k ] = m_pieces[ 1 ][ 2 ][ k ];
+		m_pieces[ 2 ][ 2 ][ k ] = m_pieces[ 0 ][ 2 ][ k ];
+		m_pieces[ 1 ][ 2 ][ k ] = m_pieces[ 0 ][ 1 ][ k ];
+		m_pieces[ 0 ][ 2 ][ k ] = tmpPiece1;
+		m_pieces[ 0 ][ 1 ][ k ] = tmpPiece2;
+
+		for ( int i = 0; i < PIECE_COUNT; ++i )
+			for ( int j = 0; j < PIECE_COUNT; ++j )
+				m_pieces[ i ][ j ][ k ].rotatePiece( rt );
+	}
 }
 
 void RubiksCube::drawObject()
 {
 	const GLfloat centerDiff = ( -1 * PIECE_COUNT ) / 2.0 + 0.5;
+	vertexCube( 0, 0, 0, 2 );
 
-	vertexCube( 0, 0, 0, 1 );
+	const GLfloat angleDiff = 8.0;
+
+	MyQuaternion quatTemp;
+	GLfloat aX[ 3 ] = { 1.0, 0.0, 0.0 };
+	GLfloat aY[ 3 ] = { 0.0, 1.0, 0.0 };
+	GLfloat aZ[ 3 ] = { 0.0, 0.0, 1.0 };
+
+//	m_moveQuat = m_rotateQuat;
+
+	if ( m_moveType != MT_NONE )
+	{
+		if ( m_moveAngle >= 90 - angleDiff )
+		{
+			GLfloat newAngle;
+			if ( m_moveType == MT_FRONT )
+				newAngle = 90 - m_moveAngle;
+			else newAngle = m_moveAngle - 90;
+
+			quatTemp.fromAxisAngle( aX[ 2 ], aY[ 2 ], aZ[ 2 ], newAngle );
+			m_moveQuat = m_moveQuat * quatTemp;
+
+			m_moveAngle = 0;
+			movePieces( m_moveType );
+			m_moveType = MT_NONE;
+			m_moveQuat.reset();
+		}
+		else
+		{
+			quatTemp.fromAxisAngle( aX[ 2 ], aY[ 2 ], aZ[ 2 ], ( m_moveType == MT_FRONT ) ? angleDiff : -angleDiff );
+			m_moveQuat = m_moveQuat * quatTemp;
+
+			m_moveAngle += angleDiff;
+		}
+	}
 
 	for ( int x = 0; x < PIECE_COUNT; ++x )
 		for ( int y = 0; y < PIECE_COUNT; ++y )
 			for ( int z = 0; z < PIECE_COUNT; ++z )
 			{
-				vertexPiece( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
+				if ( z == 2 && m_moveType == MT_FRONT )
+				{
+					glPushMatrix();
+
+					GLfloat MatrixRes[16];
+					m_moveQuat.getTrMatrix( MatrixRes );
+					glMultMatrixf( MatrixRes );
+					vertexPiece( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
+
+					glPopMatrix();
+				}
+				else vertexPiece( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
 			}
 }
 
 void RubiksCube::vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize )
 {
-	const GLfloat halfSize = cubeSize * PIECE_COUNT / 2.0 - 0.1;
+	const GLfloat halfSize = cubeSize / 2.0 - 0.1;
 
 	glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
@@ -92,9 +162,10 @@ void RubiksCube::vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat 
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	glBegin( GL_QUADS );
 
-	if ( m_pieces[ x ][ y ][ z ].colUp != -1 )
-	{
-		glColor3f( 	COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 0 ],
+
+		if ( m_pieces[ x ][ y ][ z ].colUp == -1 )
+			glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+		else glColor3f( COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 0 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 1 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 2 ] );
 
@@ -102,67 +173,62 @@ void RubiksCube::vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat 
 		glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
 		glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
 		glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
-	}
 
-	if ( m_pieces[ x ][ y ][ z ].colFront != -1 )
-	{
-		glColor3f( 	COLOR_MATR[ m_pieces[ x ][ y ][ z ].colFront ][ 0 ],
+
+	if ( m_pieces[ x ][ y ][ z ].colFront == -1 )
+		glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+	else glColor3f( COLOR_MATR[ m_pieces[ x ][ y ][ z ].colFront ][ 0 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colFront ][ 1 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colFront ][ 2 ] );
 
-		glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );	// Front
-		glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
-		glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
-		glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
-	}
+	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );	// Front
+	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
+	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 
-	if ( m_pieces[ x ][ y ][ z ].colDown != -1 )
-	{
-		glColor3f( 	COLOR_MATR[ m_pieces[ x ][ y ][ z ].colDown ][ 0 ],
+	if ( m_pieces[ x ][ y ][ z ].colDown == -1 )
+		glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+	else glColor3f( COLOR_MATR[ m_pieces[ x ][ y ][ z ].colDown ][ 0 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colDown ][ 1 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colDown ][ 2 ] );
 
-		glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );	// Down
-		glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
-		glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
-		glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
-	}
+	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );	// Down
+	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
+	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
 
-	if ( m_pieces[ x ][ y ][ z ].colBack != -1 )
-	{
-		glColor3f( 	COLOR_MATR[ m_pieces[ x ][ y ][ z ].colBack ][ 0 ],
+	if ( m_pieces[ x ][ y ][ z ].colBack == -1 )
+		glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+	else glColor3f( COLOR_MATR[ m_pieces[ x ][ y ][ z ].colBack ][ 0 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colBack ][ 1 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colBack ][ 2 ] );
 
-		glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );	// Back
-		glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
-		glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
-		glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );
-	}
+	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );	// Back
+	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
+	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );
 
-	if ( m_pieces[ x ][ y ][ z ].colLeft != -1 )
-	{
-		glColor3f( 	COLOR_MATR[ m_pieces[ x ][ y ][ z ].colLeft ][ 0 ],
+	if ( m_pieces[ x ][ y ][ z ].colLeft == -1 )
+		glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+	else glColor3f( COLOR_MATR[ m_pieces[ x ][ y ][ z ].colLeft ][ 0 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colLeft ][ 1 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colLeft ][ 2 ] );
 
-		glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );	// Left
-		glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
-		glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
-		glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
-	}
+	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );	// Left
+	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
+	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
+	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
 
-	if ( m_pieces[ x ][ y ][ z ].colRight != -1 )
-	{
-		glColor3f( 	COLOR_MATR[ m_pieces[ x ][ y ][ z ].colRight ][ 0 ],
+	if ( m_pieces[ x ][ y ][ z ].colRight == -1 )
+		glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+	else glColor3f( COLOR_MATR[ m_pieces[ x ][ y ][ z ].colRight ][ 0 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colRight ][ 1 ],
 					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colRight ][ 2 ] );
 
-		glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );	// Right
-		glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
-		glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
-		glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
-	}
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );	// Right
+	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
 
 	glEnd();
 }

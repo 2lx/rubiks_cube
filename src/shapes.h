@@ -1,6 +1,19 @@
 #ifndef SHAPES_H_INCLUDED
 #define SHAPES_H_INCLUDED
 
+enum RCMoveType
+{
+	MT_NONE,
+	MT_FRONT, MT_FRONTI,  // I (inverse) - counter-clockwise move
+	MT_BACK, MT_BACKI,
+	MT_LEFT, MT_LEFTI,
+	MT_RIGHT, MT_RIGHTI,
+	MT_UP, MT_UPI,
+	MT_DOWN, MT_DOWNI,
+
+	RT_COUNT
+};
+
 class Point3D
 {
 public:
@@ -21,6 +34,20 @@ private:
 class CubePiece
 {
 public:
+	CubePiece() { };
+	void rotatePiece( const RCMoveType rt )
+	{
+		unsigned int colTemp;
+		if ( rt == MT_FRONT || rt == MT_BACK )
+		{
+			colTemp = colLeft;
+			colLeft = colDown;
+			colDown = colRight;
+			colRight = colUp;
+			colUp = colTemp;
+		}
+	}
+
 	unsigned int colUp = -1;
 	unsigned int colDown = -1;
 	unsigned int colLeft = -1;

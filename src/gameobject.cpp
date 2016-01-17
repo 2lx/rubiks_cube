@@ -33,18 +33,18 @@ void writeMatrix( GLfloat * Matrix, const int length )
 
 bool GameObject::isRotating() const
 {
-	if ( m_moveDir[ 0 ] == MD_NONE && m_moveDir[ 1 ] == MD_NONE && m_moveDir[ 2 ] == MD_NONE )
+	if ( m_rotateDir[ 0 ] == RD_NONE && m_rotateDir[ 1 ] == RD_NONE && m_rotateDir[ 2 ] == RD_NONE )
 		return false;
 	else return true;
 };
 
-void GameObject::setRotates( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ )
+void GameObject::setRotates( const RotateDirection newDirX, const RotateDirection newDirY, const RotateDirection newDirZ )
 {
 	if ( !isRotating() )
 	{
-		m_moveDir[ 0 ] = newDirX;
-		m_moveDir[ 1 ] = newDirY;
-		m_moveDir[ 2 ] = newDirZ;
+		m_rotateDir[ 0 ] = newDirX;
+		m_rotateDir[ 1 ] = newDirY;
+		m_rotateDir[ 2 ] = newDirZ;
 	}
 }
 
@@ -59,25 +59,25 @@ void GameObject::rotateObject( )
 
 	for ( int i = 0; i < 3; i++ )
 	{
-		if ( m_moveDir[ i ] != MD_NONE )
+		if ( m_rotateDir[ i ] != RD_NONE )
 		{
 			if ( m_SmoothAngle[ i ] >= 90 - angleDiff )
 			{
 				GLfloat newAngle;
-				if ( m_moveDir[ i ] == MD_POSITIVE )
+				if ( m_rotateDir[ i ] == RD_POSITIVE )
 					newAngle = m_SmoothAngle[ i ] - 90;
 				else newAngle = 90 - m_SmoothAngle[ i ];
 
 				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], newAngle );
-				m_quatCurrent = m_quatCurrent * quatTemp[ i ];
+				m_rotateQuat = m_rotateQuat * quatTemp[ i ];
 
 				m_SmoothAngle[ i ] = 0;
-				m_moveDir[ i ] = MD_NONE;
+				m_rotateDir[ i ] = RD_NONE;
 			}
 			else
 			{
-				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], ( m_moveDir[ i ] == MD_POSITIVE ) ? -angleDiff : angleDiff );
-				m_quatCurrent = m_quatCurrent * quatTemp[ i ];
+				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], ( m_rotateDir[ i ] == RD_POSITIVE ) ? -angleDiff : angleDiff );
+				m_rotateQuat = m_rotateQuat * quatTemp[ i ];
 
 				m_SmoothAngle[ i ] += angleDiff;
 			}
@@ -91,6 +91,6 @@ void GameObject::rotateObject( )
 	}
 
 	GLfloat MatrixRes[16];
-	m_quatCurrent.getTrMatrix( MatrixRes );
+	m_rotateQuat.getTrMatrix( MatrixRes );
 	glMultMatrixf( MatrixRes );
 }
