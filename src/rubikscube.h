@@ -20,9 +20,7 @@ class RubiksCube : public GameObject
 
 		void vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize );
 		void vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int x, const int y, const int z );
-		void borderPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize,	const int x, const int y, const int z );
-		void borderCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize );
-		void fillPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int colInd );
+//		void borderRCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize );
 };
 
 #endif // RUBIKSCUBE_H

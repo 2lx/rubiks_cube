@@ -29,6 +29,7 @@ private:
 	RubiksCube m_RCube;
 //	SDL_Surface * bg;
 
+	bool m_firstDraw = { false };
 	MoveDirection moveDirX = { MD_NONE };
 	MoveDirection moveDirY = { MD_NONE };
 	MoveDirection moveDirZ = { MD_NONE };

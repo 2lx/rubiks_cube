@@ -25,11 +25,13 @@ RubiksCube::~RubiksCube()
 
 void RubiksCube::vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize )
 {
-	const GLfloat halfSize = cubeSize / 2;
+	const GLfloat halfSize = cubeSize * 3.0 / 2.0 - 0.1;
 
+	glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	glBegin( GL_QUADS );
 
-	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );  // Top
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize ); // Top
 	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
@@ -65,7 +67,7 @@ void RubiksCube::vertexCube( const GLfloat pX, const GLfloat pY, const GLfloat p
 void RubiksCube::vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize,
 	const int x, const int y, const int z )
 {
-	const GLfloat halfSize = cubeSize / 2;
+	const GLfloat halfSize = cubeSize / 2 - 0.05;
 
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	glBegin( GL_QUADS );
@@ -145,113 +147,16 @@ void RubiksCube::vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat 
 	glEnd();
 }
 
-void RubiksCube::borderPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize,
-	const int x, const int y, const int z )
-{
-	const GLfloat halfSize = ( cubeSize / 2 ) + 0.0001;
-	glLineWidth( 6 );
-
-	glColor3f( 	COLOR_MATR[ 6 ][ 0 ],
-				COLOR_MATR[ 6 ][ 1 ],
-				COLOR_MATR[ 6 ][ 2 ] );
-
-	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	glBegin( GL_QUADS );
-
-	if ( m_pieces[ x ][ y ][ z ].colTop != -1 )
-	{
-		glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize ); // Top
-		glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
-		glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
-		glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
-	}
-
-	if ( m_pieces[ x ][ y ][ z ].colFront != -1 )
-	{
-		glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );	// Front
-		glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
-		glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
-		glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
-	}
-
-	if ( m_pieces[ x ][ y ][ z ].colBottom != -1 )
-	{
-		glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );	// Bottom
-		glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
-		glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
-		glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
-	}
-
-	if ( m_pieces[ x ][ y ][ z ].colBack != -1 )
-	{
-		glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );	// Back
-		glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
-		glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
-		glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );
-	}
-
-	if ( m_pieces[ x ][ y ][ z ].colLeft != -1 )
-	{
-		glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );	// Left
-		glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
-		glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
-		glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
-	}
-
-	if ( m_pieces[ x ][ y ][ z ].colRight != -1 )
-	{
-		glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );	// Right
-		glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
-		glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
-		glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
-	}
-
-	glEnd();
-}
-
-void RubiksCube::borderCube( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize )
-{
-	glLineWidth( 1.5 );
-	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); // Borders
-
-	glColor3f( COLOR_DARKGRAY[ 0 ], COLOR_DARKGRAY[ 1 ], COLOR_DARKGRAY[ 2 ] );
-	vertexCube( pX, pY, pZ, cubeSize );
-}
-
-void RubiksCube::fillPiece( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int colInd )
-{
-	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ); // Fill
-
-	glColor3f( COLOR_MATR[ colInd ][ 0 ], COLOR_MATR[ colInd ][ 1 ], COLOR_MATR[ colInd ][ 2 ] );
-	vertexCube( pX, pY, pZ, cubeSize - 0.02 );
-}
-
 void RubiksCube::drawObject()
 {
 	static float cubeEdge = 1.0;
-/*	static int cubeSizeSign = -1;
 
-	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
-	if ( cubeEdge > 1.3 ) cubeSizeSign = -1;
-	if ( cubeEdge < 0.7 ) cubeSizeSign = 1;
-	cubeEdge = cubeEdge + cubeSizeSign * 0.01;
-*/
-
-//	borderPiece( 0, 0, 0, cubeEdge * 3 );
-//	fillPiece( 0, 0, 0, cubeEdge * 3, 6 );
+	vertexCube( 0, 0, 0, 1 );
 
 	for ( int x = 0; x < PIECE_COUNT; ++x )
 		for ( int y = 0; y < PIECE_COUNT; ++y )
 			for ( int z = 0; z < PIECE_COUNT; ++z )
 			{
 				vertexPiece( x- 1, y - 1, z - 1, cubeEdge, x, y, z );
-				borderPiece( x- 1, y - 1, z - 1, cubeEdge, x, y, z );
 			}
-
-/*	for ( int x = 0; x < PIECE_COUNT; ++x )
-		for ( int y = 0; y < PIECE_COUNT; ++y )
-			for ( int z = 0; z < PIECE_COUNT; ++z )
-				drawPiece( x - 1, y - 1, z - 1, ( cubeEdge > 1.0 ) ? 1.0 : cubeEdge,
-						  m_pieces[ x ][ y ][ z ].colInd );
-*/
 }

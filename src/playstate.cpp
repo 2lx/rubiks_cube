@@ -10,13 +10,13 @@ CPlayState CPlayState::m_PlayState;
 
 void CPlayState::Init()
 {
-	glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
 	glClearDepth( 1.0 );
 	glDepthFunc( GL_LESS );
 	glEnable( GL_DEPTH_TEST );
 	glShadeModel( GL_SMOOTH );
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
 	glMatrixMode( GL_PROJECTION );
-	//	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glLoadIdentity();
 
 //	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 20.0f );
@@ -141,8 +141,13 @@ void CPlayState::Update( CGameEngine * game )
 
 void CPlayState::Draw( CGameEngine * game )
 {
-	if ( moveDirX != MD_NONE ||	moveDirY != MD_NONE || moveDirZ != MD_NONE || m_RCube.isMoved() )
+#ifdef MY_DEBUG
+	static int drCount = 0;
+#endif // MY_DEBUG
+
+	if ( moveDirX != MD_NONE ||	moveDirY != MD_NONE || moveDirZ != MD_NONE || m_RCube.isMoved() || !m_firstDraw )
 	{
+		glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		const float angleDiff = 8;
@@ -161,6 +166,14 @@ void CPlayState::Draw( CGameEngine * game )
 		m_RCube.drawObject();
 
 		glFlush();
+
+		if ( !m_firstDraw ) m_firstDraw = true;
+
+#ifdef MY_DEBUG
+		drCount++;
+		if ( drCount % 5 == 0 )
+			std::cout << "DrawCount: " << drCount << std::endl;
+#endif // MY_DEBUG
 	}
 }
 
