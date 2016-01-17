@@ -27,7 +27,12 @@ private:
 class CubePiece
 {
 public:
-	unsigned int colInd;
+	unsigned int colTop = -1;
+	unsigned int colBottom = -1;
+	unsigned int colLeft = -1;
+	unsigned int colRight = -1;
+	unsigned int colFront = -1;
+	unsigned int colBack = -1;
 };
 
 #endif // SHAPES_H_INCLUDED

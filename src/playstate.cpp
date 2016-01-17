@@ -29,7 +29,7 @@ void CPlayState::Init()
 	GLfloat cavalierPMatrix[ 16 ] = {
 		1 , 0 , 0 , 0,
 		0 , 1 , 0 , 0,
-		0.355, -0.355, 1 , 0,
+		0.3345, -0.3345, 1 , 0,
 		0 , 0 , 0 , 1
 	};
 
@@ -147,7 +147,7 @@ void CPlayState::Draw( CGameEngine * game )
 
 	glLoadIdentity();
 //	glTranslatef( 0.0f, 0.0f, -7.0 );
-	glTranslatef( 2.0f, -2.0f, -5.0 );
+	glTranslatef( 3.0f, -3.0f, -8.0 );
 
 //	glRotatef( 15, 1.0f, 0.0f, 0.0f );
 
