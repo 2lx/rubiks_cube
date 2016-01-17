@@ -5,16 +5,17 @@
 RubiksCube::RubiksCube()
 {
 	srand( time( 0 ) );
+	const int k = PIECE_COUNT - 1;
 
 	for( int i = 0; i < PIECE_COUNT; ++i )
 		for( int j = 0; j < PIECE_COUNT; ++j )
 		{
-			m_pieces[ i ][ j ][ PIECE_COUNT - 1 ].colFront = 0;
-			m_pieces[ i ][ PIECE_COUNT - 1 ][ j ].colTop = 1;
+			m_pieces[ i ][ j ][ k ].colFront = 0;
+			m_pieces[ i ][ k ][ j ].colTop = 1;
 			m_pieces[ i ][ j ][ 0 ].colBack = 2;
 			m_pieces[ i ][ 0 ][ j ].colBottom = 3;
 			m_pieces[ 0 ][ i ][ j ].colLeft = 4;
-			m_pieces[ PIECE_COUNT - 1 ][ i ][ j ].colRight = 5;
+			m_pieces[ k ][ i ][ j ].colRight = 5;
 		}
 }
 

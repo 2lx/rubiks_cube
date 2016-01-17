@@ -110,12 +110,6 @@ void CGameEngine::Update()
 
 void CGameEngine::Draw()
 {
-	Uint32 start;
-	start = SDL_GetTicks();
-
 	states.back()->Draw( this );
 	SDL_GL_SwapWindow( gWindow );
-
-	if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
-		SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
 }

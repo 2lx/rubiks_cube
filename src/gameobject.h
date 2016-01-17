@@ -12,7 +12,8 @@ class GameObject
 		virtual ~GameObject();
 
 		virtual void drawObject() = 0;
-		void rotateObject( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ );
+		void moveObject();
+		void setMoves( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ );
 		bool isMoved() const;
 
 	protected:

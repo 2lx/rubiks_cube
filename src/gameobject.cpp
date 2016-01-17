@@ -38,19 +38,25 @@ bool GameObject::isMoved() const
 	else return true;
 };
 
-void GameObject::rotateObject( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ )
+void GameObject::setMoves( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ )
+{
+	if ( !isMoved() )
+	{
+		m_moveDirX = newDirX;
+		m_moveDirY = newDirY;
+		m_moveDirZ = newDirZ;
+	}
+}
+
+void GameObject::moveObject( )
 {
 	const GLfloat angleDiff = 8.0;
-
-	if ( m_moveDirX == MD_NONE ) m_moveDirX = newDirX;
-	if ( m_moveDirY == MD_NONE ) m_moveDirY = newDirY;
-	if ( m_moveDirZ == MD_NONE ) m_moveDirZ = newDirZ;
 
 	MyQuaternion quatTempX;
 	MyQuaternion quatTempY;
 	MyQuaternion quatTempZ;
 
-	if ( ( m_moveDirX != MD_NONE ) && ( ( ( m_moveDirY == MD_NONE ) && ( m_moveDirZ == MD_NONE ) ) || ( m_XSmoothAngle > 0 ) ) )
+	if ( m_moveDirX != MD_NONE )
 	{
 		if ( m_XSmoothAngle >= 90 - angleDiff )
 		{
@@ -74,7 +80,8 @@ void GameObject::rotateObject( const MoveDirection newDirX, const MoveDirection 
 //		writeMatrix( Matrix, 16 );
 #endif
 	}
-	else if ( ( m_moveDirY != MD_NONE ) && ( ( m_moveDirZ == MD_NONE ) || ( m_YSmoothAngle > 0 ) ) )
+
+	if ( m_moveDirY != MD_NONE )
 	{
 		if ( m_YSmoothAngle >= 90 - angleDiff )
 		{
@@ -97,7 +104,8 @@ void GameObject::rotateObject( const MoveDirection newDirX, const MoveDirection 
 //		writeMatrix( Matrix, 16 );
 #endif
 	}
-	else if ( m_moveDirZ != MD_NONE )
+
+	if ( m_moveDirZ != MD_NONE )
 	{
 		if ( m_ZSmoothAngle >= 90 - angleDiff )
 		{
