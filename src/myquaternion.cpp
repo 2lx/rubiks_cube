@@ -77,7 +77,7 @@ void MyQuaternion::fromAxisAngle( const GLfloat x, const GLfloat y, const GLfloa
 	m_z = GLfloat( z * result );
 }
 
-void MyQuaternion::getMatrix( GLfloat * pMatrix )
+void MyQuaternion::getMatrix( GLfloat * pMatrix ) const
 {
 	if( !pMatrix ) return;
 
@@ -102,7 +102,7 @@ void MyQuaternion::getMatrix( GLfloat * pMatrix )
 	pMatrix[15] = 1.0f;
 }
 
-void MyQuaternion::getTrMatrix( GLfloat * pMatrix )
+void MyQuaternion::getTrMatrix( GLfloat * pMatrix ) const
 {
 	if( !pMatrix ) return;
 

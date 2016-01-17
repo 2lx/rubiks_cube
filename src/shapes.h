@@ -1,9 +1,10 @@
 #ifndef SHAPES_H_INCLUDED
 #define SHAPES_H_INCLUDED
 
+#include "myquaternion.h"
+
 enum RCMoveType
 {
-	MT_NONE,
 	MT_FRONT, MT_FRONTINV,  // INV = inverse, counter-clockwise move
 	MT_BACK, MT_BACKINV,
 	MT_LEFT, MT_LEFTINV,
@@ -11,7 +12,21 @@ enum RCMoveType
 	MT_UP, MT_UPINV,
 	MT_DOWN, MT_DOWNINV,
 
-	RT_COUNT
+	MT_COUNT,
+	MT_NONE
+};
+
+class RCMoveParam
+{
+public:
+	RCMoveParam( const int nAxisN, const bool nisClockwise, const bool nisFront, const MyQuaternion & nQuat )
+		: axisN { nAxisN }, isClockwise { nisClockwise }, isFront { nisFront }, quat { nQuat }
+	{ };
+
+    int axisN = 0;
+    bool isClockwise = true;
+    bool isFront = true;
+    MyQuaternion quat;
 };
 
 class Point3D
@@ -19,7 +34,8 @@ class Point3D
 public:
 	Point3D() { };
 	Point3D( const GLfloat x, const GLfloat y, const GLfloat z )
-		: m_x( x ), m_y( y ), m_z( z ) { };
+		: m_x{ x }, m_y{ y }, m_z{ z }
+	{ };
 
 	GLfloat x() const { return m_x; };
 	GLfloat y() const { return m_y; };

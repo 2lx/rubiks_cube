@@ -11,6 +11,8 @@ class MyQuaternion
 		MyQuaternion( const GLfloat wi, const GLfloat xi, const GLfloat yi, const GLfloat zi );
 		virtual ~MyQuaternion();
 
+		void fromAxisAngle( const GLfloat x, const GLfloat y, const GLfloat z, const GLfloat degrees );
+
 		void reset() { m_w = 1; m_x = 0; m_y = 0; m_z = 0; }
 		MyQuaternion operator + ( const MyQuaternion & q ) const;
 		MyQuaternion operator * ( const MyQuaternion & q ) const;
@@ -20,9 +22,9 @@ class MyQuaternion
 		MyQuaternion scale( GLfloat  s ) const;
 		MyQuaternion inverse() const;
 		MyQuaternion conjugate() const;
-		void fromAxisAngle( const GLfloat x, const GLfloat y, const GLfloat z, const GLfloat degrees );
-		void getMatrix( GLfloat * pMatrix );
-		void getTrMatrix( GLfloat * pMatrix );
+
+		void getMatrix( GLfloat * pMatrix ) const;
+		void getTrMatrix( GLfloat * pMatrix ) const;
 
 	protected:
 	private:
