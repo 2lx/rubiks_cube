@@ -31,16 +31,16 @@ void writeMatrix( GLfloat * Matrix, const int length )
 }
 #endif
 
-bool GameObject::isMoved() const
+bool GameObject::isRotating() const
 {
 	if ( m_moveDir[ 0 ] == MD_NONE && m_moveDir[ 1 ] == MD_NONE && m_moveDir[ 2 ] == MD_NONE )
 		return false;
 	else return true;
 };
 
-void GameObject::setMoves( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ )
+void GameObject::setRotates( const MoveDirection newDirX, const MoveDirection newDirY, const MoveDirection newDirZ )
 {
-	if ( !isMoved() )
+	if ( !isRotating() )
 	{
 		m_moveDir[ 0 ] = newDirX;
 		m_moveDir[ 1 ] = newDirY;
@@ -48,7 +48,7 @@ void GameObject::setMoves( const MoveDirection newDirX, const MoveDirection newD
 	}
 }
 
-void GameObject::moveObject( )
+void GameObject::rotateObject( )
 {
 	const GLfloat angleDiff = 8.0;
 

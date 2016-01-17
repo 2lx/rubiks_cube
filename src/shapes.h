@@ -21,8 +21,8 @@ private:
 class CubePiece
 {
 public:
-	unsigned int colTop = -1;
-	unsigned int colBottom = -1;
+	unsigned int colUp = -1;
+	unsigned int colDown = -1;
 	unsigned int colLeft = -1;
 	unsigned int colRight = -1;
 	unsigned int colFront = -1;
