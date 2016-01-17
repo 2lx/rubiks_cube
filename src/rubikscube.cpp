@@ -18,12 +18,12 @@ RubiksCube::RubiksCube()
 	mq.fromAxisAngle( 1, 0, 0, 90 );
 	m_paramsMap[ MT_LEFTINV ] = new RCMoveParam( 0, true, false, mq );
 	m_paramsMap[ MT_RIGHTINV ] = new RCMoveParam( 0, true, true, mq );
-	mq.fromAxisAngle( 0, 1, 0, 90 );
-	m_paramsMap[ MT_UP ] = new RCMoveParam( 1, true, true, mq );
-	m_paramsMap[ MT_DOWN ] = new RCMoveParam( 1, true, false, mq );
 	mq.fromAxisAngle( 0, 1, 0, -90 );
-	m_paramsMap[ MT_UPINV ] = new RCMoveParam( 1, false, true, mq );
-	m_paramsMap[ MT_DOWNINV ] = new RCMoveParam( 1, false, false, mq );
+	m_paramsMap[ MT_UP ] = new RCMoveParam( 1, false, true, mq );
+	m_paramsMap[ MT_DOWN ] = new RCMoveParam( 1, false, false, mq );
+	mq.fromAxisAngle( 0, 1, 0, 90 );
+	m_paramsMap[ MT_UPINV ] = new RCMoveParam( 1, true, true, mq );
+	m_paramsMap[ MT_DOWNINV ] = new RCMoveParam( 1, true, false, mq );
 
 	srand( time( 0 ) );
 	const int k = PIECE_COUNT - 1;
