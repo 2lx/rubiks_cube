@@ -62,9 +62,9 @@ void GameObject::rotateObject( const MoveDirection newDirX, const MoveDirection 
 		}
 
 #ifdef MY_DEBUG
-		GLfloat Matrix[16];
-		m_quatCurrent.getTrMatrix( Matrix );
-		writeMatrix( Matrix, 16 );
+//		GLfloat Matrix[16];
+//		m_quatCurrent.getTrMatrix( Matrix );
+//		writeMatrix( Matrix, 16 );
 #endif
 	}
 	else if ( ( m_moveDirY != MD_NONE ) && ( ( m_moveDirZ == MD_NONE ) || ( m_YSmoothAngle > 0 ) ) )
@@ -85,9 +85,9 @@ void GameObject::rotateObject( const MoveDirection newDirX, const MoveDirection 
 			m_YSmoothAngle += angleDiff;
 		}
 #ifdef MY_DEBUG
-		GLfloat Matrix[16];
-		m_quatCurrent.getTrMatrix( Matrix );
-		writeMatrix( Matrix, 16 );
+//		GLfloat Matrix[16];
+//		m_quatCurrent.getTrMatrix( Matrix );
+//		writeMatrix( Matrix, 16 );
 #endif
 	}
 	else if ( m_moveDirZ != MD_NONE )
@@ -108,9 +108,9 @@ void GameObject::rotateObject( const MoveDirection newDirX, const MoveDirection 
 			m_ZSmoothAngle += angleDiff;
 		}
 #ifdef MY_DEBUG
-		GLfloat Matrix[16];
-		m_quatCurrent.getTrMatrix( Matrix );
-		writeMatrix( Matrix, 16 );
+//		GLfloat Matrix[16];
+//		m_quatCurrent.getTrMatrix( Matrix );
+//		writeMatrix( Matrix, 16 );
 #endif
 	}
 
