@@ -12,6 +12,18 @@ RubiksCube::RubiksCube()
 	mq.fromAxisAngle( 0, 0, 1, -90 );
 	m_paramsMap[ MT_FRONTINV ] = new RCMoveParam( 2, false, true, mq );
 	m_paramsMap[ MT_BACKINV ] = new RCMoveParam( 2, false, false, mq );
+	mq.fromAxisAngle( 1, 0, 0, -90 );
+	m_paramsMap[ MT_LEFT ] = new RCMoveParam( 0, false, false, mq );
+	m_paramsMap[ MT_RIGHT ] = new RCMoveParam( 0, false, true, mq );
+	mq.fromAxisAngle( 1, 0, 0, 90 );
+	m_paramsMap[ MT_LEFTINV ] = new RCMoveParam( 0, true, false, mq );
+	m_paramsMap[ MT_RIGHTINV ] = new RCMoveParam( 0, true, true, mq );
+	mq.fromAxisAngle( 0, 1, 0, 90 );
+	m_paramsMap[ MT_UP ] = new RCMoveParam( 1, true, true, mq );
+	m_paramsMap[ MT_DOWN ] = new RCMoveParam( 1, true, false, mq );
+	mq.fromAxisAngle( 0, 1, 0, -90 );
+	m_paramsMap[ MT_UPINV ] = new RCMoveParam( 1, false, true, mq );
+	m_paramsMap[ MT_DOWNINV ] = new RCMoveParam( 1, false, false, mq );
 
 	srand( time( 0 ) );
 	const int k = PIECE_COUNT - 1;
@@ -134,7 +146,13 @@ void RubiksCube::drawObject()
 				{
 					RCMoveParam * mp = m_paramsMap[ m_moveType ];
 
-					if ( z == 2 && mp->axisN == 2 && mp->isFront )
+					if (	( z == 2 && mp->axisN == 2 &&  mp->isFront ) ||
+							( z == 0 && mp->axisN == 2 && !mp->isFront ) ||
+							( x == 2 && mp->axisN == 0 &&  mp->isFront ) ||
+							( x == 0 && mp->axisN == 0 && !mp->isFront ) ||
+							( y == 2 && mp->axisN == 1 &&  mp->isFront ) ||
+							( y == 0 && mp->axisN == 1 && !mp->isFront )
+						)
 					{
 						glPushMatrix();
 

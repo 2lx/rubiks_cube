@@ -118,14 +118,53 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				m_gkStates[ GK_ROTATECLOCKWISE ].setDown();
 				break;
 
-			case SDLK_u:
+			case SDLK_i:
 				m_gkStates[ GK_MOVEFRONT ].setDown();
 				break;
 
-			case SDLK_i:
+			case SDLK_u:
 				m_gkStates[ GK_MOVEFRONTINV ].setDown();
 				break;
 
+			case SDLK_p:
+				m_gkStates[ GK_MOVEBACK ].setDown();
+				break;
+
+			case SDLK_o:
+				m_gkStates[ GK_MOVEBACKINV ].setDown();
+				break;
+
+			case SDLK_k:
+				m_gkStates[ GK_MOVELEFT ].setDown();
+				break;
+
+			case SDLK_j:
+				m_gkStates[ GK_MOVELEFTINV ].setDown();
+				break;
+
+			case SDLK_SEMICOLON:
+				m_gkStates[ GK_MOVERIGHT ].setDown();
+				break;
+
+			case SDLK_l:
+				m_gkStates[ GK_MOVERIGHTINV ].setDown();
+				break;
+
+			case SDLK_n:
+				m_gkStates[ GK_MOVEUP ].setDown();
+				break;
+
+			case SDLK_m:
+				m_gkStates[ GK_MOVEUPINV ].setDown();
+				break;
+
+			case SDLK_COMMA:
+				m_gkStates[ GK_MOVEDOWN ].setDown();
+				break;
+
+			case SDLK_PERIOD:
+				m_gkStates[ GK_MOVEDOWNINV ].setDown();
+				break;
 			}
 			break;
 		default:
@@ -190,6 +229,56 @@ void CPlayState::Update( CGameEngine * game )
 		{
 			m_RCube->setMove( MT_FRONTINV );
 			m_gkStates[ GK_MOVEFRONTINV ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVEBACK ].isNewDown() )
+		{
+			m_RCube->setMove( MT_BACK );
+			m_gkStates[ GK_MOVEBACK ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVEBACKINV ].isNewDown() )
+		{
+			m_RCube->setMove( MT_BACKINV );
+			m_gkStates[ GK_MOVEBACKINV ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVELEFT ].isNewDown() )
+		{
+			m_RCube->setMove( MT_LEFT );
+			m_gkStates[ GK_MOVELEFT ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVELEFTINV ].isNewDown() )
+		{
+			m_RCube->setMove( MT_LEFTINV );
+			m_gkStates[ GK_MOVELEFTINV ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVERIGHT ].isNewDown() )
+		{
+			m_RCube->setMove( MT_RIGHT );
+			m_gkStates[ GK_MOVERIGHT ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVERIGHTINV ].isNewDown() )
+		{
+			m_RCube->setMove( MT_RIGHTINV );
+			m_gkStates[ GK_MOVERIGHTINV ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVEUP ].isNewDown() )
+		{
+			m_RCube->setMove( MT_UP );
+			m_gkStates[ GK_MOVEUP ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVEUPINV ].isNewDown() )
+		{
+			m_RCube->setMove( MT_UPINV );
+			m_gkStates[ GK_MOVEUPINV ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVEDOWN ].isNewDown() )
+		{
+			m_RCube->setMove( MT_DOWN );
+			m_gkStates[ GK_MOVEDOWN ].releaseNewDown();
+		}
+		else if ( m_gkStates[ GK_MOVEDOWNINV ].isNewDown() )
+		{
+			m_RCube->setMove( MT_DOWNINV );
+			m_gkStates[ GK_MOVEDOWNINV ].releaseNewDown();
 		}
 	}
 }
