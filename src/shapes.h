@@ -55,7 +55,7 @@ public:
 	{
 		unsigned int colTemp;
 
-		if ( rt == MT_FRONT || rt == MT_BACK )
+		if ( rt == MT_FRONT || rt == MT_BACKINV )
 		{
 			colTemp = colLeft;
 			colLeft = colDown;
@@ -63,7 +63,7 @@ public:
 			colRight = colUp;
 			colUp = colTemp;
 		}
-		else if ( rt == MT_FRONTINV || rt == MT_BACKINV )
+		else if ( rt == MT_FRONTINV || rt == MT_BACK )
 		{
 			colTemp = colLeft;
 			colLeft = colUp;
@@ -71,7 +71,38 @@ public:
 			colRight = colDown;
 			colDown = colTemp;
 		}
-
+		else if ( rt == MT_LEFT || rt == MT_RIGHTINV )
+		{
+			colTemp = colBack;
+			colBack = colDown;
+			colDown = colFront;
+			colFront = colUp;
+			colUp = colTemp;
+		}
+		else if ( rt == MT_RIGHT || rt == MT_LEFTINV )
+		{
+			colTemp = colBack;
+			colBack = colUp;
+			colUp = colFront;
+			colFront = colDown;
+			colDown = colTemp;
+		}
+		else if ( rt == MT_UP || rt == MT_DOWNINV )
+		{
+			colTemp = colLeft;
+			colLeft = colFront;
+			colFront = colRight;
+			colRight = colBack;
+			colBack = colTemp;
+		}
+		else if ( rt == MT_UPINV || rt == MT_DOWN )
+		{
+			colTemp = colLeft;
+			colLeft = colBack;
+			colBack = colRight;
+			colRight = colFront;
+			colFront = colTemp;
+		}
 	}
 
 	unsigned int colUp = -1;

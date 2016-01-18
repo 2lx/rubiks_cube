@@ -8,21 +8,21 @@ RubiksCube::RubiksCube()
 
 	mq.fromAxisAngle( 0, 0, 1, 90 );
 	m_paramsMap[ MT_FRONT ] = new RCMoveParam( 2, true, true, mq );
-	m_paramsMap[ MT_BACK ] = new RCMoveParam( 2, true, false, mq );
+	m_paramsMap[ MT_BACKINV ] = new RCMoveParam( 2, true, false, mq );
 	mq.fromAxisAngle( 0, 0, 1, -90 );
 	m_paramsMap[ MT_FRONTINV ] = new RCMoveParam( 2, false, true, mq );
-	m_paramsMap[ MT_BACKINV ] = new RCMoveParam( 2, false, false, mq );
+	m_paramsMap[ MT_BACK ] = new RCMoveParam( 2, false, false, mq );
 	mq.fromAxisAngle( 1, 0, 0, -90 );
 	m_paramsMap[ MT_LEFT ] = new RCMoveParam( 0, false, false, mq );
-	m_paramsMap[ MT_RIGHT ] = new RCMoveParam( 0, false, true, mq );
+	m_paramsMap[ MT_RIGHTINV ] = new RCMoveParam( 0, false, true, mq );
 	mq.fromAxisAngle( 1, 0, 0, 90 );
 	m_paramsMap[ MT_LEFTINV ] = new RCMoveParam( 0, true, false, mq );
-	m_paramsMap[ MT_RIGHTINV ] = new RCMoveParam( 0, true, true, mq );
+	m_paramsMap[ MT_RIGHT ] = new RCMoveParam( 0, true, true, mq );
 	mq.fromAxisAngle( 0, 1, 0, -90 );
-	m_paramsMap[ MT_UP ] = new RCMoveParam( 1, false, true, mq );
+	m_paramsMap[ MT_UPINV ] = new RCMoveParam( 1, false, true, mq );
 	m_paramsMap[ MT_DOWN ] = new RCMoveParam( 1, false, false, mq );
 	mq.fromAxisAngle( 0, 1, 0, 90 );
-	m_paramsMap[ MT_UPINV ] = new RCMoveParam( 1, true, true, mq );
+	m_paramsMap[ MT_UP ] = new RCMoveParam( 1, true, true, mq );
 	m_paramsMap[ MT_DOWNINV ] = new RCMoveParam( 1, true, false, mq );
 
 	srand( time( 0 ) );
@@ -57,41 +57,68 @@ void RubiksCube::movePieces( const RCMoveType rt )
 	CubePiece tmpPiece2;
 	const int k = PIECE_COUNT - 1;
 
-	if ( rt == MT_FRONT )
-	{
-		tmpPiece1 = m_pieces[ 0 ][ 0 ][ k ];
-		tmpPiece2 = m_pieces[ 1 ][ 0 ][ k ];
-		m_pieces[ 0 ][ 0 ][ k ] = m_pieces[ 2 ][ 0 ][ k ];
-		m_pieces[ 1 ][ 0 ][ k ] = m_pieces[ 2 ][ 1 ][ k ];
-		m_pieces[ 2 ][ 0 ][ k ] = m_pieces[ 2 ][ 2 ][ k ];
-		m_pieces[ 2 ][ 1 ][ k ] = m_pieces[ 1 ][ 2 ][ k ];
-		m_pieces[ 2 ][ 2 ][ k ] = m_pieces[ 0 ][ 2 ][ k ];
-		m_pieces[ 1 ][ 2 ][ k ] = m_pieces[ 0 ][ 1 ][ k ];
-		m_pieces[ 0 ][ 2 ][ k ] = tmpPiece1;
-		m_pieces[ 0 ][ 1 ][ k ] = tmpPiece2;
+	const int mvX[ 8 ] = { 0, 1, 2, 2, 2, 1, 0, 0 };
+	const int mvY[ 8 ] = { 0, 0, 0, 1, 2, 2, 2, 1 };
+	const int mvZ[ 8 ] = { k, k, k, k, k, k, k, k };
+	const int mv0[ 8 ] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-		for ( int i = 0; i < PIECE_COUNT; ++i )
-			for ( int j = 0; j < PIECE_COUNT; ++j )
-				m_pieces[ i ][ j ][ k ].rotatePiece( rt );
+	const int * mv1;
+	const int * mv2;
+	const int * mv3;
+
+    switch ( rt )
+    {
+	case MT_FRONT:
+		mv1 = mvX; mv2 = mvY; mv3 = mvZ;
+		break;
+	case MT_FRONTINV:
+		mv1 = mvY; mv2 = mvX; mv3 = mvZ;
+		break;
+	case MT_BACK:
+		mv1 = mvY; mv2 = mvX; mv3 = mv0;
+		break;
+	case MT_BACKINV:
+		mv1 = mvX; mv2 = mvY; mv3 = mv0;
+		break;
+	case MT_LEFT:
+		mv1 = mv0; mv2 = mvY; mv3 = mvX;
+		break;
+	case MT_LEFTINV:
+		mv1 = mv0; mv2 = mvX; mv3 = mvY;
+		break;
+	case MT_RIGHT:
+		mv1 = mvZ; mv2 = mvX; mv3 = mvY;
+		break;
+	case MT_RIGHTINV:
+		mv1 = mvZ; mv2 = mvY; mv3 = mvX;
+		break;
+	case MT_UP:
+		mv1 = mvY; mv2 = mvZ; mv3 = mvX;
+		break;
+	case MT_UPINV:
+		mv1 = mvX; mv2 = mvZ; mv3 = mvY;
+		break;
+	case MT_DOWN:
+		mv1 = mvX; mv2 = mv0; mv3 = mvY;
+		break;
+	case MT_DOWNINV:
+		mv1 = mvY; mv2 = mv0; mv3 = mvX;
+		break;
 	}
-	else if ( rt == MT_FRONTINV )
-	{
-		tmpPiece1 = m_pieces[ 0 ][ 0 ][ k ];
-		tmpPiece2 = m_pieces[ 0 ][ 1 ][ k ];
-		m_pieces[ 0 ][ 0 ][ k ] = m_pieces[ 0 ][ 2 ][ k ];
-		m_pieces[ 0 ][ 1 ][ k ] = m_pieces[ 1 ][ 2 ][ k ];
-		m_pieces[ 0 ][ 2 ][ k ] = m_pieces[ 2 ][ 2 ][ k ];
-		m_pieces[ 1 ][ 2 ][ k ] = m_pieces[ 2 ][ 1 ][ k ];
-		m_pieces[ 2 ][ 2 ][ k ] = m_pieces[ 2 ][ 0 ][ k ];
-		m_pieces[ 2 ][ 1 ][ k ] = m_pieces[ 1 ][ 0 ][ k ];
-		m_pieces[ 2 ][ 0 ][ k ] = tmpPiece1;
-		m_pieces[ 1 ][ 0 ][ k ] = tmpPiece2;
 
-		for ( int i = 0; i < PIECE_COUNT; ++i )
-			for ( int j = 0; j < PIECE_COUNT; ++j )
-				m_pieces[ i ][ j ][ k ].rotatePiece( rt );
-	}
+	tmpPiece1 = m_pieces[ mv1[ 0 ] ][ mv2[ 0 ] ][ mv3[ 0 ] ];
+	tmpPiece2 = m_pieces[ mv1[ 1 ] ][ mv2[ 1 ] ][ mv3[ 1 ] ];
+	m_pieces[ mv1[ 0 ] ][ mv2[ 0 ] ][ mv3[ 0 ] ] = m_pieces[ mv1[ 2 ] ][ mv2[ 2 ] ][ mv3[ 2 ] ];
+	m_pieces[ mv1[ 1 ] ][ mv2[ 1 ] ][ mv3[ 1 ] ] = m_pieces[ mv1[ 3 ] ][ mv2[ 3 ] ][ mv3[ 3 ] ];
+	m_pieces[ mv1[ 2 ] ][ mv2[ 2 ] ][ mv3[ 2 ] ] = m_pieces[ mv1[ 4 ] ][ mv2[ 4 ] ][ mv3[ 4 ] ];
+	m_pieces[ mv1[ 3 ] ][ mv2[ 3 ] ][ mv3[ 3 ] ] = m_pieces[ mv1[ 5 ] ][ mv2[ 5 ] ][ mv3[ 5 ] ];
+	m_pieces[ mv1[ 4 ] ][ mv2[ 4 ] ][ mv3[ 4 ] ] = m_pieces[ mv1[ 6 ] ][ mv2[ 6 ] ][ mv3[ 6 ] ];
+	m_pieces[ mv1[ 5 ] ][ mv2[ 5 ] ][ mv3[ 5 ] ] = m_pieces[ mv1[ 7 ] ][ mv2[ 7 ] ][ mv3[ 7 ] ];
+	m_pieces[ mv1[ 6 ] ][ mv2[ 6 ] ][ mv3[ 6 ] ] = tmpPiece1;
+	m_pieces[ mv1[ 7 ] ][ mv2[ 7 ] ][ mv3[ 7 ] ] = tmpPiece2;
 
+	for ( int i = 0; i < 8; ++i )
+		m_pieces[ mv1[ i ] ][ mv2[ i ] ][ mv3[ i ] ].rotatePiece( rt );
 }
 
 void RubiksCube::drawObject()

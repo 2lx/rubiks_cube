@@ -150,19 +150,19 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				m_gkStates[ GK_MOVERIGHTINV ].setDown();
 				break;
 
-			case SDLK_n:
+			case SDLK_m:
 				m_gkStates[ GK_MOVEUP ].setDown();
 				break;
 
-			case SDLK_m:
+			case SDLK_n:
 				m_gkStates[ GK_MOVEUPINV ].setDown();
 				break;
 
-			case SDLK_COMMA:
+			case SDLK_PERIOD:
 				m_gkStates[ GK_MOVEDOWN ].setDown();
 				break;
 
-			case SDLK_PERIOD:
+			case SDLK_COMMA:
 				m_gkStates[ GK_MOVEDOWNINV ].setDown();
 				break;
 			}
