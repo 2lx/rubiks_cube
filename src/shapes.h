@@ -19,14 +19,26 @@ enum RCMoveType
 class RCMoveParam
 {
 public:
-	RCMoveParam( const int nAxisN, const bool nisClockwise, const bool nisFront, const MyQuaternion & nQuat )
-		: axisN { nAxisN }, isClockwise { nisClockwise }, isFront { nisFront }, quat { nQuat }
+	RCMoveParam( const short int vX, const short int vY, const short int vZ, const bool nisClockwise )
+		: m_x { vX }, m_y { vY }, m_z { vZ }, m_isClockwise { nisClockwise }
 	{ };
+	short int axisN() const {
+		if ( m_x != 0 ) return 0;
+		else if ( m_y != 0 ) return 1;
+		else return 2;
+		};
+	short int x() const { return m_x; };
+	short int y() const { return m_y; };
+	short int z() const { return m_z; };
+	bool isClockwise() const { return m_isClockwise; };
+	bool isClockwiseAbs() const { if ( m_x + m_y + m_z > 0 ) return m_isClockwise; else return !m_isClockwise; };
+	bool isFront() const { return ( m_x + m_y + m_z > 0 ); };
 
-    int axisN = 0;
-    bool isClockwise = true;
-    bool isFront = true;
-    MyQuaternion quat;
+private:
+	const short int m_x = 0;
+	const short int m_y = 0;
+	const short int m_z = 0;
+    const bool m_isClockwise = true;
 };
 
 class Point3D

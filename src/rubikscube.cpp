@@ -4,26 +4,18 @@
 
 RubiksCube::RubiksCube()
 {
-	MyQuaternion mq;
-
-	mq.fromAxisAngle( 0, 0, 1, 90 );
-	m_paramsMap[ MT_FRONT ] = new RCMoveParam( 2, true, true, mq );
-	m_paramsMap[ MT_BACKINV ] = new RCMoveParam( 2, true, false, mq );
-	mq.fromAxisAngle( 0, 0, 1, -90 );
-	m_paramsMap[ MT_FRONTINV ] = new RCMoveParam( 2, false, true, mq );
-	m_paramsMap[ MT_BACK ] = new RCMoveParam( 2, false, false, mq );
-	mq.fromAxisAngle( 1, 0, 0, -90 );
-	m_paramsMap[ MT_LEFT ] = new RCMoveParam( 0, false, false, mq );
-	m_paramsMap[ MT_RIGHTINV ] = new RCMoveParam( 0, false, true, mq );
-	mq.fromAxisAngle( 1, 0, 0, 90 );
-	m_paramsMap[ MT_LEFTINV ] = new RCMoveParam( 0, true, false, mq );
-	m_paramsMap[ MT_RIGHT ] = new RCMoveParam( 0, true, true, mq );
-	mq.fromAxisAngle( 0, 1, 0, -90 );
-	m_paramsMap[ MT_UPINV ] = new RCMoveParam( 1, false, true, mq );
-	m_paramsMap[ MT_DOWN ] = new RCMoveParam( 1, false, false, mq );
-	mq.fromAxisAngle( 0, 1, 0, 90 );
-	m_paramsMap[ MT_UP ] = new RCMoveParam( 1, true, true, mq );
-	m_paramsMap[ MT_DOWNINV ] = new RCMoveParam( 1, true, false, mq );
+	m_paramsMap[ MT_FRONT ] 	= new RCMoveParam(  0,  0,  1, true );
+	m_paramsMap[ MT_FRONTINV ] 	= new RCMoveParam(  0,  0,  1, false );
+	m_paramsMap[ MT_BACK ] 		= new RCMoveParam(  0,  0, -1, true );
+	m_paramsMap[ MT_BACKINV ] 	= new RCMoveParam(  0,  0, -1, false );
+	m_paramsMap[ MT_RIGHT ] 	= new RCMoveParam(  1,  0,  0, true );
+	m_paramsMap[ MT_RIGHTINV ] 	= new RCMoveParam(  1,  0,  0, false );
+	m_paramsMap[ MT_LEFT ] 		= new RCMoveParam( -1,  0,  0, true );
+	m_paramsMap[ MT_LEFTINV ] 	= new RCMoveParam( -1,  0,  0, false );
+	m_paramsMap[ MT_UP ] 		= new RCMoveParam(  0,  1,  0, true );
+	m_paramsMap[ MT_UPINV ] 	= new RCMoveParam(  0,  1,  0, false );
+	m_paramsMap[ MT_DOWN ] 		= new RCMoveParam(  0, -1,  0, true );
+	m_paramsMap[ MT_DOWNINV ] 	= new RCMoveParam(  0, -1,  0, false );
 
 	srand( time( 0 ) );
 	const int k = PIECE_COUNT - 1;
@@ -46,9 +38,49 @@ RubiksCube::~RubiksCube()
 		delete it->second;
 }
 
+void writeMatrix2( GLfloat * Matrix, const int length )
+{
+	for ( int i = 0; i < length; i++ )
+	{
+		if ( Matrix[ i ] >= 0 )
+			std::cout << " ";
+
+		std::cout << round( Matrix[ i ] * 1000000 ) / 1000000 << " ";
+
+		if ( ( i % 4 ) == 3 )
+			std::cout << std::endl;
+	}
+	std::cout << std::endl;
+
+	std::cout.flush();
+}
+
 void RubiksCube::setMove( const RCMoveType newRT )
 {
-	m_moveType = newRT;
+	RCMoveType toRT = newRT;
+	short int nx = m_paramsMap[ newRT ]->x();
+	short int ny = m_paramsMap[ newRT ]->y();
+	short int nz = m_paramsMap[ newRT ]->z();
+
+	MyQuaternion quatT( 0, nx, ny, nz );
+	MyQuaternion quatR = m_rotateQuat * quatT * m_rotateQuat.inverse();
+	nx = quatR.x(); ny = quatR.y(); nz = quatR.z();
+	std::cout << nx << " " << ny << " " << nz << std::endl;
+
+	for ( int i = 0; i < MT_COUNT; ++i )
+	{
+		RCMoveParam * mp = m_paramsMap[ RCMoveType( i ) ];
+
+		if ( mp->x() == nx && mp->y() == ny && mp->z() == nz && mp->isClockwise() == m_paramsMap[ newRT ]->isClockwise() )
+		{
+			std::cout << mp->x() << " " << mp->y() << " " << mp->z() << std::endl;
+
+			toRT = RCMoveType( i );
+			break;
+		}
+	}
+
+	m_moveType = toRT;
 }
 
 void RubiksCube::movePieces( const RCMoveType rt )
@@ -131,21 +163,19 @@ void RubiksCube::drawObject()
 	GLfloat aY[ 3 ] = { 0.0, 1.0, 0.0 };
 	GLfloat aZ[ 3 ] = { 0.0, 0.0, 1.0 };
 
-//	m_moveQuat = m_rotateQuat.inverse();
-
 	if ( m_moveType != MT_NONE )
 	{
 		RCMoveParam * mp = m_paramsMap[ m_moveType ];
+		short int axisN = mp->axisN();
 
 		if ( m_moveAngle >= 90 - ANGLE_DIFF )
 		{
 			GLfloat newAngle;
-			if ( mp->isClockwise )
+			if ( mp->isClockwiseAbs() )
 				newAngle = 90 - m_moveAngle;
 			else newAngle = m_moveAngle - 90;
 
-			quatTemp.fromAxisAngle( aX[ mp->axisN ], aY[ mp->axisN ], aZ[ mp->axisN ], newAngle );
-	//		m_moveQuat = m_moveQuat * quatTemp;
+			quatTemp.fromAxisAngle( aX[ axisN ], aY[ axisN ], aZ[ axisN ], newAngle );
 
 			m_moveAngle = 0;
 			movePieces( m_moveType );
@@ -155,12 +185,10 @@ void RubiksCube::drawObject()
 		}
 		else
 		{
-			quatTemp.fromAxisAngle( aX[ mp->axisN ], aY[ mp->axisN ], aZ[ mp->axisN ],
-					( mp->isClockwise ) ? ANGLE_DIFF : -ANGLE_DIFF );
+			quatTemp.fromAxisAngle( aX[ axisN ], aY[ axisN ], aZ[ axisN ],
+					( mp->isClockwiseAbs() ) ? ANGLE_DIFF : -ANGLE_DIFF );
 
 			m_moveQuat = m_moveQuat * quatTemp;
-//			m_moveQuat.reset();
-//			m_moveQuat = m_moveQuat * mp->quat; // test mp->quat
 			m_moveAngle += ANGLE_DIFF;
 		}
 	}
@@ -172,13 +200,14 @@ void RubiksCube::drawObject()
 				if ( m_moveType != MT_NONE )
 				{
 					RCMoveParam * mp = m_paramsMap[ m_moveType ];
+					short int axisN = mp->axisN();
 
-					if (	( z == 2 && mp->axisN == 2 &&  mp->isFront ) ||
-							( z == 0 && mp->axisN == 2 && !mp->isFront ) ||
-							( x == 2 && mp->axisN == 0 &&  mp->isFront ) ||
-							( x == 0 && mp->axisN == 0 && !mp->isFront ) ||
-							( y == 2 && mp->axisN == 1 &&  mp->isFront ) ||
-							( y == 0 && mp->axisN == 1 && !mp->isFront )
+					if (	( z == 2 && axisN == 2 &&  mp->isFront() ) ||
+							( z == 0 && axisN == 2 && !mp->isFront() ) ||
+							( x == 2 && axisN == 0 &&  mp->isFront() ) ||
+							( x == 0 && axisN == 0 && !mp->isFront() ) ||
+							( y == 2 && axisN == 1 &&  mp->isFront() ) ||
+							( y == 0 && axisN == 1 && !mp->isFront() )
 						)
 					{
 						glPushMatrix();
