@@ -177,7 +177,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
+	if ( !m_RCube->isRotating() )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -213,65 +213,14 @@ void CPlayState::Update( CGameEngine * game )
 
 	if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
 	{
-		if ( m_gkStates[ GK_MOVEFRONT ].isNewDown() )
+		for ( int i = 0; i < GK_COUNT - GK_MOVEFRONT; i++ )
 		{
-			m_RCube->setMove( MT_FRONT );
-			m_gkStates[ GK_MOVEFRONT ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVEFRONTINV ].isNewDown() )
-		{
-			m_RCube->setMove( MT_FRONTINV );
-			m_gkStates[ GK_MOVEFRONTINV ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVEBACK ].isNewDown() )
-		{
-			m_RCube->setMove( MT_BACK );
-			m_gkStates[ GK_MOVEBACK ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVEBACKINV ].isNewDown() )
-		{
-			m_RCube->setMove( MT_BACKINV );
-			m_gkStates[ GK_MOVEBACKINV ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVELEFT ].isNewDown() )
-		{
-			m_RCube->setMove( MT_LEFT );
-			m_gkStates[ GK_MOVELEFT ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVELEFTINV ].isNewDown() )
-		{
-			m_RCube->setMove( MT_LEFTINV );
-			m_gkStates[ GK_MOVELEFTINV ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVERIGHT ].isNewDown() )
-		{
-			m_RCube->setMove( MT_RIGHT );
-			m_gkStates[ GK_MOVERIGHT ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVERIGHTINV ].isNewDown() )
-		{
-			m_RCube->setMove( MT_RIGHTINV );
-			m_gkStates[ GK_MOVERIGHTINV ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVEUP ].isNewDown() )
-		{
-			m_RCube->setMove( MT_UP );
-			m_gkStates[ GK_MOVEUP ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVEUPINV ].isNewDown() )
-		{
-			m_RCube->setMove( MT_UPINV );
-			m_gkStates[ GK_MOVEUPINV ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVEDOWN ].isNewDown() )
-		{
-			m_RCube->setMove( MT_DOWN );
-			m_gkStates[ GK_MOVEDOWN ].releaseNewDown();
-		}
-		else if ( m_gkStates[ GK_MOVEDOWNINV ].isNewDown() )
-		{
-			m_RCube->setMove( MT_DOWNINV );
-			m_gkStates[ GK_MOVEDOWNINV ].releaseNewDown();
+			if ( m_gkStates[ GK_MOVEFRONT + i ].isNewDown() )
+			{
+				m_RCube->setMove( ( RCMoveType ) ( MT_FRONT + i ) );
+				m_gkStates[ GK_MOVEFRONT + i ].releaseNewDown();
+				break;
+			}
 		}
 	}
 }
