@@ -5,7 +5,6 @@
 #include "gameobject.h"
 #include "shapes.h"
 #include <map>
-#include <memory>
 
 const int PIECE_COUNT = 3;
 const float CUBE_EDGE = 1.0;

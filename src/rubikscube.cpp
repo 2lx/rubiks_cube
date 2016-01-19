@@ -258,17 +258,16 @@ void RubiksCube::vertexPiece( const GLfloat pX, const GLfloat pY, const GLfloat 
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	glBegin( GL_QUADS );
 
+	if ( m_pieces[ x ][ y ][ z ].colUp == -1 )
+		glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+	else glColor3f( COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 0 ],
+				COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 1 ],
+				COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 2 ] );
 
-		if ( m_pieces[ x ][ y ][ z ].colUp == -1 )
-			glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
-		else glColor3f( COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 0 ],
-					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 1 ],
-					COLOR_MATR[ m_pieces[ x ][ y ][ z ].colUp ][ 2 ] );
-
-		glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize ); // Up
-		glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
-		glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
-		glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize ); // Up
+	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
+	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
+	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
 
 
 	if ( m_pieces[ x ][ y ][ z ].colFront == -1 )

@@ -2,6 +2,10 @@
 
 #include "gameobject.h"
 
+#ifdef MY_DEBUG
+#include "output.h"
+#endif
+
 GameObject::GameObject()
 {
 
@@ -11,25 +15,6 @@ GameObject::~GameObject()
 {
 	//dtor
 }
-
-#ifdef MY_DEBUG
-void writeMatrix( GLfloat * Matrix, const int length )
-{
-	for ( int i = 0; i < length; i++ )
-	{
-		if ( Matrix[ i ] >= 0 )
-			std::cout << " ";
-
-		std::cout << round( Matrix[ i ] * 1000000 ) / 1000000 << " ";
-
-		if ( ( i % 4 ) == 3 )
-			std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
-	std::cout.flush();
-}
-#endif
 
 bool GameObject::isRotating() const
 {
@@ -83,8 +68,8 @@ void GameObject::rotateObject( )
 
 #ifdef MY_DEBUG
 //		GLfloat Matrix[16];
-//		m_quatCurrent.getTrMatrix( Matrix );
-//		writeMatrix( Matrix, 16 );
+//		m_rotateQuat.getTrMatrix( Matrix );
+//		writeMatrix( Matrix, 4, 4 );
 #endif
 		}
 	}
