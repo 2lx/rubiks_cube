@@ -27,8 +27,8 @@ int main( int argc, char * args[] )
 
 		endAll = SDL_GetTicks();
 #ifdef MY_DEBUG
-		if ( startDR - startHE > 0 )
-			std::cout << "Handles: " << startDR - startHE << "    Draw: " << endAll - startDR << std::endl;
+//		if ( startDR - startHE > 0 )
+//			std::cout << "Handles: " << startDR - startHE << "    Draw: " << endAll - startDR << std::endl;
 #endif // MY_DEBUG
 	}
 

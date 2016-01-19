@@ -17,6 +17,7 @@ class MyQuaternion
 		MyQuaternion operator + ( const MyQuaternion & q ) const;
 		MyQuaternion operator * ( const MyQuaternion & q ) const;
 		MyQuaternion operator = ( const MyQuaternion & q );
+		bool operator == ( const MyQuaternion & lq ) const;
 
 		GLfloat norm() const;
 		MyQuaternion scale( GLfloat  s ) const;
@@ -25,6 +26,11 @@ class MyQuaternion
 
 		void getMatrix( GLfloat * pMatrix ) const;
 		void getTrMatrix( GLfloat * pMatrix ) const;
+
+		inline GLfloat w() const { return m_w; };
+		inline GLfloat x() const { return m_x; };
+		inline GLfloat y() const { return m_y; };
+		inline GLfloat z() const { return m_z; };
 
 	protected:
 	private:

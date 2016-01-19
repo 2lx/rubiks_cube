@@ -1,7 +1,7 @@
 #include "all.h"
 
 #include "myquaternion.h"
-#include <math.h>
+#include <cmath>
 
 MyQuaternion::MyQuaternion()
 {
@@ -44,6 +44,16 @@ MyQuaternion MyQuaternion::operator = ( const MyQuaternion & q )
 	m_z = q.m_z;
 
 	return ( * this );
+}
+
+bool MyQuaternion::operator == ( const MyQuaternion & q ) const
+{
+	if ( ( std::abs( m_w - q.m_w ) < 0.00001 )
+		&& ( std::abs( m_x - q.m_x ) < 0.00001 )
+		&& ( std::abs( m_y - q.m_y ) < 0.00001 )
+		&& ( std::abs( m_z - q.m_z ) < 0.00001 ) )
+		return true;
+	else return false;
 }
 
 GLfloat MyQuaternion::norm() const
