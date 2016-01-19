@@ -66,6 +66,35 @@ MyQuaternion MyQuaternion::scale( GLfloat  s ) const
 	return MyQuaternion( m_w * s, m_x * s, m_y * s, m_z * s );
 }
 
+MyQuaternion MyQuaternion::normalize() const
+{
+	MyQuaternion r;
+	r = scale( 1 / norm() );
+
+	if ( std::abs( r.m_x - 1.0 ) < 0.00001 )
+		r.m_x = 1;
+	else if ( std::abs( r.m_x ) < 0.00001 )
+		r.m_x = 0;
+	else if ( std::abs( r.m_x + 1.0 ) < 0.00001 )
+		r.m_x = -1;
+
+	if ( std::abs( r.m_y - 1.0 ) < 0.00001 )
+		r.m_y = 1;
+	else if ( std::abs( r.m_y ) < 0.00001 )
+		r.m_y = 0;
+	else if ( std::abs( r.m_y + 1.0 ) < 0.00001 )
+		r.m_y = -1;
+
+	if ( std::abs( r.m_z - 1.0 ) < 0.00001 )
+		r.m_z = 1;
+	else if ( std::abs( r.m_z ) < 0.00001 )
+		r.m_z = 0;
+	else if ( std::abs( r.m_z + 1.0 ) < 0.00001 )
+		r.m_z = -1;
+
+	return r;
+}
+
 MyQuaternion MyQuaternion::inverse() const
 {
 	return conjugate().scale( 1 / norm() );

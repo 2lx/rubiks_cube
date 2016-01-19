@@ -23,6 +23,7 @@ class MyQuaternion
 		MyQuaternion scale( GLfloat  s ) const;
 		MyQuaternion inverse() const;
 		MyQuaternion conjugate() const;
+		MyQuaternion normalize() const;
 
 		void getMatrix( GLfloat * pMatrix ) const;
 		void getTrMatrix( GLfloat * pMatrix ) const;

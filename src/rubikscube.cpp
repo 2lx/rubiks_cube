@@ -1,6 +1,7 @@
 #include "all.h"
 
 #include "rubikscube.h"
+#include <cmath>
 
 RubiksCube::RubiksCube()
 {
@@ -38,34 +39,21 @@ RubiksCube::~RubiksCube()
 		delete it->second;
 }
 
-void writeMatrix2( GLfloat * Matrix, const int length )
-{
-	for ( int i = 0; i < length; i++ )
-	{
-		if ( Matrix[ i ] >= 0 )
-			std::cout << " ";
-
-		std::cout << round( Matrix[ i ] * 1000000 ) / 1000000 << " ";
-
-		if ( ( i % 4 ) == 3 )
-			std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
-	std::cout.flush();
-}
-
 void RubiksCube::setMove( const RCMoveType newRT )
 {
-	RCMoveType toRT = newRT;
 	short int nx = m_paramsMap[ newRT ]->x();
 	short int ny = m_paramsMap[ newRT ]->y();
 	short int nz = m_paramsMap[ newRT ]->z();
 
 	MyQuaternion quatT( 0, nx, ny, nz );
 	MyQuaternion quatR = m_rotateQuat * quatT * m_rotateQuat.inverse();
-	nx = quatR.x(); ny = quatR.y(); nz = quatR.z();
-	std::cout << nx << " " << ny << " " << nz << std::endl;
+	quatR = quatR.normalize();
+
+	nx = static_cast< int >( quatR.x() );
+	ny = static_cast< int >( quatR.y() );
+	nz = static_cast< int >( quatR.z() );
+
+	std::cout << quatR.x() << " " << quatR.y() << " " << quatR.z() << std::endl;
 
 	for ( int i = 0; i < MT_COUNT; ++i )
 	{
@@ -73,14 +61,10 @@ void RubiksCube::setMove( const RCMoveType newRT )
 
 		if ( mp->x() == nx && mp->y() == ny && mp->z() == nz && mp->isClockwise() == m_paramsMap[ newRT ]->isClockwise() )
 		{
-			std::cout << mp->x() << " " << mp->y() << " " << mp->z() << std::endl;
-
-			toRT = RCMoveType( i );
+			m_moveType = RCMoveType( i );
 			break;
 		}
 	}
-
-	m_moveType = toRT;
 }
 
 void RubiksCube::movePieces( const RCMoveType rt )

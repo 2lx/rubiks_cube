@@ -68,6 +68,7 @@ void GameObject::rotateObject( )
 
 				quatTemp[ i ].fromAxisAngle( aX[ i ], aY[ i ], aZ[ i ], newAngle );
 				m_rotateQuat = m_rotateQuat * quatTemp[ i ];
+				m_rotateQuat = m_rotateQuat.normalize();
 
 				m_rotateAngle[ i ] = 0;
 				m_rotateDir[ i ] = RD_NONE;

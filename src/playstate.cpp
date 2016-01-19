@@ -45,23 +45,16 @@ void CPlayState::Cleanup()
 {
 //	SDL_FreeSurface(bg);
 	delete m_RCube;
-#ifdef MY_DEBUG
-	printf("CPlayState Cleanup\n");
-#endif
 }
 
 void CPlayState::Pause()
 {
-#ifdef MY_DEBUG
-	printf("CPlayState Pause\n");
-#endif
+
 }
 
 void CPlayState::Resume()
 {
-#ifdef MY_DEBUG
-	printf("CPlayState Resume\n");
-#endif
+
 }
 
 void CPlayState::HandleEvents( CGameEngine* game )
@@ -184,7 +177,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( !m_RCube->isRotating() )
+	if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -218,7 +211,7 @@ void CPlayState::Update( CGameEngine * game )
 		}
 	}
 
-	if ( !m_RCube->isMoving() )
+	if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
 	{
 		if ( m_gkStates[ GK_MOVEFRONT ].isNewDown() )
 		{
