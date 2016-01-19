@@ -90,22 +90,22 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 			case SDLK_UP:
 			case SDLK_w:
-				m_gkStates[ GK_ROTATEEUP ].setDown();
+				m_gkStates[ GK_LOOKUP ].setDown();
 				break;
 
 			case SDLK_DOWN:
 			case SDLK_s:
-				m_gkStates[ GK_ROTATEDOWN ].setDown();
+				m_gkStates[ GK_LOOKDOWN ].setDown();
 				break;
 
 			case SDLK_LEFT:
 			case SDLK_a:
-				m_gkStates[ GK_ROTATELEFT ].setDown();
+				m_gkStates[ GK_LOOKLEFT ].setDown();
 				break;
 
 			case SDLK_RIGHT:
 			case SDLK_d:
-				m_gkStates[ GK_ROTATERIGHT ].setDown();
+				m_gkStates[ GK_LOOKRIGHT ].setDown();
 				break;
 
 			case SDLK_PAGEDOWN:
@@ -186,25 +186,25 @@ void CPlayState::Update( CGameEngine * game )
 {
 	if ( !m_RCube->isRotating() )
 	{
-        if ( m_gkStates[ GK_ROTATEEUP ].isNewDown() )
+        if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_NEGATIVE, GameObject::RD_NONE, GameObject::RD_NONE );
-			m_gkStates[ GK_ROTATEEUP ].releaseNewDown();
+			m_gkStates[ GK_LOOKDOWN ].releaseNewDown();
 		}
-		else if ( m_gkStates[ GK_ROTATEDOWN ].isNewDown() )
+		else if ( m_gkStates[ GK_LOOKUP ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_POSITIVE, GameObject::RD_NONE, GameObject::RD_NONE );
-			m_gkStates[ GK_ROTATEDOWN ].releaseNewDown();
+			m_gkStates[ GK_LOOKUP ].releaseNewDown();
 		}
-		else if ( m_gkStates[ GK_ROTATELEFT ].isNewDown() )
+		else if ( m_gkStates[ GK_LOOKRIGHT ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NEGATIVE, GameObject::RD_NONE );
-			m_gkStates[ GK_ROTATELEFT ].releaseNewDown();
+			m_gkStates[ GK_LOOKRIGHT ].releaseNewDown();
 		}
-		else if ( m_gkStates[ GK_ROTATERIGHT ].isNewDown() )
+		else if ( m_gkStates[ GK_LOOKLEFT ].isNewDown() )
 		{
 			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_POSITIVE, GameObject::RD_NONE );
-			m_gkStates[ GK_ROTATERIGHT ].releaseNewDown();
+			m_gkStates[ GK_LOOKLEFT ].releaseNewDown();
 		}
 		else if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
 		{
@@ -313,8 +313,8 @@ void CPlayState::Draw( CGameEngine * game )
 		drCount++;
 		if ( drCount > 1 ) m_needRedraw = false;
 #ifdef MY_DEBUG
-		if ( drCount % 5 == 0 )
-			std::cout << "DrawCount: " << drCount << std::endl;
+//		if ( drCount % 5 == 0 )
+//			std::cout << "DrawCount: " << drCount << std::endl;
 #endif // MY_DEBUG
 	}
 }
