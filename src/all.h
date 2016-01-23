@@ -15,6 +15,10 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
+const float SCREEN_WDH = ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT;
+const float SCREEN_VERTMARGIN = 4.0;
+const float SCREEN_HORIZMARGIN = SCREEN_VERTMARGIN * SCREEN_WDH;
+
 // Screen FPS
 const int SCREEN_FPS = 40;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;

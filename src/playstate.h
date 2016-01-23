@@ -16,8 +16,15 @@ enum GameKeys
     GK_MOVEFIRST = GK_MOVEFRONT,
     GK_MOVELAST = GK_MOVEDOWNINV,
 
-    GK_INCCOLOR,
+    GK_CHANGECOLOR,
+    GK_CHANGEPROJ,
     GK_COUNT
+};
+
+enum ProjectionType
+{
+	PT_DIMETRIC, PT_ISOMETRIC,
+	PT_COUNT
 };
 
 class GameKeysStates
@@ -60,10 +67,11 @@ protected:
 private:
 	static CPlayState m_PlayState;
 	RCubeObject * m_RCube;
-//	SDL_Surface * bg;
-
 	bool m_needRedraw = { true };
 	GameKeysStates m_gkStates[ GK_COUNT ];
+	ProjectionType m_prType = { PT_DIMETRIC };
+
+	void setProjection( const ProjectionType pType ) const;
 };
 
 #endif

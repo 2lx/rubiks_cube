@@ -8,37 +8,34 @@
 
 CPlayState CPlayState::m_PlayState;
 
+GLfloat cavalierPMatrix[ 16 ] = {
+	1 , 0 , 0 , 0,
+	0 , 1 , 0 , 0,
+	0.3345, -0.3345, 1 , 0,
+	0 , 0 , 0 , 1
+};
+
 void CPlayState::Init()
 {
+	m_RCube = new RCubeObject;
+
 	glClearDepth( 1.0 );
 	glDepthFunc( GL_LESS );
 	glEnable( GL_DEPTH_TEST );
 	glShadeModel( GL_SMOOTH );
 	glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
-	glMatrixMode( GL_PROJECTION );
+	setProjection( m_prType );
+/*	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
 
 //	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 20.0f );
 
-//	const float margin = 0.1;
-//	glFrustum( -margin * wdh * 1.2, margin* wdh, -margin, margin* 1.2, 0.1, 20.0 );
-
-	const float wdh = ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT;
-	const float margin = 4;
-	GLfloat cavalierPMatrix[ 16 ] = {
-		1 , 0 , 0 , 0,
-		0 , 1 , 0 , 0,
-		0.3345, -0.3345, 1 , 0,
-		0 , 0 , 0 , 1
-	};
-
-	glOrtho( -margin * wdh, margin * wdh, -margin, margin, 0.0, 20.0 );
+	glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 10.0 );
 	glMultMatrixf( cavalierPMatrix );
 
 	glMatrixMode( GL_MODELVIEW );
-
-	m_RCube = new RCubeObject;
+*/
 }
 
 void CPlayState::Cleanup()
@@ -48,6 +45,25 @@ void CPlayState::Cleanup()
 	MoveParams::cleanup();
 	Colors::cleanup();
 	AxisParams::cleanup();
+}
+
+void CPlayState::setProjection( const ProjectionType pType ) const
+{
+//	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 20.0f );
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity();
+
+	if ( pType == PT_DIMETRIC )
+	{
+		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 20.0 );
+		glMultMatrixf( cavalierPMatrix );
+	}
+	else if ( pType == PT_ISOMETRIC )
+	{
+		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 20.0 );
+	};
+
+	glMatrixMode( GL_MODELVIEW );
 }
 
 void CPlayState::Pause()
@@ -163,7 +179,24 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				break;
 
 			case SDLK_SPACE:
-				m_gkStates[ GK_INCCOLOR ].setDown();
+				m_gkStates[ GK_CHANGECOLOR ].setDown();
+				break;
+
+			case SDLK_RETURN:
+				m_gkStates[ GK_CHANGEPROJ ].setDown();
+				break;
+			}
+			break;
+		case SDL_KEYUP:
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			switch( event.button.button )
+			{
+			case SDL_BUTTON_LEFT:
+				std::cout << event.button.x << " " << event.button.y << std::endl;
+				std::cout.flush();
+				break;
+			case SDL_BUTTON_RIGHT:
 				break;
 			}
 			break;
@@ -231,12 +264,22 @@ void CPlayState::Update( CGameEngine * game )
 		}
 	}
 
-	if ( m_gkStates[ GK_INCCOLOR ].isNewDown() )
+	if ( m_gkStates[ GK_CHANGECOLOR ].isNewDown() )
 	{
 		RC::Colors::incScheme();
-		m_gkStates[ GK_INCCOLOR ].releaseNewDown();
+		m_gkStates[ GK_CHANGECOLOR ].releaseNewDown();
 		m_needRedraw = true;
 	}
+
+	if ( m_gkStates[ GK_CHANGEPROJ ].isNewDown() )
+	{
+        m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT);
+        setProjection( m_prType );
+		m_gkStates[ GK_CHANGEPROJ ].releaseNewDown();
+		m_needRedraw = true;
+	}
+
+//	gluUnProject( winX, winY, winZ, modelview, projection, viewport, &amp;worldX, &amp;worldY, &amp;worldZ);
 }
 
 void CPlayState::Draw( CGameEngine * game )
@@ -251,10 +294,18 @@ void CPlayState::Draw( CGameEngine * game )
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		glLoadIdentity();
-//		glTranslatef( 0.0f, 0.0f, -7.0 );
-		glTranslatef( 0.0f, 0.0, -2.0 );
 
-//		glRotatef( 15, 1.0f, 0.0f, 0.0f );
+		if ( m_prType == PT_DIMETRIC )
+		{
+			glTranslatef( 0.0f, 0.0, -2.0 );
+		}
+		else if ( m_prType == PT_ISOMETRIC )
+		{
+			glTranslatef( 0.0f, 0.0, -3.0 );
+
+			glRotatef( 35.264f, 1.0f, 0.0f, 0.0f );
+			glRotatef( 45.0f, 0.0f, 1.0f, 0.0f );
+		}
 
 		m_RCube->rotateObject();
 		m_RCube->drawObject();
