@@ -16,6 +16,8 @@ enum GameKeys
     GK_MOVEFIRST = GK_MOVEFRONT,
     GK_MOVELAST = GK_MOVEDOWNINV,
 
+    GK_MOVEMOUSE,
+
     GK_CHANGECOLOR,
     GK_CHANGEPROJ,
     GK_COUNT
@@ -69,9 +71,11 @@ private:
 	RCubeObject * m_RCube;
 	bool m_needRedraw = { true };
 	GameKeysStates m_gkStates[ GK_COUNT ];
-	ProjectionType m_prType = { PT_DIMETRIC };
+	ProjectionType m_prType = { PT_ISOMETRIC };
+	Point3D m_pBegin, m_pEnd;
 
 	void setProjection( const ProjectionType pType ) const;
+	Point3D getGLPos( const int mX, const int mY ) const;
 };
 
 #endif

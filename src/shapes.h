@@ -11,7 +11,20 @@ public:
 	Point3D( const GLfloat x, const GLfloat y, const GLfloat z )
 		: m_x{ x }, m_y{ y }, m_z{ z }
 	{ };
+	Point3D operator - ( const Point3D & p ) const { return Point3D( m_x - p.m_x, m_y - p.m_y, m_z - p.m_z ); };
+	Point3D operator / ( const GLfloat d ) const { return Point3D( m_x / d, m_y / d, m_z / d ); };
 
+	void setXYZ( const GLfloat x, const GLfloat y, const GLfloat z ) { m_x = x; m_y = y; m_z = z; };
+	bool is0() const { if ( m_x == 0 && m_y == 0 && m_z == 0 ) return true; else return false; };
+	void normalize() {
+		if ( abs( m_x - 1.0 ) < 0.00001 ) m_x =  1;
+		if ( abs( m_x + 1.0 ) < 0.00001 ) m_x = -1;
+		if ( abs( m_y - 1.0 ) < 0.00001 ) m_y =  1;
+		if ( abs( m_y + 1.0 ) < 0.00001 ) m_y = -1;
+		if ( abs( m_z - 1.0 ) < 0.00001 ) m_z =  1;
+		if ( abs( m_z + 1.0 ) < 0.00001 ) m_z = -1;
+	};
+	GLfloat length() const { return sqrt( m_x * m_x + m_y * m_y + m_z * m_z ); }
 	GLfloat x() const { return m_x; };
 	GLfloat y() const { return m_y; };
 	GLfloat z() const { return m_z; };

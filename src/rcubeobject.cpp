@@ -26,6 +26,49 @@ void RCubeObject::setMove( const RCMoveType newRT )
 	m_moveType = MoveParams::getMTypeForPars( vec, MoveParams::clockwise( newRT ) );
 }
 
+Point3D RCubeObject::getCubeByCoord( const Point3D p ) const
+{
+    int x, y, z;
+
+    x = ( int ) ( p.x() + 1.5 );
+    if ( x > CUBIE_COUNT || x < 0 )
+		return Point3D( -1, -1, -1 );
+    else
+    {
+		y = ( int ) ( p.y() + 1.5 );
+		if ( y > CUBIE_COUNT || y < 0 )
+			return Point3D( -1, -1, -1 );
+		else
+		{
+			z = ( int ) ( p.z() + 1.5 );
+			if ( z > CUBIE_COUNT || z < 0 )
+				return Point3D( -1, -1, -1 );
+		}
+    }
+
+    return Point3D( x, y, z );
+}
+
+void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
+{
+	Point3D pcBeg =  getCubeByCoord( pBeg );
+//	std::cout << pcBeg.x() << " " << pcBeg.y() << " " << pcBeg.z() << std::endl;
+
+	Point3D pcEnd =  getCubeByCoord( pEnd );
+//	std::cout << pcEnd.x() << " " << pcEnd.y() << " " << pcEnd.z() << std::endl;
+
+	if ( pcBeg.x() != -1 && pcEnd.x() != -1 )
+	{
+		Point3D pcRes = getCubeByCoord( pEnd ) - getCubeByCoord( pBeg );
+		pcRes = pcRes / pcRes.length();
+		pcRes.normalize();
+		std::cout << pcRes.x() << " " << pcRes.y() << " " << pcRes.z() << std::endl;
+		Vector3D vecRes( pcRes.x(), pcRes.y(), pcRes.z() );
+
+		m_moveType = MoveParams::getMTypeForPars( vecRes, true );
+	}
+}
+
 void RCubeObject::drawObject()
 {
 	const GLfloat centerDiff = ( -1 * CUBIE_COUNT ) / 2.0 + 0.5;

@@ -8,13 +8,6 @@
 
 CPlayState CPlayState::m_PlayState;
 
-GLfloat cavalierPMatrix[ 16 ] = {
-	1 , 0 , 0 , 0,
-	0 , 1 , 0 , 0,
-	0.3345, -0.3345, 1 , 0,
-	0 , 0 , 0 , 1
-};
-
 void CPlayState::Init()
 {
 	m_RCube = new RCubeObject;
@@ -26,16 +19,6 @@ void CPlayState::Init()
 	glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
 	setProjection( m_prType );
-/*	glMatrixMode( GL_PROJECTION );
-	glLoadIdentity();
-
-//	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 20.0f );
-
-	glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 10.0 );
-	glMultMatrixf( cavalierPMatrix );
-
-	glMatrixMode( GL_MODELVIEW );
-*/
 }
 
 void CPlayState::Cleanup()
@@ -55,6 +38,13 @@ void CPlayState::setProjection( const ProjectionType pType ) const
 
 	if ( pType == PT_DIMETRIC )
 	{
+		GLfloat cavalierPMatrix[ 16 ] = {
+			1 , 0 , 0 , 0,
+			0 , 1 , 0 , 0,
+			0.3345, -0.3345, 1 , 0,
+			0 , 0 , 0 , 1
+		};
+
 		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 20.0 );
 		glMultMatrixf( cavalierPMatrix );
 	}
@@ -74,6 +64,28 @@ void CPlayState::Pause()
 void CPlayState::Resume()
 {
 
+}
+
+Point3D CPlayState::getGLPos( const int mX, const int mY ) const
+{
+	GLint viewport[ 4 ];
+	glGetIntegerv( GL_VIEWPORT, viewport ); // 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT
+
+	GLdouble modelview[16];
+	glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+
+	GLdouble projection[ 16 ];
+	glGetDoublev( GL_PROJECTION_MATRIX, projection );
+
+	GLfloat winX, winY, winZ;
+	winX = ( float ) mX;
+	winY = ( float ) viewport[ 3 ] - ( float ) mY;
+	glReadPixels( winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+
+	GLdouble posX, posY, posZ;
+	gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ );
+//	std::cout << posX << " " << posY << " " << posZ << std::endl;
+	return Point3D( posX, posY, posZ );
 }
 
 void CPlayState::HandleEvents( CGameEngine* game )
@@ -187,14 +199,29 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				break;
 			}
 			break;
-		case SDL_KEYUP:
-			break;
+//		case SDL_KEYUP:
+//			break;
 		case SDL_MOUSEBUTTONDOWN:
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
-				std::cout << event.button.x << " " << event.button.y << std::endl;
-				std::cout.flush();
+				m_pBegin = getGLPos( event.button.x, event.button.y );
+//				std::cout << m_pBegin.x() << " " << m_pBegin.y() << " " << m_pBegin.z() << std::endl;
+
+				break;
+			case SDL_BUTTON_RIGHT:
+				break;
+			}
+			break;
+		case SDL_MOUSEBUTTONUP:
+			switch( event.button.button )
+			{
+			case SDL_BUTTON_LEFT:
+				m_pEnd = getGLPos( event.button.x, event.button.y );
+//				std::cout << m_pEnd.x() << " " << m_pEnd.y() << " " << m_pEnd.z() << std::endl;
+
+				m_gkStates[ GK_MOVEMOUSE ].setDown();
+				m_gkStates[ GK_MOVEMOUSE ].releasePress();
 				break;
 			case SDL_BUTTON_RIGHT:
 				break;
@@ -205,6 +232,9 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			{
 				for ( int i = 0; i < GK_COUNT; ++i )
 					m_gkStates[ i ].releasePress();
+
+				m_pBegin.setXYZ( 0, 0, 0 );
+				m_pEnd.setXYZ( 0, 0, 0 );
 
 				lastEvent = false;
 				allEventsRunOut = true;
@@ -217,7 +247,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( !m_RCube->isRotating() )
+	if ( !m_RCube->isRotating() && m_pBegin.is0() )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -251,7 +281,19 @@ void CPlayState::Update( CGameEngine * game )
 		}
 	}
 
-	if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
+	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && !m_pBegin.is0() )
+	{
+		if ( m_gkStates[ GK_MOVEMOUSE ].isNewDown() )
+		{
+			m_RCube->setMoveByCoords( m_pBegin, m_pEnd );
+			m_gkStates[ GK_MOVEMOUSE ].releaseNewDown();
+
+			m_pBegin.setXYZ( 0, 0, 0 );
+			m_pEnd.setXYZ( 0, 0, 0 );
+		}
+	}
+
+	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && m_pBegin.is0() )
 	{
 		for ( int i = 0; i < GK_MOVELAST - GK_MOVEFIRST + 1; i++ )
 		{
@@ -273,7 +315,7 @@ void CPlayState::Update( CGameEngine * game )
 
 	if ( m_gkStates[ GK_CHANGEPROJ ].isNewDown() )
 	{
-        m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT);
+        m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
         setProjection( m_prType );
 		m_gkStates[ GK_CHANGEPROJ ].releaseNewDown();
 		m_needRedraw = true;
@@ -297,11 +339,11 @@ void CPlayState::Draw( CGameEngine * game )
 
 		if ( m_prType == PT_DIMETRIC )
 		{
-			glTranslatef( 0.0f, 0.0, -2.0 );
+			glTranslatef( 1.0f, -0.5, -3.0 );
 		}
 		else if ( m_prType == PT_ISOMETRIC )
 		{
-			glTranslatef( 0.0f, 0.0, -3.0 );
+			glTranslatef( 0.0f, 0.5, -3.0 );
 
 			glRotatef( 35.264f, 1.0f, 0.0f, 0.0f );
 			glRotatef( 45.0f, 0.0f, 1.0f, 0.0f );
