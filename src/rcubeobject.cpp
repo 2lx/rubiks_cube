@@ -23,15 +23,7 @@ void RCubeObject::setMove( const RCMoveType newRT )
 	quatR = quatR.normalize();
 
 	Vector3D vec = Vector3D( quatR.x(), quatR.y(), quatR.z() );
-
-	for ( int i = MT_FIRST; i < MT_COUNT; ++i )
-	{
-		if ( MoveParams::vec( RCMoveType( i ) ) == vec && MoveParams::clockwise( RCMoveType( i ) ) == MoveParams::clockwise( newRT ) )
-		{
-			m_moveType = RCMoveType( i );
-			break;
-		}
-	}
+	m_moveType = MoveParams::getMTypeForPars( vec, MoveParams::clockwise( newRT ) );
 }
 
 void RCubeObject::drawObject()
@@ -140,54 +132,107 @@ void RCubeObject::setCubieVertices( const GLfloat pX, const GLfloat pY, const GL
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	glBegin( GL_QUADS );
 
+	// Up
 	glColor3f( m_RCModel->cubie( x, y, z ).colR( AX_UP ),
 			m_RCModel->cubie( x, y, z ).colG( AX_UP ), m_RCModel->cubie( x, y, z ).colB( AX_UP ) );
 
-	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );  // Up
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
 
+	if ( y == 2 && !isAxisVisible( AX_UP ) )
+	{
+		glVertex3f( pX + halfSize, pY + 2.0 + halfSize, pZ - halfSize );
+		glVertex3f( pX - halfSize, pY + 2.0 + halfSize, pZ - halfSize );
+		glVertex3f( pX - halfSize, pY + 2.0 + halfSize, pZ + halfSize );
+		glVertex3f( pX + halfSize, pY + 2.0 + halfSize, pZ + halfSize );
+	}
 
+	// Front
 	glColor3f( m_RCModel->cubie( x, y, z ).colR( AX_FRONT ),
 			m_RCModel->cubie( x, y, z ).colG( AX_FRONT ), m_RCModel->cubie( x, y, z ).colB( AX_FRONT ) );
 
-	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );	// Front
+	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 
+	if ( z == 2 && !isAxisVisible( AX_FRONT ) )
+	{
+		glVertex3f( pX + halfSize, pY + halfSize, pZ + 2.0 + halfSize );
+		glVertex3f( pX - halfSize, pY + halfSize, pZ + 2.0 + halfSize );
+		glVertex3f( pX - halfSize, pY - halfSize, pZ + 2.0 + halfSize );
+		glVertex3f( pX + halfSize, pY - halfSize, pZ + 2.0 + halfSize );
+	}
+
+	// Down
 	glColor3f( m_RCModel->cubie( x, y, z ).colR( AX_DOWN ),
 			m_RCModel->cubie( x, y, z ).colG( AX_DOWN ), m_RCModel->cubie( x, y, z ).colB( AX_DOWN ) );
 
-	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );	// Down
+	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
 
+	if ( y == 0 && !isAxisVisible( AX_DOWN ) )
+	{
+		glVertex3f( pX + halfSize, pY - 2.0 - halfSize, pZ + halfSize );
+		glVertex3f( pX - halfSize, pY - 2.0 - halfSize, pZ + halfSize );
+		glVertex3f( pX - halfSize, pY - 2.0 - halfSize, pZ - halfSize );
+		glVertex3f( pX + halfSize, pY - 2.0 - halfSize, pZ - halfSize );
+	}
+
+	// Back
 	glColor3f( m_RCModel->cubie( x, y, z ).colR( AX_BACK ),
 			m_RCModel->cubie( x, y, z ).colG( AX_BACK ), m_RCModel->cubie( x, y, z ).colB( AX_BACK ) );
 
-	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );	// Back
+	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
 	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );
 
+	if ( z == 0 && !isAxisVisible( AX_BACK ) )
+	{
+		glVertex3f( pX + halfSize, pY - halfSize, pZ - 2.0 - halfSize );
+		glVertex3f( pX - halfSize, pY - halfSize, pZ - 2.0 - halfSize );
+		glVertex3f( pX - halfSize, pY + halfSize, pZ - 2.0 - halfSize );
+		glVertex3f( pX + halfSize, pY + halfSize, pZ - 2.0 - halfSize );
+	}
+
+	// Left
 	glColor3f( m_RCModel->cubie( x, y, z ).colR( AX_LEFT ),
 			m_RCModel->cubie( x, y, z ).colG( AX_LEFT ), m_RCModel->cubie( x, y, z ).colB( AX_LEFT ) );
 
-	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );	// Left
+	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
 
+	if ( x == 0 && !isAxisVisible( AX_LEFT ) )
+	{
+		glVertex3f( pX - 2.0 - halfSize, pY + halfSize, pZ - halfSize );
+		glVertex3f( pX - 2.0 - halfSize, pY + halfSize, pZ + halfSize );
+		glVertex3f( pX - 2.0 - halfSize, pY - halfSize, pZ + halfSize );
+		glVertex3f( pX - 2.0 - halfSize, pY - halfSize, pZ - halfSize );
+	}
+
+	// Right
 	glColor3f( m_RCModel->cubie( x, y, z ).colR( AX_RIGHT ),
 			m_RCModel->cubie( x, y, z ).colG( AX_RIGHT ), m_RCModel->cubie( x, y, z ).colB( AX_RIGHT ) );
 
-	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );	// Right
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );
 	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
+
+	if ( x == 2 && !isAxisVisible( AX_RIGHT ) )
+	{
+		glVertex3f( pX + 2.0 + halfSize, pY + halfSize, pZ - halfSize );
+		glVertex3f( pX + 2.0 + halfSize, pY + halfSize, pZ + halfSize );
+		glVertex3f( pX + 2.0 + halfSize, pY - halfSize, pZ + halfSize );
+		glVertex3f( pX + 2.0 + halfSize, pY - halfSize, pZ - halfSize );
+	}
 
 	glEnd();
 }

@@ -25,7 +25,7 @@ void CPlayState::Init()
 //	glFrustum( -margin * wdh * 1.2, margin* wdh, -margin, margin* 1.2, 0.1, 20.0 );
 
 	const float wdh = ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT;
-	const float margin = 4.5;
+	const float margin = 4;
 	GLfloat cavalierPMatrix[ 16 ] = {
 		1 , 0 , 0 , 0,
 		0 , 1 , 0 , 0,
@@ -43,8 +43,11 @@ void CPlayState::Init()
 
 void CPlayState::Cleanup()
 {
-//	SDL_FreeSurface(bg);
 	delete m_RCube;
+
+	MoveParams::cleanup();
+	Colors::cleanup();
+	AxisParams::cleanup();
 }
 
 void CPlayState::Pause()
@@ -238,7 +241,7 @@ void CPlayState::Draw( CGameEngine * game )
 
 		glLoadIdentity();
 //		glTranslatef( 0.0f, 0.0f, -7.0 );
-		glTranslatef( 2.7f, -2.7f, -8.0 );
+		glTranslatef( 0.0f, 0.0, -2.0 );
 
 //		glRotatef( 15, 1.0f, 0.0f, 0.0f );
 

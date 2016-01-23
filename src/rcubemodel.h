@@ -1,7 +1,6 @@
 #ifndef RCUBEMODEL_H
 #define RCUBEMODEL_H
 
-#include <map>
 #include "shapes.h"
 
 namespace RC
@@ -12,7 +11,8 @@ namespace RC
 	enum RCAxis
 	{
 		AX_FRONT, AX_UP, AX_BACK, AX_DOWN, AX_LEFT, AX_RIGHT,
-		AX_COUNT, AX_NONE
+		AX_COUNT, AX_NONE,
+		AX_FIRST = AX_FRONT
 	};
 
 	enum RCMoveType
@@ -26,8 +26,7 @@ namespace RC
 
 		MT_COUNT,
 		MT_NONE,
-		MT_FIRST = MT_FRONT,
-		MT_LAST = MT_DOWNINV
+		MT_FIRST = MT_FRONT
 	};
 
 	class Cubie

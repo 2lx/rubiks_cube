@@ -8,56 +8,42 @@ using namespace RC;
 
 void Cubie::rotateCubie( const RCMoveType rt )
 {
-	RCAxis colTemp;
+	RCAxis tt, t1, t2, t3, t4;
 
-	if ( rt == MT_FRONT || rt == MT_BACKINV )
+	switch ( rt )
 	{
-		colTemp = m_colourInd[ AX_LEFT ];
-		m_colourInd[ AX_LEFT ] = m_colourInd[ AX_DOWN ];
-		m_colourInd[ AX_DOWN ] = m_colourInd[ AX_RIGHT ];
-		m_colourInd[ AX_RIGHT ] = m_colourInd[ AX_UP ];
-		m_colourInd[ AX_UP ] = colTemp;
-	}
-	else if ( rt == MT_FRONTINV || rt == MT_BACK )
-	{
-		colTemp = m_colourInd[ AX_LEFT ];
-		m_colourInd[ AX_LEFT ] = m_colourInd[ AX_UP ];
-		m_colourInd[ AX_UP ] = m_colourInd[ AX_RIGHT ];
-		m_colourInd[ AX_RIGHT ] = m_colourInd[ AX_DOWN ];
-		m_colourInd[ AX_DOWN ] = colTemp;
-	}
-	else if ( rt == MT_LEFT || rt == MT_RIGHTINV )
-	{
-		colTemp = m_colourInd[ AX_BACK ];
-		m_colourInd[ AX_BACK ] = m_colourInd[ AX_DOWN ];
-		m_colourInd[ AX_DOWN ] = m_colourInd[ AX_FRONT ];
-		m_colourInd[ AX_FRONT ] = m_colourInd[ AX_UP ];
-		m_colourInd[ AX_UP ] = colTemp;
-	}
-	else if ( rt == MT_RIGHT || rt == MT_LEFTINV )
-	{
-		colTemp = m_colourInd[ AX_BACK ];
-		m_colourInd[ AX_BACK ] = m_colourInd[ AX_UP ];
-		m_colourInd[ AX_UP ] = m_colourInd[ AX_FRONT ];
-		m_colourInd[ AX_FRONT ] = m_colourInd[ AX_DOWN ];
-		m_colourInd[ AX_DOWN ] = colTemp;
-	}
-	else if ( rt == MT_UP || rt == MT_DOWNINV )
-	{
-		colTemp = m_colourInd[ AX_LEFT ];
-		m_colourInd[ AX_LEFT ] = m_colourInd[ AX_FRONT ];
-		m_colourInd[ AX_FRONT ] = m_colourInd[ AX_RIGHT ];
-		m_colourInd[ AX_RIGHT ] = m_colourInd[ AX_BACK ];
-		m_colourInd[ AX_BACK ] = colTemp;
-	}
-	else if ( rt == MT_UPINV || rt == MT_DOWN )
-	{
-		colTemp = m_colourInd[ AX_LEFT ];
-		m_colourInd[ AX_LEFT ] = m_colourInd[ AX_BACK ];
-		m_colourInd[ AX_BACK ] = m_colourInd[ AX_RIGHT ];
-		m_colourInd[ AX_RIGHT ] = m_colourInd[ AX_FRONT ];
-		m_colourInd[ AX_FRONT ] = colTemp;
-	}
+		case MT_FRONT:
+		case MT_BACKINV:
+			t1 = AX_LEFT; t2 = AX_DOWN; t3 = AX_RIGHT; t4 = AX_UP;
+			break;
+		case MT_FRONTINV:
+		case MT_BACK:
+			t1 = AX_LEFT; t2 = AX_UP; t3 = AX_RIGHT; t4 = AX_DOWN;
+			break;
+		case MT_LEFT:
+		case MT_RIGHTINV:
+			t1 = AX_BACK; t2 = AX_DOWN; t3 = AX_FRONT; t4 = AX_UP;
+			break;
+		case MT_LEFTINV:
+		case MT_RIGHT:
+			t1 = AX_BACK; t2 = AX_UP; t3 = AX_FRONT; t4 = AX_DOWN;
+			break;
+		case MT_UP:
+		case MT_DOWNINV:
+			t1 = AX_LEFT; t2 = AX_FRONT; t3 = AX_RIGHT; t4 = AX_BACK;
+			break;
+		case MT_UPINV:
+		case MT_DOWN:
+			t1 = AX_LEFT; t2 = AX_BACK; t3 = AX_RIGHT; t4 = AX_FRONT;
+			break;
+		default: return;
+	};
+
+	tt = m_colourInd[ t1 ];
+	m_colourInd[ t1 ] = m_colourInd[ t2 ];
+	m_colourInd[ t2 ] = m_colourInd[ t3 ];
+	m_colourInd[ t3 ] = m_colourInd[ t4 ];
+	m_colourInd[ t4 ] = tt;
 }
 
 float Cubie::colR( const RCAxis ax ) const

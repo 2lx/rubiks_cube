@@ -17,4 +17,19 @@ void writeMatrix( GLfloat * Matrix, const int rowC, const int colC )
 	std::cout.flush();
 }
 
+void writeVector3D( const Vector3D vec )
+{
+	std::cout.precision( 1 );
+
+	std::cout.width( 6 );
+	std::cout << std::fixed << std::right << vec.x() << " ";
+	std::cout.width( 6 );
+	std::cout << std::fixed << std::right << vec.y() << " ";
+	std::cout.width( 6 );
+	std::cout << std::fixed << std::right << vec.z() << " ";
+//	std::cout << std::endl;
+
+	std::cout.flush();
+}
+
 #endif // OUTPUT_H_INCLUDED

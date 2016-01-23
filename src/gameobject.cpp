@@ -1,14 +1,18 @@
 #include "all.h"
 
 #include "gameobject.h"
+#include "rcubeparams.h"
 
 #ifdef MY_DEBUG
 #include "output.h"
 #endif
 
+using namespace RC;
+
 GameObject::GameObject()
 {
-
+    for ( int i = AX_FIRST; i < AX_COUNT; i++ )
+		m_axesPos[ i ] = RCAxis( i );
 }
 
 GameObject::~GameObject()
@@ -25,6 +29,32 @@ void GameObject::setRotates( const int newDirX, const int newDirY, const int new
 	}
 }
 
+void GameObject::updateAxesPos()
+{
+    for ( int i = AX_FIRST; i < AX_COUNT; i++ )
+    {
+		MyQuaternion quatT( AxisParams::vec( RCAxis( i ) ) );
+
+		MyQuaternion quatR = m_rotateQuat.inverse() * quatT * m_rotateQuat;
+		quatR = quatR.normalize();
+
+		Vector3D vec = Vector3D( quatR.x(), quatR.y(), quatR.z() );
+		m_axesPos[ i ] = AxisParams::getAxisForVector( vec );
+#ifdef MY_DEBUG
+		writeVector3D( AxisParams::vec( RCAxis( i ) ) );
+		writeVector3D( vec );
+		std::cout << std::endl;
+#endif // MY_DEBUG
+	}
+}
+
+bool GameObject::isAxisVisible( const RCAxis ax ) const
+{
+    if ( m_axesPos[ ax ] == AX_FRONT || m_axesPos[ ax ] == AX_UP || m_axesPos[ ax ] == AX_LEFT )
+		return true;
+	else return false;
+}
+
 void GameObject::rotateObject( )
 {
 	MyQuaternion quatTemp;
@@ -38,6 +68,8 @@ void GameObject::rotateObject( )
 			quatTemp.fromAxisAngle( m_rotateVec.x(), m_rotateVec.y(), m_rotateVec.z(), newAngle );
 			m_rotateQuat = m_rotateQuat * quatTemp;
 			m_rotateQuat = m_rotateQuat.normalize();
+
+            updateAxesPos();
 
 			m_rotateAngle = 0;
 			m_rotateVec.setXYZ( 0, 0, 0 );
