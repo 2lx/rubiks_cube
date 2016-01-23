@@ -79,6 +79,7 @@ namespace RC
 		static float colB( const RCAxis colId ) { return m_ax[ m_schemeId ][ colId ]->m_B; };
 
 		static void setScheme( const RCColorScheme sc ) { m_schemeId = sc; };
+		static void incScheme() { m_schemeId = RCColorScheme( ( m_schemeId + 1 ) % RCS_COUNT ); };
 		static void cleanup();
 
 	private:

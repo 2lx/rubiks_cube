@@ -78,7 +78,7 @@ void MoveParams::cleanup()
 		delete it->second;
 }
 
-RCColorScheme Colors::m_schemeId = RCS_S2;
+RCColorScheme Colors::m_schemeId = RCS_S1;
 std::map< RCColorScheme, std::map< RCAxis, Colors::OneColor * > > Colors::m_ax = InitMapAX();
 std::map< RCColorScheme, std::map< RCColor, Colors::OneColor * > > Colors::m_c = InitMapRC();
 

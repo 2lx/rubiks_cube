@@ -161,6 +161,10 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_COMMA:
 				m_gkStates[ GK_MOVEDOWNINV ].setDown();
 				break;
+
+			case SDLK_SPACE:
+				m_gkStates[ GK_INCCOLOR ].setDown();
+				break;
 			}
 			break;
 		default:
@@ -216,7 +220,7 @@ void CPlayState::Update( CGameEngine * game )
 
 	if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
 	{
-		for ( int i = 0; i < GK_COUNT - GK_MOVEFRONT; i++ )
+		for ( int i = 0; i < GK_MOVELAST - GK_MOVEFIRST + 1; i++ )
 		{
 			if ( m_gkStates[ GK_MOVEFRONT + i ].isNewDown() )
 			{
@@ -225,6 +229,13 @@ void CPlayState::Update( CGameEngine * game )
 				break;
 			}
 		}
+	}
+
+	if ( m_gkStates[ GK_INCCOLOR ].isNewDown() )
+	{
+		RC::Colors::incScheme();
+		m_gkStates[ GK_INCCOLOR ].releaseNewDown();
+		m_needRedraw = true;
 	}
 }
 
