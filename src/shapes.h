@@ -1,6 +1,7 @@
 #ifndef SHAPES_H_INCLUDED
 #define SHAPES_H_INCLUDED
 
+#include <GL/gl.h>
 #include <cmath>
 
 class Point3D

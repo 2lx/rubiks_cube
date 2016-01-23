@@ -2,12 +2,13 @@
 #include "rcubemodel.h"
 
 #include <cmath>
+#include "rcubeparams.h"
 
-std::map< RCMoveType, RCMoveTable * > RCMoveTable::m_p = InitMap();
+using namespace RC;
 
-void RCCubie::rotateCubie( const RCMoveType rt )
+void Cubie::rotateCubie( const RCMoveType rt )
 {
-	short int colTemp;
+	RCAxis colTemp;
 
 	if ( rt == MT_FRONT || rt == MT_BACKINV )
 	{
@@ -59,28 +60,28 @@ void RCCubie::rotateCubie( const RCMoveType rt )
 	}
 }
 
-float RCCubie::colR( const RCAxis ax ) const
+float Cubie::colR( const RCAxis ax ) const
 {
-	if ( m_colourInd[ ax ] == -1 )
-		return COLOR_MATR[ 6 ][ 0 ];
-	else return COLOR_MATR[ m_colourInd[ ax ] ][ 0 ];
+	if ( m_colourInd[ ax ] == AX_NONE )
+		return Colors::colR( RC_FG );
+	else return Colors::colR( m_colourInd[ ax ] );
 }
 
-float RCCubie::colG( const RCAxis ax ) const
+float Cubie::colG( const RCAxis ax ) const
 {
-	if ( m_colourInd[ ax ] == -1 )
-		return COLOR_MATR[ 6 ][ 1 ];
-	else return COLOR_MATR[ m_colourInd[ ax ] ][ 1 ];
+	if ( m_colourInd[ ax ] == AX_NONE )
+		return Colors::colG( RC_FG );
+	else return Colors::colG( m_colourInd[ ax ] );
 }
 
-float RCCubie::colB( const RCAxis ax ) const
+float Cubie::colB( const RCAxis ax ) const
 {
-	if ( m_colourInd[ ax ] == -1 )
-		return COLOR_MATR[ 6 ][ 2 ];
-	else return COLOR_MATR[ m_colourInd[ ax ] ][ 2 ];
+	if ( m_colourInd[ ax ] == AX_NONE )
+		return Colors::colB( RC_FG );
+	else return Colors::colB( m_colourInd[ ax ] );
 }
 
-RCubeModel::RCubeModel()
+CubeModel::CubeModel()
 {
 	srand( time( 0 ) );
 	const int k = CUBIE_COUNT - 1;
@@ -88,24 +89,24 @@ RCubeModel::RCubeModel()
 	for( int i = 0; i < CUBIE_COUNT; ++i )
 		for( int j = 0; j < CUBIE_COUNT; ++j )
 		{
-			m_cubies[ i ][ j ][ k ].setColourInd( AX_FRONT, 0 );
-			m_cubies[ i ][ k ][ j ].setColourInd( AX_UP, 1 );
-			m_cubies[ i ][ j ][ 0 ].setColourInd( AX_BACK, 2 );
-			m_cubies[ i ][ 0 ][ j ].setColourInd( AX_DOWN, 3 );
-			m_cubies[ 0 ][ i ][ j ].setColourInd( AX_LEFT, 4 );
-			m_cubies[ k ][ i ][ j ].setColourInd( AX_RIGHT, 5 );
+			m_cubies[ i ][ j ][ k ].setColourInd( AX_FRONT, AX_FRONT );
+			m_cubies[ i ][ k ][ j ].setColourInd( AX_UP, AX_UP );
+			m_cubies[ i ][ j ][ 0 ].setColourInd( AX_BACK, AX_BACK );
+			m_cubies[ i ][ 0 ][ j ].setColourInd( AX_DOWN, AX_DOWN );
+			m_cubies[ 0 ][ i ][ j ].setColourInd( AX_LEFT, AX_LEFT );
+			m_cubies[ k ][ i ][ j ].setColourInd( AX_RIGHT, AX_RIGHT );
 		}
 }
 
-RCubeModel::~RCubeModel()
+CubeModel::~CubeModel()
 {
 
 }
 
-void RCubeModel::moveCubies( const RCMoveType rt )
+void CubeModel::moveCubies( const RCMoveType rt )
 {
-	RCCubie tmpPiece1;
-	RCCubie tmpPiece2;
+	Cubie tmpPiece1;
+	Cubie tmpPiece2;
 	const int k = CUBIE_COUNT - 1;
 
 	const int mvX[ 8 ] = { 0, 1, 2, 2, 2, 1, 0, 0 };
@@ -155,7 +156,8 @@ void RCubeModel::moveCubies( const RCMoveType rt )
 	case MT_DOWNINV:
 		mv1 = mvY; mv2 = mv0; mv3 = mvX;
 		break;
-	default: ;
+	default:
+		return;
 	}
 
 	tmpPiece1 = m_cubies[ mv1[ 0 ] ][ mv2[ 0 ] ][ mv3[ 0 ] ];

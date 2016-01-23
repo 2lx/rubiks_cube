@@ -4,6 +4,7 @@
 #include "playstate.h"
 #include "gameengine.h"
 #include "myquaternion.h"
+#include "rcubeparams.h"
 
 CPlayState CPlayState::m_PlayState;
 
@@ -232,7 +233,7 @@ void CPlayState::Draw( CGameEngine * game )
 	{
 		Uint32 start = SDL_GetTicks();
 
-		glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
+		glClearColor( Colors::colR( RC_BG ), Colors::colG( RC_BG ), Colors::colB( RC_BG ), 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		glLoadIdentity();

@@ -22,22 +22,4 @@ const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 // rotation speed
 const float ANGLE_DIFF = 11.0;
 
-const uint COLOR_COUNT = 6;
-
-const float COLOR_MATR[ COLOR_COUNT + 2 ][ 3 ] =
-{
-	{  52 / 255.0, 152 / 255.0, 219 / 255.0 }, // Blue - Peter river
-	{ 236 / 255.0, 240 / 255.0, 241 / 255.0 }, // White - Clouds
-	{  46 / 255.0, 204 / 255.0, 113 / 255.0 }, // Green - Emerald
-	{ 241 / 255.0, 196 / 255.0,  15 / 255.0 }, // Yellow - Sun flower
-	{ 231 / 255.0,  76 / 255.0,  60 / 255.0 }, // Red - Alizarin
-	{ 230 / 255.0, 126 / 255.0,  34 / 255.0 }, // Orange - Carrot
-
-	{  52 / 255.0,  73 / 255.0,  94 / 255.0 }, // Wet asphalt
-	{ 149 / 255.0, 165 / 255.0, 166 / 255.0 } // Concrete
-};
-
-const float COLOR_DARKGRAY[ 3 ] = 	{  52 / 255.0,  73 / 255.0,  94 / 255.0 }; // Wet asphalt
-const float COLOR_LIGHTGRAY[ 3 ] = 	{ 149 / 255.0, 165 / 255.0, 166 / 255.0 }; // Concrete
-
 #endif // ALL_H_INCLUDED

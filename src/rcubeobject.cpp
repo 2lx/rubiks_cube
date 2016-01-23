@@ -1,10 +1,13 @@
 #include "all.h"
 
 #include "rcubeobject.h"
+#include "rcubeparams.h"
+
+using namespace RC;
 
 RCubeObject::RCubeObject()
 {
-	m_RCModel = new RCubeModel();
+	m_RCModel = new CubeModel();
 }
 
 RCubeObject::~RCubeObject()
@@ -14,7 +17,7 @@ RCubeObject::~RCubeObject()
 
 void RCubeObject::setMove( const RCMoveType newRT )
 {
-	MyQuaternion quatT( RCMoveTable::vec( newRT ) );
+	MyQuaternion quatT( MoveParams::vec( newRT ) );
 
 	MyQuaternion quatR = m_rotateQuat * quatT * m_rotateQuat.inverse();
 	quatR = quatR.normalize();
@@ -23,7 +26,7 @@ void RCubeObject::setMove( const RCMoveType newRT )
 
 	for ( int i = MT_FIRST; i < MT_COUNT; ++i )
 	{
-		if ( RCMoveTable::vec( RCMoveType( i ) ) == vec && RCMoveTable::clockwise( RCMoveType( i ) ) == RCMoveTable::clockwise( newRT ) )
+		if ( MoveParams::vec( RCMoveType( i ) ) == vec && MoveParams::clockwise( RCMoveType( i ) ) == MoveParams::clockwise( newRT ) )
 		{
 			m_moveType = RCMoveType( i );
 			break;
@@ -50,9 +53,9 @@ void RCubeObject::drawObject()
 		}
 		else
 		{
-			quatTemp.fromAxisAngle( abs( RCMoveTable::vec( m_moveType ).x() ),
-				abs( RCMoveTable::vec( m_moveType ).y() ), abs( RCMoveTable::vec( m_moveType ).z() ),
-				( RCMoveTable::vec( m_moveType ).isFirstOctant() == RCMoveTable::clockwise( m_moveType ) ) ? ANGLE_DIFF : -ANGLE_DIFF );
+			quatTemp.fromAxisAngle( abs( MoveParams::vec( m_moveType ).x() ),
+				abs( MoveParams::vec( m_moveType ).y() ), abs( MoveParams::vec( m_moveType ).z() ),
+				( MoveParams::vec( m_moveType ).isFirstOctant() == MoveParams::clockwise( m_moveType ) ) ? ANGLE_DIFF : -ANGLE_DIFF );
 
 			m_moveQuat = m_moveQuat * quatTemp;
 			m_moveAngle += ANGLE_DIFF;
@@ -65,12 +68,12 @@ void RCubeObject::drawObject()
 			{
 				if ( m_moveType != MT_NONE )
 				{
-					if (	( z == 2 && RCMoveTable::vec( m_moveType ).z() > 0 ) ||
-							( z == 0 && RCMoveTable::vec( m_moveType ).z() < 0 ) ||
-							( x == 2 && RCMoveTable::vec( m_moveType ).x() > 0 ) ||
-							( x == 0 && RCMoveTable::vec( m_moveType ).x() < 0 ) ||
-							( y == 2 && RCMoveTable::vec( m_moveType ).y() > 0 ) ||
-							( y == 0 && RCMoveTable::vec( m_moveType ).y() < 0 )
+					if (	( z == 2 && MoveParams::vec( m_moveType ).z() > 0 ) ||
+							( z == 0 && MoveParams::vec( m_moveType ).z() < 0 ) ||
+							( x == 2 && MoveParams::vec( m_moveType ).x() > 0 ) ||
+							( x == 0 && MoveParams::vec( m_moveType ).x() < 0 ) ||
+							( y == 2 && MoveParams::vec( m_moveType ).y() > 0 ) ||
+							( y == 0 && MoveParams::vec( m_moveType ).y() < 0 )
 						)
 					{
 						glPushMatrix();
@@ -92,7 +95,7 @@ void RCubeObject::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLf
 {
 	const GLfloat halfSize = cubeSize / 2.0 - 0.1;
 
-	glColor3f( COLOR_MATR[ 6 ][ 0 ], COLOR_MATR[ 6 ][ 1 ], COLOR_MATR[ 6 ][ 2 ] );
+	glColor3f( Colors::colR( RC_FG ), Colors::colG( RC_FG ), Colors::colB( RC_FG ) );
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	glBegin( GL_QUADS );
 

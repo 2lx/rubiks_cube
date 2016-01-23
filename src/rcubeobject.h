@@ -4,7 +4,8 @@
 #include <GL/gl.h>
 #include "gameobject.h"
 #include "rcubemodel.h"
-#include <map>
+
+using namespace RC;
 
 class RCubeObject : public GameObject
 {
@@ -18,7 +19,7 @@ public:
 
 protected:
 private:
-	RCubeModel * m_RCModel;
+	CubeModel * m_RCModel;
 
 	MyQuaternion m_moveQuat;
 	GLfloat m_moveAngle = { 0 };
