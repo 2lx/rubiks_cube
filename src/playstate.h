@@ -3,7 +3,7 @@
 
 #include "SDL2/SDL.h"
 #include "gamestate.h"
-#include "rubikscube.h"
+#include "rcubeobject.h"
 #include "shapes.h"
 
 enum GameKeys
@@ -26,7 +26,7 @@ public:
 		}
 	};
 	inline void releasePress() { if ( m_isPressed ) m_isPressed = false; };
-	inline bool releaseNewDown() { if ( m_isNewDown ) m_isNewDown = false; };
+	inline void releaseNewDown() { if ( m_isNewDown ) m_isNewDown = false; };
 	inline bool isNewDown() const { return m_isNewDown; };
 
 private:
@@ -54,7 +54,7 @@ protected:
 
 private:
 	static CPlayState m_PlayState;
-	RubiksCube * m_RCube;
+	RCubeObject * m_RCube;
 //	SDL_Surface * bg;
 
 	bool m_needRedraw = { true };

@@ -14,6 +14,12 @@ MyQuaternion::MyQuaternion( const GLfloat wi, const GLfloat xi, const GLfloat yi
 	//ctor
 }
 
+MyQuaternion::MyQuaternion( const Vector3D vec )
+	: m_w{ 0 }, m_x{ vec.x() }, m_y{ vec.y() }, m_z{ vec.z() }
+{
+
+}
+
 MyQuaternion::~MyQuaternion()
 {
 	//dtor

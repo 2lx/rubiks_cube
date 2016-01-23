@@ -4,7 +4,6 @@
 #include "playstate.h"
 #include "gameengine.h"
 #include "myquaternion.h"
-#include "rubikscube.h"
 
 CPlayState CPlayState::m_PlayState;
 
@@ -25,7 +24,7 @@ void CPlayState::Init()
 //	glFrustum( -margin * wdh * 1.2, margin* wdh, -margin, margin* 1.2, 0.1, 20.0 );
 
 	const float wdh = ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT;
-	const float margin = 3;
+	const float margin = 4.5;
 	GLfloat cavalierPMatrix[ 16 ] = {
 		1 , 0 , 0 , 0,
 		0 , 1 , 0 , 0,
@@ -38,7 +37,7 @@ void CPlayState::Init()
 
 	glMatrixMode( GL_MODELVIEW );
 
-	m_RCube = new RubiksCube;
+	m_RCube = new RCubeObject;
 }
 
 void CPlayState::Cleanup()
@@ -181,32 +180,32 @@ void CPlayState::Update( CGameEngine * game )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::RD_NEGATIVE, GameObject::RD_NONE, GameObject::RD_NONE );
+			m_RCube->setRotates( 1, 0, 0, false );
 			m_gkStates[ GK_LOOKDOWN ].releaseNewDown();
 		}
 		else if ( m_gkStates[ GK_LOOKUP ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::RD_POSITIVE, GameObject::RD_NONE, GameObject::RD_NONE );
+			m_RCube->setRotates( 1, 0, 0, true );
 			m_gkStates[ GK_LOOKUP ].releaseNewDown();
 		}
 		else if ( m_gkStates[ GK_LOOKRIGHT ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NEGATIVE, GameObject::RD_NONE );
+			m_RCube->setRotates( 0, 1, 0, false );
 			m_gkStates[ GK_LOOKRIGHT ].releaseNewDown();
 		}
 		else if ( m_gkStates[ GK_LOOKLEFT ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_POSITIVE, GameObject::RD_NONE );
+			m_RCube->setRotates( 0, 1, 0, true );
 			m_gkStates[ GK_LOOKLEFT ].releaseNewDown();
 		}
 		else if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NONE, GameObject::RD_NEGATIVE );
+			m_RCube->setRotates( 0, 0, 1, false );
 			m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].releaseNewDown();
 		}
 		else if ( m_gkStates[ GK_ROTATECLOCKWISE ].isNewDown() )
 		{
-			m_RCube->setRotates( GameObject::RD_NONE, GameObject::RD_NONE, GameObject::RD_POSITIVE );
+			m_RCube->setRotates( 0, 0, 1, true );
 			m_gkStates[ GK_ROTATECLOCKWISE ].releaseNewDown();
 		}
 	}
@@ -235,8 +234,6 @@ void CPlayState::Draw( CGameEngine * game )
 
 		glClearColor( COLOR_LIGHTGRAY[ 0 ], COLOR_LIGHTGRAY[ 1 ], COLOR_LIGHTGRAY[ 2 ], 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-		const float angleDiff = 8;
 
 		glLoadIdentity();
 //		glTranslatef( 0.0f, 0.0f, -7.0 );

@@ -27,7 +27,7 @@ void CGameEngine::Init(const char* title, int width, int height,
 	}
 
 	SDL_GLContext glcontext = SDL_GL_CreateContext( gWindow );
-	if ( glcontext = NULL )
+	if ( glcontext == NULL )
 	{
 		printf( "SDL Error: %s\n", SDL_GetError() );
 		return;

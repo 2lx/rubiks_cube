@@ -1,54 +1,29 @@
 #include "all.h"
 
-#include "rubikscube.h"
+#include "rcubeobject.h"
 
-RubiksCube::RubiksCube()
+RCubeObject::RCubeObject()
 {
 	m_RCModel = new RCubeModel();
-
-	m_paramsMap[ MT_FRONT ] 	= new RCMoveParam(  0,  0,  1, true );
-	m_paramsMap[ MT_FRONTINV ] 	= new RCMoveParam(  0,  0,  1, false );
-	m_paramsMap[ MT_BACK ] 		= new RCMoveParam(  0,  0, -1, true );
-	m_paramsMap[ MT_BACKINV ] 	= new RCMoveParam(  0,  0, -1, false );
-	m_paramsMap[ MT_RIGHT ] 	= new RCMoveParam(  1,  0,  0, true );
-	m_paramsMap[ MT_RIGHTINV ] 	= new RCMoveParam(  1,  0,  0, false );
-	m_paramsMap[ MT_LEFT ] 		= new RCMoveParam( -1,  0,  0, true );
-	m_paramsMap[ MT_LEFTINV ] 	= new RCMoveParam( -1,  0,  0, false );
-	m_paramsMap[ MT_UP ] 		= new RCMoveParam(  0,  1,  0, true );
-	m_paramsMap[ MT_UPINV ] 	= new RCMoveParam(  0,  1,  0, false );
-	m_paramsMap[ MT_DOWN ] 		= new RCMoveParam(  0, -1,  0, true );
-	m_paramsMap[ MT_DOWNINV ] 	= new RCMoveParam(  0, -1,  0, false );
 }
 
-RubiksCube::~RubiksCube()
+RCubeObject::~RCubeObject()
 {
 	delete m_RCModel;
-
-	for ( std::map< RCMoveType, RCMoveParam * >::iterator it = m_paramsMap.begin(); it != m_paramsMap.end(); ++it )
-		delete it->second;
 }
 
-void RubiksCube::setMove( const RCMoveType newRT )
+void RCubeObject::setMove( const RCMoveType newRT )
 {
-	short int nx = m_paramsMap[ newRT ]->x();
-	short int ny = m_paramsMap[ newRT ]->y();
-	short int nz = m_paramsMap[ newRT ]->z();
+	MyQuaternion quatT( RCMoveTable::vec( newRT ) );
 
-	MyQuaternion quatT( 0, nx, ny, nz );
 	MyQuaternion quatR = m_rotateQuat * quatT * m_rotateQuat.inverse();
 	quatR = quatR.normalize();
 
-	std::cout << quatR.x() << " " << quatR.y() << " " << quatR.z() << std::endl;
+	Vector3D vec = Vector3D( quatR.x(), quatR.y(), quatR.z() );
 
-	nx = static_cast< int >( quatR.x() );
-	ny = static_cast< int >( quatR.y() );
-	nz = static_cast< int >( quatR.z() );
-
-	for ( int i = 0; i < MT_COUNT; ++i )
+	for ( int i = MT_FIRST; i < MT_COUNT; ++i )
 	{
-		RCMoveParam * mp = m_paramsMap[ RCMoveType( i ) ];
-
-		if ( mp->x() == nx && mp->y() == ny && mp->z() == nz && mp->isClockwise() == m_paramsMap[ newRT ]->isClockwise() )
+		if ( RCMoveTable::vec( RCMoveType( i ) ) == vec && RCMoveTable::clockwise( RCMoveType( i ) ) == RCMoveTable::clockwise( newRT ) )
 		{
 			m_moveType = RCMoveType( i );
 			break;
@@ -56,30 +31,17 @@ void RubiksCube::setMove( const RCMoveType newRT )
 	}
 }
 
-void RubiksCube::drawObject()
+void RCubeObject::drawObject()
 {
-	const GLfloat centerDiff = ( -1 * PIECE_COUNT ) / 2.0 + 0.5;
+	const GLfloat centerDiff = ( -1 * CUBIE_COUNT ) / 2.0 + 0.5;
 	setCubeVertices( 0, 0, 0, 2.2 );
 
 	MyQuaternion quatTemp;
-	GLfloat aX[ 3 ] = { 1.0, 0.0, 0.0 };
-	GLfloat aY[ 3 ] = { 0.0, 1.0, 0.0 };
-	GLfloat aZ[ 3 ] = { 0.0, 0.0, 1.0 };
 
 	if ( m_moveType != MT_NONE )
 	{
-		RCMoveParam * mp = m_paramsMap[ m_moveType ];
-		short int axisN = mp->axisN();
-
 		if ( m_moveAngle >= 90 - ANGLE_DIFF )
 		{
-			GLfloat newAngle;
-			if ( mp->isClockwiseAbs() )
-				newAngle = 90 - m_moveAngle;
-			else newAngle = m_moveAngle - 90;
-
-			quatTemp.fromAxisAngle( aX[ axisN ], aY[ axisN ], aZ[ axisN ], newAngle );
-
 			m_moveAngle = 0;
 			m_RCModel->moveCubies( m_moveType );
 
@@ -88,29 +50,27 @@ void RubiksCube::drawObject()
 		}
 		else
 		{
-			quatTemp.fromAxisAngle( aX[ axisN ], aY[ axisN ], aZ[ axisN ],
-					( mp->isClockwiseAbs() ) ? ANGLE_DIFF : -ANGLE_DIFF );
+			quatTemp.fromAxisAngle( abs( RCMoveTable::vec( m_moveType ).x() ),
+				abs( RCMoveTable::vec( m_moveType ).y() ), abs( RCMoveTable::vec( m_moveType ).z() ),
+				( RCMoveTable::vec( m_moveType ).isFirstOctant() == RCMoveTable::clockwise( m_moveType ) ) ? ANGLE_DIFF : -ANGLE_DIFF );
 
 			m_moveQuat = m_moveQuat * quatTemp;
 			m_moveAngle += ANGLE_DIFF;
 		}
 	}
 
-	for ( int x = 0; x < PIECE_COUNT; ++x )
-		for ( int y = 0; y < PIECE_COUNT; ++y )
-			for ( int z = 0; z < PIECE_COUNT; ++z )
+	for ( int x = 0; x < CUBIE_COUNT; ++x )
+		for ( int y = 0; y < CUBIE_COUNT; ++y )
+			for ( int z = 0; z < CUBIE_COUNT; ++z )
 			{
 				if ( m_moveType != MT_NONE )
 				{
-					RCMoveParam * mp = m_paramsMap[ m_moveType ];
-					short int axisN = mp->axisN();
-
-					if (	( z == 2 && axisN == 2 &&  mp->isFront() ) ||
-							( z == 0 && axisN == 2 && !mp->isFront() ) ||
-							( x == 2 && axisN == 0 &&  mp->isFront() ) ||
-							( x == 0 && axisN == 0 && !mp->isFront() ) ||
-							( y == 2 && axisN == 1 &&  mp->isFront() ) ||
-							( y == 0 && axisN == 1 && !mp->isFront() )
+					if (	( z == 2 && RCMoveTable::vec( m_moveType ).z() > 0 ) ||
+							( z == 0 && RCMoveTable::vec( m_moveType ).z() < 0 ) ||
+							( x == 2 && RCMoveTable::vec( m_moveType ).x() > 0 ) ||
+							( x == 0 && RCMoveTable::vec( m_moveType ).x() < 0 ) ||
+							( y == 2 && RCMoveTable::vec( m_moveType ).y() > 0 ) ||
+							( y == 0 && RCMoveTable::vec( m_moveType ).y() < 0 )
 						)
 					{
 						glPushMatrix();
@@ -128,7 +88,7 @@ void RubiksCube::drawObject()
 			}
 }
 
-void RubiksCube::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize )
+void RCubeObject::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const
 {
 	const GLfloat halfSize = cubeSize / 2.0 - 0.1;
 
@@ -136,7 +96,7 @@ void RubiksCube::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfl
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	glBegin( GL_QUADS );
 
-	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize ); // Top
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );  // Up
 	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
@@ -146,7 +106,7 @@ void RubiksCube::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfl
 	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 
-	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );	// Bottom
+	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );	// Down
 	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX - halfSize, pY - halfSize, pZ - halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
@@ -169,8 +129,8 @@ void RubiksCube::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfl
 	glEnd();
 }
 
-void RubiksCube::setCubieVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize,
-	const int x, const int y, const int z )
+void RCubeObject::setCubieVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize,
+	const int x, const int y, const int z ) const
 {
 	const GLfloat halfSize = cubeSize / 2 - 0.05;
 
@@ -180,7 +140,7 @@ void RubiksCube::setCubieVertices( const GLfloat pX, const GLfloat pY, const GLf
 	glColor3f( m_RCModel->cubie( x, y, z ).colR( AX_UP ),
 			m_RCModel->cubie( x, y, z ).colG( AX_UP ), m_RCModel->cubie( x, y, z ).colB( AX_UP ) );
 
-	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize ); // Up
+	glVertex3f( pX + halfSize, pY + halfSize, pZ - halfSize );  // Up
 	glVertex3f( pX - halfSize, pY + halfSize, pZ - halfSize );
 	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );

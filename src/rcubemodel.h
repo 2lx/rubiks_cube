@@ -1,7 +1,10 @@
 #ifndef RCUBEMODEL_H
 #define RCUBEMODEL_H
 
-const int PIECE_COUNT = 3;
+#include <map>
+#include "shapes.h"
+
+const int CUBIE_COUNT = 3;
 const float CUBE_EDGE = 1.0;
 
 enum RCAxis
@@ -20,33 +23,48 @@ enum RCMoveType
 	MT_DOWN, MT_DOWNINV,
 
 	MT_COUNT,
-	MT_NONE
+	MT_NONE,
+	MT_FIRST = MT_FRONT,
+	MT_LAST = MT_DOWNINV
 };
 
-class RCMoveParam
+class RCMoveTable	// Singleton
 {
 public:
-	RCMoveParam( const short int vX, const short int vY, const short int vZ, const bool nisClockwise )
-		: m_x { vX }, m_y { vY }, m_z { vZ }, m_isClockwise { nisClockwise }
-	{ };
-	short int axisN() const {
-		if ( m_x != 0 ) return 0;
-		else if ( m_y != 0 ) return 1;
-		else return 2;
-		};
-	short int x() const { return m_x; };
-	short int y() const { return m_y; };
-	short int z() const { return m_z; };
-	bool isClockwise() const { return m_isClockwise; };
-	bool isClockwiseAbs() const { if ( m_x + m_y + m_z > 0 ) return m_isClockwise; else return !m_isClockwise; };
-	bool isFront() const { return ( m_x + m_y + m_z > 0 ); };
+	static Vector3D vec( const RCMoveType mt ) { return m_p[ mt ]->m_vec; };
+	static bool clockwise( const RCMoveType mt ) { return m_p[ mt ]->m_isClockwise; };
+
+//	static RCMoveTable * par( const RCMoveType mt )	{ return m_p[ mt ]; };
 
 private:
-	const short int m_x = 0;
-	const short int m_y = 0;
-	const short int m_z = 0;
+	RCMoveTable( const GLfloat vX, const GLfloat vY, const GLfloat vZ, const bool nisClockwise )
+		: m_vec { vX, vY, vZ }, m_isClockwise { nisClockwise }
+	{ };
+
+	static std::map< RCMoveType, RCMoveTable * > InitMap()
+	{
+		std::map< RCMoveType, RCMoveTable * > mp;
+		mp[ MT_FRONT ] 		= new RCMoveTable(  0,  0,  1, true );
+		mp[ MT_FRONTINV ] 	= new RCMoveTable(  0,  0,  1, false );
+		mp[ MT_BACK ] 		= new RCMoveTable(  0,  0, -1, true );
+		mp[ MT_BACKINV ] 	= new RCMoveTable(  0,  0, -1, false );
+		mp[ MT_RIGHT ] 		= new RCMoveTable(  1,  0,  0, true );
+		mp[ MT_RIGHTINV ] 	= new RCMoveTable(  1,  0,  0, false );
+		mp[ MT_LEFT ] 		= new RCMoveTable( -1,  0,  0, true );
+		mp[ MT_LEFTINV ] 	= new RCMoveTable( -1,  0,  0, false );
+		mp[ MT_UP ] 		= new RCMoveTable(  0,  1,  0, true );
+		mp[ MT_UPINV ] 		= new RCMoveTable(  0,  1,  0, false );
+		mp[ MT_DOWN ] 		= new RCMoveTable(  0, -1,  0, true );
+		mp[ MT_DOWNINV ] 	= new RCMoveTable(  0, -1,  0, false );
+
+		return mp;
+	};
+
+	static std::map< RCMoveType, RCMoveTable * > m_p;
+	const Vector3D m_vec = { 0, 0, 0 };
     const bool m_isClockwise = true;
 };
+
 
 class RCCubie
 {
@@ -74,7 +92,7 @@ class RCubeModel
 	protected:
 
 	private:
-		RCCubie m_cubies[ PIECE_COUNT ][ PIECE_COUNT ][ PIECE_COUNT ];
+		RCCubie m_cubies[ CUBIE_COUNT ][ CUBIE_COUNT ][ CUBIE_COUNT ];
 };
 
 #endif // RCUBEMODEL_H

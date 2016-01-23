@@ -4,31 +4,28 @@
 #include <GL/gl.h>
 #include "shapes.h"
 #include "myquaternion.h"
+//#include "myquaternion.h"
 
 class GameObject
 {
 public:
-	enum RotateDirection
-	{
-		RD_NONE, RD_POSITIVE, RD_NEGATIVE
-	};
-
-	GameObject();
 	virtual ~GameObject();
 
 	virtual void drawObject() = 0;
 	void rotateObject();
-	void setRotates( const RotateDirection newDirX, const RotateDirection newDirY, const RotateDirection newDirZ );
-	bool isRotating() const;
+	void setRotates( const int newDirX, const int newDirY, const int newDirZ, const bool isPos );
+	bool isRotating() const { return ( m_rotateVec.length() > 0 ); };
 
 protected:
+	GameObject();	// Hide public constructor
+
 	MyQuaternion m_rotateQuat;
 
 private:
 	Point3D m_pos;
-
-	float m_rotateAngle[ 3 ] = { 0, 0, 0 };
-	RotateDirection m_rotateDir[ 3 ] = { RD_NONE, RD_NONE, RD_NONE };
+	float m_rotateAngle = { 0 };
+	bool m_isPositive = { true };
+	Vector3D m_rotateVec;
 };
 
 #endif // GAMEOBJECT_H
