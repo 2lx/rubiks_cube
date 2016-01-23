@@ -5,7 +5,7 @@ OBJS = src/*.cpp
 
 CC = g++
 
-COMPILER_FLAGS = -w -x c++-header $(CORE_PCH_FILENAME)
+COMPILER_FLAGS = -x c++-header $(CORE_PCH_FILENAME) -Wpedantic -std=c++11
 
 LINKER_FLAGS = -lSDL2 -lGL -lGLU
 
