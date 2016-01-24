@@ -100,6 +100,14 @@ std::map< RCColorScheme, std::map< RCAxis, Colors::OneColor * > > Colors::InitMa
 	cp[ RCS_S2 ][ AX_LEFT ]		= new OneColor( 220,  42,  59 ); // Red
 	cp[ RCS_S2 ][ AX_RIGHT ]	= new OneColor( 213, 120,  76 ); // Orange
 
+
+	cp[ RCS_S3 ][ AX_FRONT ]	= new OneColor(   0,   0, 255 ); // Blue
+	cp[ RCS_S3 ][ AX_UP ]		= new OneColor( 255, 255, 255 ); // White
+	cp[ RCS_S3 ][ AX_BACK ]		= new OneColor(   0, 220,   0 ); // Green
+	cp[ RCS_S3 ][ AX_DOWN ]		= new OneColor( 255, 235,   0 ); // Yellow
+	cp[ RCS_S3 ][ AX_LEFT ]		= new OneColor( 255,   0,   0 ); // Red
+	cp[ RCS_S3 ][ AX_RIGHT ]	= new OneColor( 255, 128,   0 ); // Orange
+
 	return cp;
 }
 
@@ -112,6 +120,9 @@ std::map< RCColorScheme, std::map< RCColor, Colors::OneColor * > > Colors::InitM
 
 	cp[ RCS_S2 ][ RC_FG ]	= new OneColor( 229, 229, 229 );
 	cp[ RCS_S2 ][ RC_BG ]	= new OneColor(  33,  33,  33 );
+
+	cp[ RCS_S3 ][ RC_FG ]	= new OneColor(   0,   0,   0 );
+	cp[ RCS_S3 ][ RC_BG ]	= new OneColor( 120, 110, 120 );
 
 	return cp;
 }

@@ -50,6 +50,8 @@ public:
 		else return false;
 	};
 
+	Vector3D operator * ( const GLfloat m ) const { return Vector3D( m_x * m, m_y * m, m_z * m ); };
+
 	GLfloat x() const { return m_x; };
 	GLfloat y() const { return m_y; };
 	GLfloat z() const { return m_z; };

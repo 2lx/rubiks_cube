@@ -17,6 +17,7 @@ namespace RC
 	{
 		RCS_S1,
 		RCS_S2,
+		RCS_S3,
 		RCS_COUNT
 	};
 
