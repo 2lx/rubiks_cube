@@ -3,12 +3,14 @@
 
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "shapes.h"
+//#include "shapes.h"
+class Vector3D;
 
 class MyQuaternion
 {
 	public:
 		MyQuaternion();
+		MyQuaternion( const MyQuaternion & q );
 		MyQuaternion( const GLfloat wi, const GLfloat xi, const GLfloat yi, const GLfloat zi );
 		MyQuaternion( const Vector3D vec );
 		virtual ~MyQuaternion();

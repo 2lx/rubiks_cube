@@ -1,11 +1,18 @@
 #include "all.h"
 
 #include "myquaternion.h"
+#include "shapes.h"
 #include <cmath>
 
 MyQuaternion::MyQuaternion()
 {
 	//ctor
+}
+
+MyQuaternion::MyQuaternion( const MyQuaternion & q )
+	: m_w{ q.m_w }, m_x{ q.m_x }, m_y{ q.m_y }, m_z{ q.m_z }
+{
+
 }
 
 MyQuaternion::MyQuaternion( const GLfloat wi, const GLfloat xi, const GLfloat yi, const GLfloat zi )

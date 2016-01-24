@@ -1,5 +1,6 @@
 #include "all.h"
 
+#include "rcdefines.h"
 #include "rcubeobject.h"
 #include "rcubeparams.h"
 
@@ -26,111 +27,50 @@ void RCubeObject::setMove( const RCMoveType newRT )
 	m_moveType = MoveParams::getMTypeForPars( vec, MoveParams::clockwise( newRT ) );
 }
 
-Point3D RCubeObject::getCubeByCoord( const Point3D p ) const
+RCAxis RCubeObject::getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const
 {
-    int x, y, z;
+	Point3D pcDiff = pEnd - pBeg;
+	Vector3D vec = Vector3D( pcDiff.x(), pcDiff.y(), pcDiff.z() );
 
-    x = ( int ) ( p.x() + 1.5 );
-    if ( x > CUBIE_COUNT || x < 0 )
-		return Point3D( -1, -1, -1 );
-    else
-    {
-		y = ( int ) ( p.y() + 1.5 );
-		if ( y > CUBIE_COUNT || y < 0 )
-			return Point3D( -1, -1, -1 );
-		else
-		{
-			z = ( int ) ( p.z() + 1.5 );
-			if ( z > CUBIE_COUNT || z < 0 )
-				return Point3D( -1, -1, -1 );
-		}
-    }
-
-    return Point3D( x, y, z );
+	return vec.getNearestAxis();
 }
 
 void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 {
-//	std::cout << pBeg.x() << " " << pBeg.y() << " " << pBeg.z() << std::endl;
-//	std::cout << pEnd.x() << " " << pEnd.y() << " " << pEnd.z() << std::endl;
-	Vector3D vecTangent;
-    if ( std::abs( pBeg.x() - 1.45 ) < 0.14 && std::abs( pEnd.x() - 1.45 ) < 0.14 )
-		vecTangent.setXYZ(  1,  0,  0 );
-	else if ( std::abs( pBeg.x() + 1.45 ) < 0.14 && std::abs( pEnd.x() + 1.45 ) < 0.14 )
-		vecTangent.setXYZ( -1,  0,  0 );
-    else if ( std::abs( pBeg.y() - 1.45 ) < 0.14 && std::abs( pEnd.y() - 1.45 ) < 0.14 )
-		vecTangent.setXYZ(  0,  1,  0 );
-	else if ( std::abs( pBeg.y() + 1.45 ) < 0.14 && std::abs( pEnd.y() + 1.45 ) < 0.14 )
-		vecTangent.setXYZ(  0, -1,  0 );
-    else if ( std::abs( pBeg.z() - 1.45 ) < 0.14 && std::abs( pEnd.z() - 1.45 ) < 0.14 )
-		vecTangent.setXYZ(  0,  0,  1 );
-	else if ( std::abs( pBeg.z() + 1.45 ) < 0.14 && std::abs( pEnd.z() + 1.45 ) < 0.14 )
-		vecTangent.setXYZ(  0,  0, -1 );
-	else return;
+    // get tangent axis
+	RCAxis axBeg = pBeg.getTangentAxis( 1.45, 0.14 );
+	RCAxis axTangent = pEnd.getTangentAxis( 1.45, 0.14 );
 
-//	std::cout << vecTangent.x() << " " << vecTangent.y() << " " << vecTangent.z() << std::endl;
-	Point3D pcBeg =  getCubeByCoord( pBeg );
-	Point3D pcEnd =  getCubeByCoord( pEnd );
+	// if the points in different planes or don't lie on the surface of the cube
+	if ( axBeg != axTangent || axBeg == AX_NONE || axTangent == AX_NONE )
+		return;
 
-	if ( pcBeg.x() != -1 && pcEnd.x() != -1 )
+	// get mouse move axis
+    RCAxis axMove = getMoveAxis( pBeg, pEnd );
+	if ( axMove == AX_NONE || axMove == axTangent )
+		return;
+
+	// get rotation axis
+    RCAxis axResult = getThirdAxis( axTangent, axMove );
+    if ( axResult == AX_NONE )
+		return;
+
+    if ( ( axResult == AX_RIGHT	&& pBeg.x() < -0.5 ) ||
+		 ( axResult == AX_UP 	&& pBeg.y() < -0.5 ) ||
+		 ( axResult == AX_FRONT	&& pBeg.z() < -0.5 ) )
 	{
-		Point3D pcRes = getCubeByCoord( pEnd ) - getCubeByCoord( pBeg );
-		if ( pcRes.x() != 0 && pcRes.y() != 0 || pcRes.x() != 0 && pcRes.z() != 0 || pcRes.z() != 0 && pcRes.y() != 0 )
-			return;
-
-		pcRes = pcRes / pcRes.length();
-		pcRes.normalize();
-//		std::cout << pcRes.x() << " " << pcRes.y() << " " << pcRes.z() << std::endl;
-		Vector3D vecMove( pcRes.x(), pcRes.y(), pcRes.z() );
-		Vector3D vecResult;
-
-		MyQuaternion rQt;
-		if ( vecTangent.x() == 0 && vecMove.x() == 0 )
-			if ( pcBeg.x() > 1 )
-			{
-				vecResult.setXYZ( 1, 0, 0 );
-				rQt.fromAxisAngle( 0, 1, 0, -90 );
-			}
-			else
-			{
-				vecResult.setXYZ( -1, 0, 0 );
-				rQt.fromAxisAngle( 0, 1, 0, 90 );
-			}
-		else if ( vecTangent.y() == 0 && vecMove.y() == 0 )
-			if ( pcBeg.y() > 1 )
-			{
-				vecResult.setXYZ( 0, 1, 0 );
-				rQt.fromAxisAngle( 1, 0, 0, 90 );
-			}
-			else
-			{
-				vecResult.setXYZ( 0, -1, 0 );
-				rQt.fromAxisAngle( 1, 0, 0, -90 );
-			}
-		else if ( vecTangent.z() == 0 && vecMove.z() == 0 )
-			if ( pcBeg.z() > 1 )
-			{
-				vecResult.setXYZ( 0, 0, 1 );
-				rQt.fromAxisAngle( 1, 0, 0, 0 );
-			}
-			else
-			{
-				vecResult.setXYZ( 0, 0, -1 );
-				rQt.fromAxisAngle( 1, 0, 0, 180 );
-			}
-
-		MyQuaternion qBeg = MyQuaternion( 0, pBeg.x(), pBeg.y(), pBeg.z() );
-		MyQuaternion qEnd = MyQuaternion( 0, pEnd.x(), pEnd.y(), pEnd.z() );
-		MyQuaternion quatRB = rQt * qBeg * rQt.inverse();
-		MyQuaternion quatRE = rQt * qEnd * rQt.inverse();
-
-//		std::cout << quatRB.x() << " " << quatRB.y() << " " << quatRB.z() << std::endl;
-//		std::cout << quatRE.x() << " " << quatRE.y() << " " << quatRE.z() << std::endl;
-
-		bool isCW = ( quatRE.x() * quatRB.y() - quatRB.x() * quatRE.y() ) >= 0;
-
-		m_moveType = MoveParams::getMTypeForPars( vecResult, isCW );
+        axResult = getInvAxis( axResult );
 	}
+
+	// rotate the cube to the rotation axis looked at front
+	MyQuaternion rQt = AxisParams::quat( axResult );
+	Point3D pnBeg = pBeg.rotateByQuat( rQt );
+	Point3D pnEnd = pEnd.rotateByQuat( rQt );
+
+	// check clockwise
+	bool isCW = ( pnEnd.x() * pnBeg.y() - pnBeg.x() * pnEnd.y() ) >= 0;
+
+	m_moveType = MoveParams::getMTypeForPars( axResult, isCW );
 }
 
 void RCubeObject::drawObject()

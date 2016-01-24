@@ -16,6 +16,7 @@ public:
 	void drawObject();
 	void setMove( const RCMoveType newRT );
 	void setMoveByCoords( const Point3D pBeg, const Point3D pEnd );
+	RCAxis getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const;
 	bool isMoving() const { return m_moveType != MT_NONE; }
 
 protected:
@@ -28,8 +29,6 @@ private:
 
 	void setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const;
 	void setCubieVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int x, const int y, const int z ) const;
-
-	Point3D getCubeByCoord( const Point3D p ) const;
 };
 
 #endif // RUBIKSCUBE_H

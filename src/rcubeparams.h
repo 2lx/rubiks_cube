@@ -3,6 +3,7 @@
 
 #include <map>
 #include "rcubemodel.h"
+#include "myquaternion.h"
 
 namespace RC
 {
@@ -25,26 +26,43 @@ namespace RC
 	class AxisParams	// Singleton
 	{
 	public:
-		static Vector3D vec( const RCAxis ax ) { return * m_p[ ax ]; };
+		static Vector3D vec( const RCAxis ax ) { return m_p[ ax ]->m_vec; };
+		static MyQuaternion quat( const RCAxis ax ) { return m_p[ ax ]->m_quat; };
 		static RCAxis getAxisForVector( const Vector3D & vec );
 
 		static void cleanup();
 
 	private:
+		class AxisParam	// Hidden class
+		{
+		public:
+			AxisParam( const GLfloat vX, const GLfloat vY, const GLfloat vZ,
+				const GLfloat qX, const GLfloat qY, const GLfloat qZ, const GLfloat qAngle )
+				: m_vec { vX, vY, vZ }
+			{
+				m_quat.fromAxisAngle( qX, qY, qZ, qAngle );
+			};
+
+			const Vector3D m_vec;
+			MyQuaternion m_quat;
+		};
+
 		AxisParams() {};
 		AxisParams( const AxisParams & ) = delete;
 		AxisParams & operator= ( const AxisParams & ) = delete;
 
-		static std::map< RCAxis, Vector3D * > InitMap();
-		static std::map< RCAxis, Vector3D * > m_p;
+		static std::map< RCAxis, AxisParam * > InitMap();
+		static std::map< RCAxis, AxisParam * > m_p;
 	};
 
 	class MoveParams	// Singleton
 	{
 	public:
 		static Vector3D vec( const RCMoveType mt ) { return m_p[ mt ]->m_vec; };
+		static RCAxis axis( const RCMoveType mt ) { return m_p[ mt ]->m_axis; };
 		static bool clockwise( const RCMoveType mt ) { return m_p[ mt ]->m_clockwise; };
 		static RCMoveType getMTypeForPars( const Vector3D & vec, const bool cw );
+		static RCMoveType getMTypeForPars( const RCAxis ax, const bool cw );
 
 		static void cleanup();
 
@@ -52,12 +70,13 @@ namespace RC
 		class OneParam	// Hidden class
 		{
 		public:
-			OneParam( const GLfloat x, const GLfloat y, const GLfloat z, const bool clockwise )
-				: m_vec { x, y, z }, m_clockwise { clockwise }
+			OneParam( const GLfloat x, const GLfloat y, const GLfloat z, const RCAxis ax, const bool clockwise )
+				: m_vec { x, y, z }, m_clockwise { clockwise }, m_axis{ ax }
 			{ };
 
 			const Vector3D m_vec;
 			const bool m_clockwise;
+			const RCAxis m_axis;
 		};
 
 		MoveParams() {};
