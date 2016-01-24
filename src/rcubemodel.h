@@ -27,7 +27,7 @@ namespace RC
 			CubeModel();
 			virtual ~CubeModel();
 
-			void moveCubies( const RCMoveType rt );
+			void moveCubies( const RCMoveType rt, const int mLayer );
 			const Cubie cubie( const int x, const int y, const int z ) const { return m_cubies[ x ][ y ][ z ]; };
 		protected:
 

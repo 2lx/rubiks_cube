@@ -89,16 +89,32 @@ CubeModel::~CubeModel()
 
 }
 
-void CubeModel::moveCubies( const RCMoveType rt )
+void CubeModel::moveCubies( const RCMoveType rt, const int mLayer )
 {
-	Cubie tmpPiece1;
-	Cubie tmpPiece2;
-	const int k = CUBIE_COUNT - 1;
+	const int sc = ( CUBIE_COUNT - 1 );
 
-	const int mvX[ 8 ] = { 0, 1, 2, 2, 2, 1, 0, 0 };
-	const int mvY[ 8 ] = { 0, 0, 0, 1, 2, 2, 2, 1 };
-	const int mvZ[ 8 ] = { k, k, k, k, k, k, k, k };
-	const int mv0[ 8 ] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	Cubie tmpPiece[ sc ];
+	int mvX[ sc * 4 ];
+	int mvY[ sc * 4 ];
+	int mvZ[ sc * 4 ];
+
+	for ( int i = 0; i < CUBIE_COUNT - 1; i++ )
+	{
+		mvZ[ i ] = mLayer;
+		mvZ[ i + sc ] = mLayer;
+		mvZ[ i + 2 * sc ] = mLayer;
+		mvZ[ i + 3 * sc ] = mLayer;
+
+		mvX[ i ] = i;
+		mvX[ i + sc ] = sc;
+		mvX[ i + 2 * sc ] = sc - i;
+		mvX[ i + 3 * sc ] = 0;
+
+		mvY[ i ] = 0;
+		mvY[ i + sc ] = i;
+		mvY[ i + 2 * sc ] = sc;
+		mvY[ i + 3 * sc ] = sc - i;
+	}
 
 	const int * mv1;
 	const int * mv2;
@@ -107,56 +123,42 @@ void CubeModel::moveCubies( const RCMoveType rt )
     switch ( rt )
     {
 	case MT_FRONT:
+	case MT_BACKINV:
 		mv1 = mvX; mv2 = mvY; mv3 = mvZ;
 		break;
+	case MT_BACK:
 	case MT_FRONTINV:
 		mv1 = mvY; mv2 = mvX; mv3 = mvZ;
 		break;
-	case MT_BACK:
-		mv1 = mvY; mv2 = mvX; mv3 = mv0;
-		break;
-	case MT_BACKINV:
-		mv1 = mvX; mv2 = mvY; mv3 = mv0;
-		break;
 	case MT_LEFT:
-		mv1 = mv0; mv2 = mvY; mv3 = mvX;
-		break;
-	case MT_LEFTINV:
-		mv1 = mv0; mv2 = mvX; mv3 = mvY;
-		break;
-	case MT_RIGHT:
-		mv1 = mvZ; mv2 = mvX; mv3 = mvY;
-		break;
 	case MT_RIGHTINV:
 		mv1 = mvZ; mv2 = mvY; mv3 = mvX;
 		break;
+	case MT_LEFTINV:
+	case MT_RIGHT:
+		mv1 = mvZ; mv2 = mvX; mv3 = mvY;
+		break;
 	case MT_UP:
+	case MT_DOWNINV:
 		mv1 = mvY; mv2 = mvZ; mv3 = mvX;
 		break;
 	case MT_UPINV:
-		mv1 = mvX; mv2 = mvZ; mv3 = mvY;
-		break;
 	case MT_DOWN:
-		mv1 = mvX; mv2 = mv0; mv3 = mvY;
-		break;
-	case MT_DOWNINV:
-		mv1 = mvY; mv2 = mv0; mv3 = mvX;
+		mv1 = mvX; mv2 = mvZ; mv3 = mvY;
 		break;
 	default:
 		return;
 	}
 
-	tmpPiece1 = m_cubies[ mv1[ 0 ] ][ mv2[ 0 ] ][ mv3[ 0 ] ];
-	tmpPiece2 = m_cubies[ mv1[ 1 ] ][ mv2[ 1 ] ][ mv3[ 1 ] ];
-	m_cubies[ mv1[ 0 ] ][ mv2[ 0 ] ][ mv3[ 0 ] ] = m_cubies[ mv1[ 2 ] ][ mv2[ 2 ] ][ mv3[ 2 ] ];
-	m_cubies[ mv1[ 1 ] ][ mv2[ 1 ] ][ mv3[ 1 ] ] = m_cubies[ mv1[ 3 ] ][ mv2[ 3 ] ][ mv3[ 3 ] ];
-	m_cubies[ mv1[ 2 ] ][ mv2[ 2 ] ][ mv3[ 2 ] ] = m_cubies[ mv1[ 4 ] ][ mv2[ 4 ] ][ mv3[ 4 ] ];
-	m_cubies[ mv1[ 3 ] ][ mv2[ 3 ] ][ mv3[ 3 ] ] = m_cubies[ mv1[ 5 ] ][ mv2[ 5 ] ][ mv3[ 5 ] ];
-	m_cubies[ mv1[ 4 ] ][ mv2[ 4 ] ][ mv3[ 4 ] ] = m_cubies[ mv1[ 6 ] ][ mv2[ 6 ] ][ mv3[ 6 ] ];
-	m_cubies[ mv1[ 5 ] ][ mv2[ 5 ] ][ mv3[ 5 ] ] = m_cubies[ mv1[ 7 ] ][ mv2[ 7 ] ][ mv3[ 7 ] ];
-	m_cubies[ mv1[ 6 ] ][ mv2[ 6 ] ][ mv3[ 6 ] ] = tmpPiece1;
-	m_cubies[ mv1[ 7 ] ][ mv2[ 7 ] ][ mv3[ 7 ] ] = tmpPiece2;
+	for ( int i = 0; i < CUBIE_COUNT - 1; i++ )
+	{
+		tmpPiece[ i ] = m_cubies[ mv1[ i ] ][ mv2[ i ] ][ mv3[ i ] ];
+		m_cubies[ mv1[ i ] ][ mv2[ i ] ][ mv3[ i ] ] = m_cubies[ mv1[ i + sc ] ][ mv2[ i + sc ] ][ mv3[ i + sc ] ];
+		m_cubies[ mv1[ i + sc ] ][ mv2[ i + sc ] ][ mv3[ i + sc ] ] = m_cubies[ mv1[ i + 2 * sc ] ][ mv2[ i + 2 * sc ] ][ mv3[ i + 2 * sc ] ];
+		m_cubies[ mv1[ i + 2 * sc ] ][ mv2[ i + 2 * sc ] ][ mv3[ i + 2 * sc ] ] = m_cubies[ mv1[ i + 3 * sc ] ][ mv2[ i + 3 * sc ] ][ mv3[ i + 3 * sc ] ];
+		m_cubies[ mv1[ i + 3 * sc ] ][ mv2[ i + 3 * sc ] ][ mv3[ i + 3 * sc ] ] = tmpPiece[ i ];
+	}
 
-	for ( int i = 0; i < 8; ++i )
+	for ( int i = 0; i < sc * 4; ++i )
 		m_cubies[ mv1[ i ] ][ mv2[ i ] ][ mv3[ i ] ].rotateCubie( rt );
 }

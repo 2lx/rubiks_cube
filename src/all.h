@@ -10,13 +10,14 @@
 #include <GL/glu.h>
 
 #include <iostream>
+#include "rcdefines.h"
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 768;
 
 const float SCREEN_WDH = ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT;
-const float SCREEN_VERTMARGIN = 4.0;
+const float SCREEN_VERTMARGIN = 1 + RC::CUBIE_COUNT;
 const float SCREEN_HORIZMARGIN = SCREEN_VERTMARGIN * SCREEN_WDH;
 
 // Screen FPS

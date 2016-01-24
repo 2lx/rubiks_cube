@@ -3,7 +3,7 @@
 
 namespace RC
 {
-	const int CUBIE_COUNT = 3;
+	const int CUBIE_COUNT = 16;
 	const float CUBE_EDGE = 1.0;
 
 	enum RCAxis
@@ -26,8 +26,10 @@ namespace RC
 		MT_NONE,
 		MT_FIRST = MT_FRONT
 	};
+
 	RCAxis getInvAxis( const RCAxis ax );
 	RCAxis getThirdAxis( const RCAxis ax1, const RCAxis ax2 );
+	bool isMTInvAxis( const RCMoveType mt );
 }
 
 #endif // RCDEFINES_H_INCLUDED

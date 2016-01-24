@@ -26,6 +26,7 @@ private:
 	MyQuaternion m_moveQuat;
 	GLfloat m_moveAngle = { 0 };
 	RCMoveType m_moveType = { MT_NONE };
+	int m_moveLayer = -1;
 
 	void setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const;
 	void setCubieVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int x, const int y, const int z ) const;

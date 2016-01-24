@@ -25,6 +25,10 @@ void RCubeObject::setMove( const RCMoveType newRT )
 
 	Vector3D vec = Vector3D( quatR.x(), quatR.y(), quatR.z() );
 	m_moveType = MoveParams::getMTypeForPars( vec, MoveParams::clockwise( newRT ) );
+
+	if ( isMTInvAxis( m_moveType ) )
+		m_moveLayer = 0;
+	else m_moveLayer = CUBIE_COUNT - 1;
 }
 
 RCAxis RCubeObject::getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const
@@ -38,8 +42,9 @@ RCAxis RCubeObject::getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const
 void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 {
     // get tangent axis
-	RCAxis axBeg = pBeg.getTangentAxis( 1.45, 0.14 );
-	RCAxis axTangent = pEnd.getTangentAxis( 1.45, 0.14 );
+	const float coorSurface = ( CUBIE_COUNT / 2.0 ) - 0.05;
+	RCAxis axBeg = pBeg.getTangentAxis( coorSurface, 0.14 );
+	RCAxis axTangent = pEnd.getTangentAxis( coorSurface, 0.14 );
 
 	// if the points in different planes or don't lie on the surface of the cube
 	if ( axBeg != axTangent || axBeg == AX_NONE || axTangent == AX_NONE )
@@ -55,13 +60,13 @@ void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
     if ( axResult == AX_NONE )
 		return;
 
-    if ( ( axResult == AX_RIGHT	&& pBeg.x() < -0.5 ) ||
+ /*   if ( ( axResult == AX_RIGHT	&& pBeg.x() < -0.5 ) ||
 		 ( axResult == AX_UP 	&& pBeg.y() < -0.5 ) ||
 		 ( axResult == AX_FRONT	&& pBeg.z() < -0.5 ) )
 	{
         axResult = getInvAxis( axResult );
 	}
-
+*/
 	// rotate the cube to the rotation axis looked at front
 	MyQuaternion rQt = AxisParams::quat( axResult );
 	Point3D pnBeg = pBeg.rotateByQuat( rQt );
@@ -71,12 +76,21 @@ void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 	bool isCW = ( pnEnd.x() * pnBeg.y() - pnBeg.x() * pnEnd.y() ) >= 0;
 
 	m_moveType = MoveParams::getMTypeForPars( axResult, isCW );
+
+	// find move layer
+	Point3D pp = pBeg + Point3D( CUBIE_COUNT / 2.0, CUBIE_COUNT / 2.0, CUBIE_COUNT / 2.0 );
+	if ( axResult == AX_RIGHT || axResult == AX_LEFT )
+		m_moveLayer = floor( pp.x() );
+	else if ( axResult == AX_UP || axResult == AX_DOWN )
+		m_moveLayer = floor( pp.y() );
+	else if ( axResult == AX_FRONT || axResult == AX_BACK )
+		m_moveLayer = floor( pp.z() );
 }
 
 void RCubeObject::drawObject()
 {
 	const GLfloat centerDiff = ( -1 * CUBIE_COUNT ) / 2.0 + 0.5;
-	setCubeVertices( 0, 0, 0, 2.2 );
+	setCubeVertices( 0, 0, 0, CUBIE_COUNT * 2.0 / 3.0 );
 
 	MyQuaternion quatTemp;
 
@@ -85,9 +99,10 @@ void RCubeObject::drawObject()
 		if ( m_moveAngle >= 90 - ANGLE_DIFF )
 		{
 			m_moveAngle = 0;
-			m_RCModel->moveCubies( m_moveType );
+			m_RCModel->moveCubies( m_moveType, m_moveLayer );
 
 			m_moveType = MT_NONE;
+			m_moveLayer = -1;
 			m_moveQuat.reset();
 		}
 		else
@@ -104,30 +119,28 @@ void RCubeObject::drawObject()
 	for ( int x = 0; x < CUBIE_COUNT; ++x )
 		for ( int y = 0; y < CUBIE_COUNT; ++y )
 			for ( int z = 0; z < CUBIE_COUNT; ++z )
-			{
-				if ( m_moveType != MT_NONE )
+				if ( x == 0 || x == CUBIE_COUNT - 1 || y == 0 || y == CUBIE_COUNT - 1 || z == 0 || z == CUBIE_COUNT - 1 )
 				{
-					if (	( z == 2 && MoveParams::vec( m_moveType ).z() > 0 ) ||
-							( z == 0 && MoveParams::vec( m_moveType ).z() < 0 ) ||
-							( x == 2 && MoveParams::vec( m_moveType ).x() > 0 ) ||
-							( x == 0 && MoveParams::vec( m_moveType ).x() < 0 ) ||
-							( y == 2 && MoveParams::vec( m_moveType ).y() > 0 ) ||
-							( y == 0 && MoveParams::vec( m_moveType ).y() < 0 )
-						)
+					if ( m_moveType != MT_NONE && m_moveLayer != -1 )
 					{
-						glPushMatrix();
+						if (	( z == m_moveLayer && MoveParams::vec( m_moveType ).z() != 0 ) ||
+								( x == m_moveLayer && MoveParams::vec( m_moveType ).x() != 0 ) ||
+								( y == m_moveLayer && MoveParams::vec( m_moveType ).y() != 0 )
+							)
+						{
+							glPushMatrix();
 
-						GLfloat MatrixRes[ 16 ];
-						m_moveQuat.getTrMatrix( MatrixRes );
-						glMultMatrixf( MatrixRes );
-						setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
+							GLfloat MatrixRes[ 16 ];
+							m_moveQuat.getTrMatrix( MatrixRes );
+							glMultMatrixf( MatrixRes );
+							setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
 
-						glPopMatrix();
+							glPopMatrix();
+						}
+						else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
 					}
 					else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
 				}
-				else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
-			}
 }
 
 void RCubeObject::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const
@@ -188,7 +201,7 @@ void RCubeObject::setCubieVertices( const GLfloat pX, const GLfloat pY, const GL
 	glVertex3f( pX - halfSize, pY + halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY + halfSize, pZ + halfSize );
 
-	if ( y == 2 && !isAxisVisible( AX_UP ) )
+	if ( y == CUBIE_COUNT - 1 && !isAxisVisible( AX_UP ) )
 	{
 		glVertex3f( pX + halfSize, pY + 2.0 + halfSize, pZ - halfSize );
 		glVertex3f( pX - halfSize, pY + 2.0 + halfSize, pZ - halfSize );
@@ -205,7 +218,7 @@ void RCubeObject::setCubieVertices( const GLfloat pX, const GLfloat pY, const GL
 	glVertex3f( pX - halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 
-	if ( z == 2 && !isAxisVisible( AX_FRONT ) )
+	if ( z == CUBIE_COUNT - 1 && !isAxisVisible( AX_FRONT ) )
 	{
 		glVertex3f( pX + halfSize, pY + halfSize, pZ + 2.0 + halfSize );
 		glVertex3f( pX - halfSize, pY + halfSize, pZ + 2.0 + halfSize );
@@ -273,7 +286,7 @@ void RCubeObject::setCubieVertices( const GLfloat pX, const GLfloat pY, const GL
 	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
 
-	if ( x == 2 && !isAxisVisible( AX_RIGHT ) )
+	if ( x == CUBIE_COUNT - 1 && !isAxisVisible( AX_RIGHT ) )
 	{
 		glVertex3f( pX + 2.0 + halfSize, pY + halfSize, pZ - halfSize );
 		glVertex3f( pX + 2.0 + halfSize, pY + halfSize, pZ + halfSize );

@@ -49,3 +49,10 @@ RCAxis RC::getThirdAxis( const RCAxis ax1, const RCAxis ax2 )
 	}
 	else return AX_NONE;
 }
+
+bool RC::isMTInvAxis( const RCMoveType mt )
+{
+	if ( mt == MT_FRONTINV || mt == MT_FRONT || mt == MT_RIGHTINV || mt == MT_RIGHT || mt == MT_UPINV || mt == MT_UP )
+		return false;
+	else return true;
+}

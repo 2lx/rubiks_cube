@@ -45,12 +45,12 @@ void CPlayState::setProjection( const ProjectionType pType ) const
 			0 , 0 , 0 , 1
 		};
 
-		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 20.0 );
+		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 40.0 );
 		glMultMatrixf( cavalierPMatrix );
 	}
 	else if ( pType == PT_ISOMETRIC )
 	{
-		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 20.0 );
+		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 40.0 );
 	};
 
 	glMatrixMode( GL_MODELVIEW );
@@ -320,8 +320,6 @@ void CPlayState::Update( CGameEngine * game )
 		m_gkStates[ GK_CHANGEPROJ ].releaseNewDown();
 		m_needRedraw = true;
 	}
-
-//	gluUnProject( winX, winY, winZ, modelview, projection, viewport, &amp;worldX, &amp;worldY, &amp;worldZ);
 }
 
 void CPlayState::Draw( CGameEngine * game )
@@ -339,11 +337,11 @@ void CPlayState::Draw( CGameEngine * game )
 
 		if ( m_prType == PT_DIMETRIC )
 		{
-			glTranslatef( 1.0f, -0.5, -3.0 );
+			glTranslatef( RC::CUBIE_COUNT - 2, -RC::CUBIE_COUNT + 2.5, -20 );
 		}
 		else if ( m_prType == PT_ISOMETRIC )
 		{
-			glTranslatef( 0.0f, 0.5, -3.0 );
+			glTranslatef( 0.0f, 0.5, -20 );
 
 			glRotatef( 35.264f, 1.0f, 0.0f, 0.0f );
 			glRotatef( 45.0f, 0.0f, 1.0f, 0.0f );
