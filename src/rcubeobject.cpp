@@ -89,7 +89,6 @@ void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 
 void RCubeObject::drawObject()
 {
-	const GLfloat centerDiff = ( -1 * CUBIE_COUNT ) / 2.0 + 0.5;
 	setCubeVertices( 0, 0, 0, CUBIE_COUNT * 2.0 / 3.0 );
 
 	MyQuaternion quatTemp;
@@ -98,9 +97,9 @@ void RCubeObject::drawObject()
 	{
 		if ( m_moveAngle >= 90 - ANGLE_DIFF )
 		{
-			m_moveAngle = 0;
 			m_RCModel->moveCubies( m_moveType, m_moveLayer );
 
+			m_moveAngle = 0;
 			m_moveType = MT_NONE;
 			m_moveLayer = -1;
 			m_moveQuat.reset();
@@ -119,28 +118,34 @@ void RCubeObject::drawObject()
 	for ( int x = 0; x < CUBIE_COUNT; ++x )
 		for ( int y = 0; y < CUBIE_COUNT; ++y )
 			for ( int z = 0; z < CUBIE_COUNT; ++z )
+				// only draw cubies in the outer layer
 				if ( x == 0 || x == CUBIE_COUNT - 1 || y == 0 || y == CUBIE_COUNT - 1 || z == 0 || z == CUBIE_COUNT - 1 )
-				{
-					if ( m_moveType != MT_NONE && m_moveLayer != -1 )
-					{
-						if (	( z == m_moveLayer && MoveParams::vec( m_moveType ).z() != 0 ) ||
-								( x == m_moveLayer && MoveParams::vec( m_moveType ).x() != 0 ) ||
-								( y == m_moveLayer && MoveParams::vec( m_moveType ).y() != 0 )
-							)
-						{
-							glPushMatrix();
+					drawCubie( x, y, z );
+}
 
-							GLfloat MatrixRes[ 16 ];
-							m_moveQuat.getTrMatrix( MatrixRes );
-							glMultMatrixf( MatrixRes );
-							setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
+void RCubeObject::drawCubie( const int x, const int y, const int z ) const
+{
+	const GLfloat centerDiff = ( -1 * CUBIE_COUNT ) / 2.0 + 0.5;
 
-							glPopMatrix();
-						}
-						else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
-					}
-					else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
-				}
+	if ( m_moveType != MT_NONE && m_moveLayer != -1 )
+	{
+		if (	( z == m_moveLayer && MoveParams::vec( m_moveType ).z() != 0 ) ||
+				( x == m_moveLayer && MoveParams::vec( m_moveType ).x() != 0 ) ||
+				( y == m_moveLayer && MoveParams::vec( m_moveType ).y() != 0 )
+			)
+		{
+			glPushMatrix();
+
+			GLfloat MatrixRes[ 16 ];
+			m_moveQuat.getTrMatrix( MatrixRes );
+			glMultMatrixf( MatrixRes );
+			setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
+
+			glPopMatrix();
+		}
+		else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
+	}
+	else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
 }
 
 void RCubeObject::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const

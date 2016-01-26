@@ -32,7 +32,6 @@ void CPlayState::Cleanup()
 
 void CPlayState::setProjection( const ProjectionType pType ) const
 {
-//	gluPerspective( 40.0f, ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT, 0.1f, 20.0f );
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
 

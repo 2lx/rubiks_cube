@@ -2,7 +2,7 @@
 #define MYQUATERNION_H
 
 #include <GL/gl.h>
-#include <GL/glu.h>
+//#include <GL/glu.h>
 //#include "shapes.h"
 class Vector3D;
 

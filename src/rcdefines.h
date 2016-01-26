@@ -3,7 +3,7 @@
 
 namespace RC
 {
-	const int CUBIE_COUNT = 16;
+	const int CUBIE_COUNT = 5;
 	const float CUBE_EDGE = 1.0;
 
 	enum RCAxis
