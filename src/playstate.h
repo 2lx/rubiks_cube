@@ -1,7 +1,7 @@
 #ifndef PLAYSTATE_H
 #define PLAYSTATE_H
 
-#include "SDL2/SDL.h"
+//#include "SDL2/SDL.h"
 #include "gamestate.h"
 #include "rcubeobject.h"
 #include "shapes.h"
@@ -76,6 +76,21 @@ private:
 
 	void setProjection( const ProjectionType pType ) const;
 	Point3D getGLPos( const int mX, const int mY ) const;
+
+	ShaderProgram * m_shaderPr;
+	GLint attribute_coord2d, attribute_v_color;
+	GLint uniform_fade;
+	GLuint vbo_triangle;
+
+	struct attributes {
+		GLfloat coord2d[2];
+		GLfloat v_color[3];
+	};
+	struct attributes triangle_attributes[3] = {
+		{{ 0.0,  0.8}, {1.0, 1.0, 0.0}},
+		{{-0.8, -0.8}, {0.0, 0.0, 1.0}},
+		{{ 0.8, -0.8}, {1.0, 0.0, 0.0}}
+	};
 };
 
 #endif

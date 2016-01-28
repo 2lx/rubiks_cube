@@ -3,28 +3,54 @@
 #include "gameengine.h"
 #include "gamestate.h"
 
-void CGameEngine::Init(const char* title, int width, int height,
-						 int bpp, bool fullscreen)
+void CGameEngine::Init( const std::string & title )
 {
-	// Init SDL
+	// init SDL
 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		return;
 	}
 
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 6 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+	// create window
+	m_window = SDL_CreateWindow( title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL );
 
-	gWindow = SDL_CreateWindow( title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
-								SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL );
-	if( gWindow == NULL )
+	if( m_window == NULL )
 	{
 		printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 		return;
 	}
+
+	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
+	if ( SDL_GL_CreateContext( m_window ) == NULL )
+	{
+		std::cout << "Error: SDL_GL_CreateContext: " << SDL_GetError() << std::endl;
+		return;
+	}
+
+	// init GLEW
+	GLenum glew_status = glewInit();
+	if ( glew_status != GLEW_OK )
+	{
+		std::cout << "Error: glewInit: " << glewGetErrorString( glew_status ) << std::endl;
+		return;
+	}
+
+	if ( !GLEW_VERSION_2_0 )
+	{
+		/*cerr*/ std::cout << "Error: your graphic card does not support OpenGL 2.0" << std::endl;
+		return;
+	}
+
+//	std::cout.flush();
+
+/*	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 6 );
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+
+
 
 	SDL_GLContext glcontext = SDL_GL_CreateContext( gWindow );
 	if ( glcontext == NULL )
@@ -32,12 +58,8 @@ void CGameEngine::Init(const char* title, int width, int height,
 		printf( "SDL Error: %s\n", SDL_GetError() );
 		return;
 	}
-
+*/
 	m_running = true;
-
-#ifdef MY_DEBUG
-	printf( "CGameEngine Init\n" );
-#endif
 }
 
 void CGameEngine::Cleanup()
@@ -50,8 +72,8 @@ void CGameEngine::Cleanup()
 	printf( "CGameEngine Cleanup\n" );
 #endif
 
-	SDL_DestroyWindow( gWindow );
-	gWindow = NULL;
+	SDL_DestroyWindow( m_window );
+	m_window = NULL;
 
 	SDL_Quit();
 }
@@ -111,5 +133,6 @@ void CGameEngine::Update()
 void CGameEngine::Draw()
 {
 	states.back()->Draw( this );
-	SDL_GL_SwapWindow( gWindow );
+
+	SDL_GL_SwapWindow( m_window );
 }

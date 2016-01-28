@@ -5,6 +5,7 @@
 #define MY_DEBUG
 #endif
 
+#include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>

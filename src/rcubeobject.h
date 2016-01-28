@@ -1,7 +1,7 @@
 #ifndef RUBIKSCUBE_H
 #define RUBIKSCUBE_H
 
-#include <GL/gl.h>
+//#include <GL/gl.h>
 #include "gameobject.h"
 #include "rcubemodel.h"
 

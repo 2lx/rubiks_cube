@@ -1,18 +1,20 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
-#include "SDL2/SDL.h"
-
+//#include "SDL2/SDL.h"
 #include <vector>
 
+struct SDL_Surface;
+struct SDL_Window;
+
 class CGameState;
+class ShaderProgram;
 
 class CGameEngine
 {
 public:
 
-	void Init( const char * title, int width = 640, int height = 480,
-			   int bpp = 0, bool fullscreen = false );
+	void Init( const std::string & title );
 	void Cleanup();
 
 	void ChangeState( CGameState * state );
@@ -26,15 +28,11 @@ public:
 	bool Running() { return m_running; }
 	void Quit() { m_running = false; }
 
-	SDL_Surface * screen;
-
 private:
-	// the stack of states
 	std::vector< CGameState * > states;
-	SDL_Window * gWindow;
-
 	bool m_running;
-//	bool m_fullscreen;
+
+	SDL_Window * m_window;
 };
 
 #endif

@@ -127,7 +127,7 @@ void RCubeObject::drawCubie( const int x, const int y, const int z ) const
 {
 	const GLfloat centerDiff = ( -1 * CUBIE_COUNT ) / 2.0 + 0.5;
 
-	if ( m_moveType != MT_NONE && m_moveLayer != -1 )
+/*	if ( m_moveType != MT_NONE && m_moveLayer != -1 )
 	{
 		if (	( z == m_moveLayer && MoveParams::vec( m_moveType ).z() != 0 ) ||
 				( x == m_moveLayer && MoveParams::vec( m_moveType ).x() != 0 ) ||
@@ -146,6 +146,7 @@ void RCubeObject::drawCubie( const int x, const int y, const int z ) const
 		else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
 	}
 	else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
+*/
 }
 
 void RCubeObject::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const

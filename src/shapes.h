@@ -1,7 +1,7 @@
 #ifndef SHAPES_H_INCLUDED
 #define SHAPES_H_INCLUDED
 
-#include <GL/gl.h>
+//#include <GL/gl.h>
 #include <cmath>
 #include "rcdefines.h"
 #include "myquaternion.h"

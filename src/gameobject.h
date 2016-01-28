@@ -1,7 +1,7 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-#include <GL/gl.h>
+//#include <GL/gl.h>
 #include "shapes.h"
 #include "rcubemodel.h"
 #include "myquaternion.h"

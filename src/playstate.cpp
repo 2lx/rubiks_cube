@@ -1,10 +1,13 @@
 #include "all.h"
 
-#include "gamestate.h"
 #include "playstate.h"
+#include "gamestate.h"
 #include "gameengine.h"
 #include "myquaternion.h"
 #include "rcubeparams.h"
+
+#include "shader.h"
+#include "shaderprogram.h"
 
 CPlayState CPlayState::m_PlayState;
 
@@ -12,18 +15,50 @@ void CPlayState::Init()
 {
 	m_RCube = new RCubeObject;
 
-	glClearDepth( 1.0 );
+	glGenBuffers( 1, &vbo_triangle );
+	glBindBuffer( GL_ARRAY_BUFFER, vbo_triangle );
+	glBufferData( GL_ARRAY_BUFFER, sizeof( triangle_attributes ), triangle_attributes, GL_STATIC_DRAW );
+
+	Shader vertexShader( GL_VERTEX_SHADER );
+	vertexShader.loadFromFile( "glsl/shader.v.glsl" );
+	vertexShader.compile();
+
+	// Set up fragment shader
+	Shader fragmentShader( GL_FRAGMENT_SHADER );
+	fragmentShader.loadFromFile( "glsl/shader.f.glsl" );
+	fragmentShader.compile();
+
+	// Set up shader program
+	m_shaderPr = new ShaderProgram();
+	m_shaderPr->attachShader( vertexShader );
+	m_shaderPr->attachShader( fragmentShader );
+	m_shaderPr->linkProgram();
+
+	attribute_coord2d = m_shaderPr->addAttribute( "coord2d" );
+	attribute_v_color = m_shaderPr->addAttribute( "v_color" );
+	uniform_fade = m_shaderPr->addUniform( "fade" );
+
+	std::cout.flush();
+	//char f;
+	//std::cin >> f;
+
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+
+/*	glClearDepth( 1.0 );
 	glDepthFunc( GL_LESS );
 	glEnable( GL_DEPTH_TEST );
 	glShadeModel( GL_SMOOTH );
 	glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
-	setProjection( m_prType );
+	setProjection( m_prType );*/
 }
 
 void CPlayState::Cleanup()
 {
 	delete m_RCube;
+	delete m_shaderPr;
 
 	MoveParams::cleanup();
 	Colors::cleanup();
@@ -246,7 +281,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( !m_RCube->isRotating() && m_pBegin.is0() )
+/*	if ( !m_RCube->isRotating() && m_pBegin.is0() )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -319,20 +354,53 @@ void CPlayState::Update( CGameEngine * game )
 		m_gkStates[ GK_CHANGEPROJ ].releaseNewDown();
 		m_needRedraw = true;
 	}
+*/
+	float cur_fade = SDL_GetTicks()/1000.0;
+	glUseProgram( m_shaderPr->id() );
+	glUniform1f(uniform_fade, cur_fade);
 }
 
 void CPlayState::Draw( CGameEngine * game )
 {
 	static int drCount = 0;
 
-	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() )
+//	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() )
 	{
 		Uint32 start = SDL_GetTicks();
 
 		glClearColor( Colors::colR( RC_BG ), Colors::colG( RC_BG ), Colors::colB( RC_BG ), 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-		glLoadIdentity();
+		glUseProgram( m_shaderPr->id() );
+
+		glEnableVertexAttribArray(attribute_coord2d);
+		glEnableVertexAttribArray(attribute_v_color);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+		glVertexAttribPointer(
+			attribute_coord2d,   // attribute
+			2,                   // number of elements per vertex, here (x,y)
+			GL_FLOAT,            // the type of each element
+			GL_FALSE,            // take our values as-is
+			sizeof(struct attributes),  // next coord2d appears every 5 floats
+			0                    // offset of first element
+		);
+		glVertexAttribPointer(
+			attribute_v_color,      // attribute
+			3,                      // number of elements per vertex, here (r,g,b)
+			GL_FLOAT,               // the type of each element
+			GL_FALSE,               // take our values as-is
+			sizeof(struct attributes),  // stride
+			//(GLvoid*) (2 * sizeof(GLfloat))     // offset of first element
+			(GLvoid*) offsetof(struct attributes, v_color)  // offset
+		);
+
+		/* Push each element in buffer_vertices to the vertex shader */
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glDisableVertexAttribArray(attribute_coord2d);
+		glDisableVertexAttribArray(attribute_v_color);
+
+/*		glLoadIdentity();
 
 		if ( m_prType == PT_DIMETRIC )
 		{
@@ -345,11 +413,11 @@ void CPlayState::Draw( CGameEngine * game )
 			glRotatef( 35.264f, 1.0f, 0.0f, 0.0f );
 			glRotatef( 45.0f, 0.0f, 1.0f, 0.0f );
 		}
+*/
+//		m_RCube->rotateObject();
+//		m_RCube->drawObject();
 
-		m_RCube->rotateObject();
-		m_RCube->drawObject();
-
-		glFlush();
+//		glFlush();
 
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );

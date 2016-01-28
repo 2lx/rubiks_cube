@@ -7,7 +7,7 @@ CC = g++
 
 COMPILER_FLAGS = -x c++-header $(CORE_PCH_FILENAME) -Wpedantic -std=c++11
 
-LINKER_FLAGS = -lSDL2 -lGL -lGLU
+LINKER_FLAGS = -lSDL2 -lGL -lGLU -lGLEW
 
 OBJ_NAME = 3DCube
 
