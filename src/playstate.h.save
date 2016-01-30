@@ -83,11 +83,11 @@ private:
 	GLuint m_textureRedID, m_textureYellowID;
 	GLint attribute_coord3d, attribute_texcoord;
 	GLint uniform_mvp, m_unTextureRed, m_unTextureYellow;
-	GLfloat cube_texcoords[2*10] = {
+	GLfloat cube_texcoords[2*4*6] = {
 		// front
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,
 		1.0, 0.0,	0.0, 0.0,	1.0, 1.0,	0.0, 1.0,
-		1.0, 1.0,   0.0, 0.0,
+		1.0, 1.0,   
 	};
 
 /*	GLfloat cube_vertices[3*4*6] = {
@@ -124,7 +124,7 @@ private:
 	};
 */
 
-	GLfloat cube_vertices[ 3*10 ] = {
+	GLfloat cube_vertices[ 3*9 ] = {
 		// front
 		-1.0, -1.0,  1.0,
 		 1.0, -1.0,  1.0,
@@ -135,7 +135,6 @@ private:
 		 1.0, -1.0, -1.0,
 		-1.0, -1.0, -1.0,
 		-1.0,  1.0, -1.0,
-		 1.0, -1.0, -1.0,
 	};
 
 	GLushort cube_elements[ 4*6 ] = {
@@ -144,7 +143,7 @@ private:
 		6, 7, 5, 4, // back
 		6, 1, 0, 7, // bottom
 		0, 3, 8, 7, // left
-		2, 1, 9, 4, // right
+		2, 1, 6, 4, // right
 	};
 /*	GLushort cube_elements[2*3*6] = {
 		// front

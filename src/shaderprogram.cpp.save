@@ -7,7 +7,7 @@
 
 using namespace std;
 
-ShaderProgram::ShaderProgram()
+ShaderProgram::ShaderProgram() : m_shaderCount( 0 )
 {
 	m_id = glCreateProgram();
 }
@@ -30,7 +30,7 @@ void ShaderProgram::linkProgram()
 	glGetProgramiv( m_id, GL_LINK_STATUS, &linkStatus );
 	if ( linkStatus == GL_FALSE )
 	{
-//		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "glLinkProgram:");
+////		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "glLinkProgram:");
 		std::cout << "Shader program linking failed." << std::endl;
 //		glfwTerminate();
 	}

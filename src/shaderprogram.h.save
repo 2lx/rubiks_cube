@@ -22,9 +22,10 @@ public:
 	void disable() { glUseProgram( 0 ); }
 private:
 	GLuint m_id;
+	int m_shaderCount;
 
 	std::map< std::string, GLint > m_attributes;
-	std::map< std::string, GLint > m_uniforms;
+	std::map< std::string, GLint > uniformLocList;
 
 };
 

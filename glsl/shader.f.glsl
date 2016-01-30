@@ -1,18 +1,12 @@
-uniform float fade;
-varying vec3 f_color;
+varying vec2 f_texcoord;
+uniform sampler2D mytextureRed;
+uniform sampler2D mytextureYellow;
 
-void main(void) 
-{
-	vec2 p = vec2(-1.0 + f_color.x , -1.0 + f_color.y) ;
-	
-	// main code, *original shader by: 'Plasma' by Viktor Korsun (2011)
-	float x = p.x;
-	float y = p.y;
-	float mov0 = x+y+cos(sin(fade)*2.0)*100.+sin(x/100.)*1000.;
-	float mov1 = y / 0.9 +  fade;
-	float mov2 = x / 0.2;
-	float c1 = abs(sin(mov1+fade)/2.+mov2/2.-mov1-mov2+fade);
-	float c2 = abs(sin(c1+sin(mov0/1000.+fade)+sin(y/40.+fade)+sin((x+y)/100.)*3.));
-	float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));
-	gl_FragColor = vec4(c1,c2,c3,1);
+void main(void) {
+//  vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
+//  if ( f_vertcoord.x > 0 )
+	  gl_FragColor = texture2D(mytextureYellow, f_texcoord);  
+//  else gl_FragColor = texture2D(mytextureYellow, flipped_texcoord);  
+
+//gl_FragColor = vec4(f_texcoord, 0, 1.0);
 }

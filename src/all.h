@@ -6,7 +6,10 @@
 #endif
 
 #include <GL/glew.h>
+
 #include <SDL2/SDL.h>
+#include "SDL2/SDL_image.h"
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -14,8 +17,8 @@
 #include "rcdefines.h"
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 768;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 
 const float SCREEN_WDH = ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT;
 const float SCREEN_VERTMARGIN = 1 + RC::CUBIE_COUNT;
