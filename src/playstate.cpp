@@ -133,15 +133,15 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			break;
 
 		case SDL_WINDOWEVENT:
-			if ( event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED )
+/*			if ( event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED )
 			{
-//				screen_width = width;
-//				screen_height = height;
-//				glViewport(0, 0, screen_width, screen_height);
+				screen_width = width;
+				screen_height = height;
+				glViewport(0, 0, screen_width, screen_height);
 			}
 			break;
-
-/*		case SDL_KEYDOWN:
+*/
+		case SDL_KEYDOWN:
 			lastEvent = true;
 			switch( event.key.keysym.sym )
 			{
@@ -178,7 +178,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_q:
 				m_gkStates[ GK_ROTATECLOCKWISE ].setDown();
 				break;
-
+/*
 			case SDLK_i:
 				m_gkStates[ GK_MOVEFRONT ].setDown();
 				break;
@@ -234,11 +234,11 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_RETURN:
 				m_gkStates[ GK_CHANGEPROJ ].setDown();
 				break;
-			}
+*/			}
 			break;
 //		case SDL_KEYUP:
 //			break;
-		case SDL_MOUSEBUTTONDOWN:
+/*		case SDL_MOUSEBUTTONDOWN:
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
@@ -264,7 +264,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				break;
 			}
 			break;
-		default:
+*/		default:
 			if ( lastEvent )
 			{
 				for ( int i = 0; i < GK_COUNT; ++i )
@@ -276,7 +276,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				lastEvent = false;
 				allEventsRunOut = true;
 			}
-*/
+
 			break;
 		}
 	}
@@ -284,7 +284,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 void CPlayState::Update( CGameEngine * game )
 {
-/*	if ( !m_RCube->isRotating() && m_pBegin.is0() )
+	if ( !m_RCube->isRotating() && m_pBegin.is0() )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -308,16 +308,16 @@ void CPlayState::Update( CGameEngine * game )
 		}
 		else if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
 		{
-			m_RCube->setRotates( 0, 0, 1, false );
+			m_RCube->setRotates( 0, 0, 1, true );
 			m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].releaseNewDown();
 		}
 		else if ( m_gkStates[ GK_ROTATECLOCKWISE ].isNewDown() )
 		{
-			m_RCube->setRotates( 0, 0, 1, true );
+			m_RCube->setRotates( 0, 0, 1, false );
 			m_gkStates[ GK_ROTATECLOCKWISE ].releaseNewDown();
 		}
 	}
-
+/*
 	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && !m_pBegin.is0() )
 	{
 		if ( m_gkStates[ GK_MOVEMOUSE ].isNewDown() )
@@ -358,7 +358,7 @@ void CPlayState::Update( CGameEngine * game )
 		m_needRedraw = true;
 	}
 */
-//	glUseProgram( m_shaderPr->id() );
+
 	m_RCube->Update();
 }
 
@@ -389,7 +389,7 @@ void CPlayState::Draw( CGameEngine * game )
 			glRotatef( 45.0f, 0.0f, 1.0f, 0.0f );
 		}
 */
-//		m_RCube->rotateObject();
+		m_RCube->rotateObject();
 		m_RCube->drawObject();
 
 //		glFlush();

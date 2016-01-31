@@ -4,9 +4,10 @@
 #include "rcubeobject.h"
 #include "rcubeparams.h"
 #include "shaderprogram.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 using namespace RC;
 
@@ -114,14 +115,17 @@ void RCubeObject::drawObject()
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexUnionID );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-	glm::mat4 anim =
+	glm::mat4 view =
 		glm::rotate( glm::mat4( 1.0f ), 35.264f, glm::vec3( 1, 0, 0 ) ) * // X axis
 		glm::rotate( glm::mat4( 1.0f ), 45.0f, glm::vec3( 0, 1, 0 ) ) * // Y axis
 		glm::rotate( glm::mat4( 1.0f ), 0.0f, glm::vec3( 0, 0, 1 ) );  // Z axis
 
+	glm::mat4 rotation = glm::mat4_cast( m_rotateQuat );
+
 	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0, 0.5, -20.0 ) );
 	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
-	const float offCenter = CUBIE_COUNT / 2.0f;
+
+	const float offCenter = CUBIE_COUNT / 2.0f - 0.5;
 
 	for ( int x = 0; x < CUBIE_COUNT; ++x )
 		for ( int y = 0; y < CUBIE_COUNT; ++y )
@@ -144,7 +148,7 @@ void RCubeObject::drawObject()
 
 					glm::mat4 offset = glm::translate( glm::mat4( 1.0f ),
 							glm::vec3( x - offCenter, y - offCenter, z - offCenter ) );
-					glm::mat4 mvp = projection * model * anim * offset ;// + offset;
+					glm::mat4 mvp = projection * model * view * rotation * offset  ;// + offset;
 
 					glUniformMatrix4fv( m_UniMVP, 1, GL_FALSE, glm::value_ptr( mvp ) );
 

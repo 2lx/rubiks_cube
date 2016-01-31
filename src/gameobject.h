@@ -4,7 +4,10 @@
 //#include <GL/gl.h>
 #include "shapes.h"
 #include "rcubemodel.h"
-#include "myquaternion.h"
+//#include "myquaternion.h"
+//#include <glm/gtc/quaternion.hpp>
+//#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class GameObject
 {
@@ -14,10 +17,10 @@ public:
 	virtual void drawObject() = 0;
 	void rotateObject();
 	void setRotates( const int newDirX, const int newDirY, const int newDirZ, const bool isPos );
-//	bool isRotating() const { return ( m_rotateVec.length() > 0 ); };
+	bool isRotating() const { return ( glm::length( m_rotateVec ) > 0  /*m_rotateVec.length() > 0*/ ); };
 
 protected:
-//	MyQuaternion m_rotateQuat;
+	glm::quat m_rotateQuat;
 
 	GameObject();	// Hide public constructor
 	bool isAxisVisible( const RC::RCAxis ax ) const;
@@ -36,12 +39,11 @@ protected:
 	GLuint loadGLTexture2D( const char * filename ) const;
 
 private:
-/*	Point3D m_pos;
 	float m_rotateAngle = { 0 };
 	bool m_isPositive = { true };
-	Vector3D m_rotateVec;
-	RC::RCAxis m_axesPos[ RC::AX_COUNT ];
-*/
+	glm::vec3 m_rotateVec;
+//	RC::RCAxis m_axesPos[ RC::AX_COUNT ];
+
 	void updateAxesPos();
 };
 

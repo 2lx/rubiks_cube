@@ -52,11 +52,12 @@ GLuint GameObject::loadGLTexture2D( const char * filename ) const
 
 void GameObject::setRotates( const int newDirX, const int newDirY, const int newDirZ, const bool isPos )
 {
-/*	if ( !isRotating() )
+	if ( !isRotating() )
 	{
-		m_rotateVec.setXYZ( newDirX, newDirY, newDirZ );
+//		m_rotateVec.setXYZ( newDirX, newDirY, newDirZ );
+		m_rotateVec = glm::vec3( newDirX, newDirY, newDirZ );
 		m_isPositive = isPos;
-	}*/
+	}
 }
 
 void GameObject::updateAxesPos()
@@ -87,27 +88,27 @@ bool GameObject::isAxisVisible( const RCAxis ax ) const
 
 void GameObject::rotateObject( )
 {
-/*	MyQuaternion quatTemp;
+//	MyQuaternion quatTemp;
+	glm::quat quatTemp2;
 
-	if ( m_rotateVec.length() > 0 )
+	if ( glm::length( m_rotateVec ) > 0 )
 	{
 		if ( m_rotateAngle >= 90 - ANGLE_DIFF )
 		{
 			GLfloat newAngle = ( m_isPositive ) ? m_rotateAngle - 90 : 90 - m_rotateAngle;
 
-			quatTemp.fromAxisAngle( m_rotateVec.x(), m_rotateVec.y(), m_rotateVec.z(), newAngle );
-			m_rotateQuat = m_rotateQuat * quatTemp;
-			m_rotateQuat = m_rotateQuat.normalize();
+			quatTemp2 = glm::angleAxis( newAngle, m_rotateVec );
+			m_rotateQuat = quatTemp2 * m_rotateQuat ;
 
             updateAxesPos();
 
 			m_rotateAngle = 0;
-			m_rotateVec.setXYZ( 0, 0, 0 );
+			m_rotateVec = glm::vec3();
 		}
 		else
 		{
-			quatTemp.fromAxisAngle( m_rotateVec.x(), m_rotateVec.y(), m_rotateVec.z(), ( m_isPositive ) ? -ANGLE_DIFF : ANGLE_DIFF );
-			m_rotateQuat = m_rotateQuat * quatTemp;
+			quatTemp2 = glm::angleAxis( ( m_isPositive ) ? -ANGLE_DIFF : ANGLE_DIFF, m_rotateVec );
+			m_rotateQuat = quatTemp2 * m_rotateQuat;
 
 			m_rotateAngle += ANGLE_DIFF;
 		}
@@ -119,8 +120,7 @@ void GameObject::rotateObject( )
 #endif
 	}
 
-	GLfloat MatrixRes[16];
-	m_rotateQuat.getTrMatrix( MatrixRes );
-	glMultMatrixf( MatrixRes );
-*/
+//	GLfloat MatrixRes[16];
+//	m_rotateQuat.getTrMatrix( MatrixRes );
+//	glMultMatrixf( MatrixRes );
 }

@@ -18,7 +18,7 @@ public:
 	void drawObject();
 	void setMove( const RCMoveType newRT );
 	void setMoveByCoords( const Point3D pBeg, const Point3D pEnd );
-//	bool isMoving() const { return m_moveType != MT_NONE; }
+	bool isMoving() const { return m_moveType != MT_NONE; }
 	void Update();
 
 protected:
@@ -27,7 +27,7 @@ private:
 
 //	MyQuaternion m_moveQuat;
 //	GLfloat m_moveAngle = { 0 };
-//	RCMoveType m_moveType = { MT_NONE };
+	RCMoveType m_moveType = { MT_NONE };
 //	int m_moveLayer = -1;
 
 	GLuint m_VBOTexCoords, m_VBOTexIndex, m_VBOCubeVertices;
