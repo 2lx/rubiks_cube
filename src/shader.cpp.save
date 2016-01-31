@@ -11,35 +11,6 @@ Shader::Shader( const GLenum & type ) : m_shType ( type )
 	m_id = glCreateShader( type );
 }
 
-char* file_read(const char* filename, int* size)
-{
-	SDL_RWops * rw = SDL_RWFromFile( filename, "rb" );
-	if ( rw == NULL ) return NULL;
-
-	Sint64 res_size = SDL_RWsize( rw );
-	char * res = ( char * )malloc( res_size + 1 );
-
-	Sint64 nb_read_total = 0, nb_read = 1;
-	char * buf = res;
-	while ( nb_read_total < res_size && nb_read != 0 )
-	{
-		nb_read = SDL_RWread( rw, buf, 1, ( res_size - nb_read_total ) );
-		nb_read_total += nb_read;
-		buf += nb_read;
-	}
-	SDL_RWclose( rw );
-	if ( nb_read_total != res_size )
-	{
-		free( res );
-		return NULL;
-	}
-
-	res[nb_read_total] = '\0';
-	if ( size != NULL )
-		* size = nb_read_total;
-	return res;
-}
-
 void Shader::loadFromFile( const string & filename ) const
 {
 	std::ifstream file;
@@ -50,13 +21,10 @@ void Shader::loadFromFile( const string & filename ) const
 	int length = file.tellg();
 	file.seekg ( 0, ios::beg );
 
-	char * source;
-	source = new char[ length + 1 ];
+	char * source = new char[ length + 1 ];
 	source[ length ] = '\0';
 	file.read ( source,length );
 	file.close();
-
-//	const GLchar * source = file_read(filename.c_str(), NULL);
 
 	if ( source == NULL) {
 		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR,
@@ -75,22 +43,21 @@ void Shader::loadFromFile( const string & filename ) const
 		version = "#version 120\n";  // OpenGL 2.1
 
 	// GLES2 precision specifiers
-	const char* precision;
-	precision =
+	const char * precision =
 		"#ifdef GL_ES                        \n"
 		"#  ifdef GL_FRAGMENT_PRECISION_HIGH \n"
-		"     precision highp float;         \n"
+		"     precision highp float;
+         \n"
 		"#  else                             \n"
 		"     precision mediump float;       \n"
 		"#  endif                            \n"
 		"#else                               \n"
-		// Ignore unsupported precision specifiers
 		"#  define lowp                      \n"
 		"#  define mediump                   \n"
 		"#  define highp                     \n"
 		"#endif                              \n";
 
-	const GLchar* sources[] = {
+	const GLchar * sources[] = {
 		version,
 		precision,
 		source
@@ -99,7 +66,6 @@ void Shader::loadFromFile( const string & filename ) const
 	glShaderSource( m_id, 3, sources, NULL );
 //	std::cout << std::string( source ) << std::endl;
 	delete [] source;
-	delete [] version;
 }
 
 void Shader::compile() const
@@ -112,14 +78,11 @@ void Shader::compile() const
 	{
 		std::cout << "Shader " << ( int ) m_id << "complie failed." << std::endl;
 
-//		SDL_LogMessage( SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "%s:\n", " fd" );
-
 //		GLint infoLogLength;
 //		glGetShaderiv( m_id, GL_INFO_LOG_LENGTH, &infoLogLength );
 //		GLchar * strInfoLog = new GLchar[infoLogLength + 1];
 //		glGetShaderInfoLog( m_id, infoLogLength, NULL, strInfoLog )
 
-//		print_log( res );
 //		glDeleteShader( m );
 		return;
 	}

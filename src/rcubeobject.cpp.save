@@ -25,8 +25,8 @@ RCubeObject::RCubeObject( ShaderProgram * shaderPr )
 	m_VBOTexID[ AX_LEFT ]	= loadGLTexture2D( "glsl/red.png" );
 	m_VBOTexID[ AX_RIGHT ]	= loadGLTexture2D( "glsl/orange.png" );
 
-	m_attrCubeVertices = shaderPr->addAttribute( "cVertex" );
-	m_attrTexCoords = shaderPr->addAttribute( "texCoord" );
+	m_attrCubeVertices = shaderPr->addAttribute( "cVertice" );
+	m_attrTexCoords = shaderPr->addAttribute( "texcoord" );
 	m_attrTexIndex = shaderPr->addAttribute( "texIndex" );
 
 	m_UniMVP = shaderPr->addUniform( "mvp" );

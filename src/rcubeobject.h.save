@@ -30,13 +30,11 @@ private:
 //	RCMoveType m_moveType = { MT_NONE };
 //	int m_moveLayer = -1;
 
-	GLuint m_VBOTexCoords, m_VBOTexIndex, m_VBOCubeVertices;
-	GLint m_attrTexCoords, m_attrTexIndex, m_attrCubeVertices;
-
+	GLuint vbo_cube_vertices, vbo_cube_texcoords, vbo_textureIndex;
 	GLuint m_VBOTexID[ AX_COUNT ];
 	GLint m_UniTexID[ AX_COUNT ];
-	GLint m_UniMVP;		// ModelViewProjection
-
+	GLint attribute_coord3d, attribute_texcoord, attrTextureIndex;
+	GLint m_UniMVP; 	// ModelViewProjection
 
 	GLfloat m_aTexCoords[ 2*4*6 ] = {
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,

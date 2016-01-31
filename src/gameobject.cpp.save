@@ -20,7 +20,17 @@ GameObject::~GameObject()
 	//dtor
 }
 
-GLuint GameObject::loadGLTexture2D( const char * filename ) const
+GLuint GameObject::loadGLArrayBuffer( GLfloat * pArr, const int arrSize ) const
+{
+	GLuint bId;
+	glGenBuffers( 1, &bId );
+	glBindBuffer( GL_ARRAY_BUFFER, bId );
+	glBufferData( GL_ARRAY_BUFFER, arrSize, pArr, GL_STATIC_DRAW );
+
+	return bId;
+}
+
+GLuint loadGLTexture( const char * filename ) const
 {
 	GLuint bId;
 
@@ -33,19 +43,17 @@ GLuint GameObject::loadGLTexture2D( const char * filename ) const
 
 	glGenTextures(1, &bId);
 	glBindTexture( GL_TEXTURE_2D, bId );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexImage2D( GL_TEXTURE_2D,	// target
-		0,							// level, 0 = base, no minimap,
-		GL_RGBA,					// internalformat
-		res_texture->w,  			// width
-		res_texture->h,				// height
-		0,							// border, always 0 in OpenGL ES
-		GL_RGBA,					// format
-		GL_UNSIGNED_BYTE,			// type
-		res_texture->pixels			// data
-	);
-
-	SDL_FreeSurface( res_texture );
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, // target
+		0,  // level, 0 = base, no minimap,
+		GL_RGBA, // internalformat
+		res_texture->w,  // width
+		res_texture->h,  // height
+		0,  // border, always 0 in OpenGL ES
+		GL_RGBA,  // format
+		GL_UNSIGNED_BYTE, // type
+		res_texture->pixels);
+	SDL_FreeSurface(res_texture);
 
 	return bId;
 }

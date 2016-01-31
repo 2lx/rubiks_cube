@@ -9,69 +9,10 @@
 #include "shader.h"
 #include "shaderprogram.h"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-
 CPlayState CPlayState::m_PlayState;
 
 void CPlayState::Init()
 {
-	m_RCube = new RCubeObject;
-/*
-	for (int i = 1; i < 6; i++)
-		memcpy(&cube_texcoords[i*4*2], &cube_texcoords[0], 2*4*sizeof(GLfloat));
-*/
-	glGenBuffers( 1, &vbo_cube_vertices );
-	glBindBuffer( GL_ARRAY_BUFFER, vbo_cube_vertices );
-	glBufferData( GL_ARRAY_BUFFER, sizeof( cube_vertices ), cube_vertices, GL_STATIC_DRAW );
-
-	glGenBuffers( 1, &vbo_cube_texcoords );
-	glBindBuffer( GL_ARRAY_BUFFER, vbo_cube_texcoords );
-	glBufferData( GL_ARRAY_BUFFER, sizeof( cube_texcoords ), cube_texcoords, GL_STATIC_DRAW );
-
-	glGenBuffers( 1, &ibo_cube_elements );
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ibo_cube_elements );
-	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( cube_elements ), cube_elements, GL_STATIC_DRAW );
-
-	SDL_Surface* res_texture = IMG_Load( "glsl/red.png" );
-	if (res_texture == NULL) {
-		std::cout << "IMG_Load: " << SDL_GetError() << std::endl;
-		return;
-	}
-	glGenTextures(1, &m_textureRedID);
-	glBindTexture(GL_TEXTURE_2D, m_textureRedID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, // target
-		0,  // level, 0 = base, no minimap,
-		GL_RGBA, // internalformat
-		res_texture->w,  // width
-		res_texture->h,  // height
-		0,  // border, always 0 in OpenGL ES
-		GL_RGBA,  // format
-		GL_UNSIGNED_BYTE, // type
-		res_texture->pixels);
-	SDL_FreeSurface(res_texture);
-
-	res_texture = IMG_Load( "glsl/yellow.png" );
-	if (res_texture == NULL) {
-		std::cout << "IMG_Load: " << SDL_GetError() << std::endl;
-		return;
-	}
-	glGenTextures(1, &m_textureYellowID );
-	glBindTexture(GL_TEXTURE_2D, m_textureYellowID );
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, // target
-		0,  // level, 0 = base, no minimap,
-		GL_RGBA, // internalformat
-		res_texture->w,  // width
-		res_texture->h,  // height
-		0,  // border, always 0 in OpenGL ES
-		GL_RGBA,  // format
-		GL_UNSIGNED_BYTE, // type
-		res_texture->pixels);
-	SDL_FreeSurface(res_texture);
-
 	//
 	Shader vertexShader( GL_VERTEX_SHADER );
 	vertexShader.loadFromFile( "glsl/shader.v.glsl" );
@@ -88,11 +29,7 @@ void CPlayState::Init()
 	m_shaderPr->attachShader( fragmentShader );
 	m_shaderPr->linkProgram();
 
-	attribute_coord3d = m_shaderPr->addAttribute( "coord3d" );
-	attribute_texcoord = m_shaderPr->addAttribute( "texcoord" );
-	uniform_mvp = m_shaderPr->addUniform( "mvp" );
-	m_unTextureRed = m_shaderPr->addUniform( "mytextureRed" );
-	m_unTextureYellow = m_shaderPr->addUniform( "mytextureYellow" );
+	m_RCube = new RCubeObject( m_shaderPr );
 
 	std::cout.flush();
 	//char f;
@@ -116,11 +53,6 @@ void CPlayState::Cleanup()
 {
 	delete m_RCube;
 	delete m_shaderPr;
-
-	glDeleteBuffers(1, &vbo_cube_vertices);
-	glDeleteBuffers(1, &vbo_cube_texcoords);
-	glDeleteBuffers(1, &ibo_cube_elements);
-	glDeleteTextures(1, &m_textureRedID);
 
 	MoveParams::cleanup();
 	Colors::cleanup();
@@ -426,20 +358,8 @@ void CPlayState::Update( CGameEngine * game )
 		m_needRedraw = true;
 	}
 */
-	float angle = SDL_GetTicks() / 2000.0 */** glm::radians(*/15.0;//);  // base 15° per second
-	glm::mat4 anim =
-		glm::rotate( glm::mat4( 1.0f ), angle * 3.0f, glm::vec3( 1, 0, 0 ) ) * // X axis
-		glm::rotate( glm::mat4( 1.0f ), angle * 2.0f, glm::vec3( 0, 1, 0 ) ) * // Y axis
-		glm::rotate( glm::mat4( 1.0f ), angle * 4.0f, glm::vec3( 0, 0, 1 ) );  // Z axis
-
-	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0, 0.0, -4.0 ) );
-	glm::mat4 view = glm::lookAt( glm::vec3( 0.0, 2.0, 0.0 ), glm::vec3( 0.0, 0.0, -4.0 ), glm::vec3( 0.0, 1.0, 0.0 ) );
-	glm::mat4 projection = glm::perspective( 45.0f, 1.0f * SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 10.0f );
-
-	glm::mat4 mvp = projection * view * model * anim;
-
-	glUseProgram( m_shaderPr->id() );
-	glUniformMatrix4fv( uniform_mvp, 1, GL_FALSE, glm::value_ptr( mvp ) );
+//	glUseProgram( m_shaderPr->id() );
+	m_RCube->Update();
 }
 
 void CPlayState::Draw( CGameEngine * game )
@@ -454,48 +374,6 @@ void CPlayState::Draw( CGameEngine * game )
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		glUseProgram( m_shaderPr->id() );
-
-	// begin
-		glActiveTexture( GL_TEXTURE0 );
-		glUniform1i( m_unTextureRed, /*GL_TEXTURE*/0 );
-		glBindTexture( GL_TEXTURE_2D, m_textureRedID );
-
-		glActiveTexture( GL_TEXTURE1 );
-		glUniform1i( m_unTextureYellow, /*GL_TEXTURE*/1 );
-		glBindTexture( GL_TEXTURE_2D, m_textureYellowID );
-
-		glEnableVertexAttribArray( attribute_coord3d );
-		// Describe our vertices array to OpenGL (it can't guess its format automatically)
-		glBindBuffer( GL_ARRAY_BUFFER, vbo_cube_vertices );
-		glVertexAttribPointer(
-			attribute_coord3d, // attribute
-			3,                 // number of elements per vertex, here (x,y,z)
-			GL_FLOAT,          // the type of each element
-			GL_FALSE,          // take our values as-is
-			0,                 // no extra data between each position
-			0                  // offset of first element
-		);
-
-		glEnableVertexAttribArray( attribute_texcoord );
-		glBindBuffer( GL_ARRAY_BUFFER, vbo_cube_texcoords );
-		glVertexAttribPointer(
-			attribute_texcoord, // attribute
-			2,                  // number of elements per vertex, here (x,y)
-			GL_FLOAT,           // the type of each element
-			GL_FALSE,           // take our values as-is
-			0,                  // no extra data between each position
-			0                   // offset of first element
-		);
-
-		/* Push each element in buffer_vertices to the vertex shader */
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ibo_cube_elements );
-		int size;
-		glGetBufferParameteriv( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size );
-		glDrawElements( GL_QUADS, size / sizeof( GLushort ), GL_UNSIGNED_SHORT, 0 );
-
-		glDisableVertexAttribArray( attribute_coord3d );
-		glDisableVertexAttribArray( attribute_texcoord );
-	// ENd
 
 /*		glLoadIdentity();
 
@@ -512,12 +390,12 @@ void CPlayState::Draw( CGameEngine * game )
 		}
 */
 //		m_RCube->rotateObject();
-//		m_RCube->drawObject();
+		m_RCube->drawObject();
 
 //		glFlush();
 
-	//	if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
-	//		SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
+		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
+			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
 
 		drCount++;
 		if ( drCount > 1 ) m_needRedraw = false;

@@ -426,7 +426,7 @@ void CPlayState::Update( CGameEngine * game )
 		m_needRedraw = true;
 	}
 */
-	float angle = SDL_GetTicks() / 1000.0 */** glm::radians(*/15.0;//);  // base 15° per second
+	float angle = SDL_GetTicks() / 2000.0 */** glm::radians(*/15.0;//);  // base 15° per second
 	glm::mat4 anim =
 		glm::rotate( glm::mat4( 1.0f ), angle * 3.0f, glm::vec3( 1, 0, 0 ) ) * // X axis
 		glm::rotate( glm::mat4( 1.0f ), angle * 2.0f, glm::vec3( 0, 1, 0 ) ) * // Y axis
@@ -488,9 +488,10 @@ void CPlayState::Draw( CGameEngine * game )
 		);
 
 		/* Push each element in buffer_vertices to the vertex shader */
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ibo_cube_elements );
-		int size;
-		glGetBufferParameteriv( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size );
+//		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ibo_cube_elements );
+//		int size;
+//		glGetBufferParameteriv( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size );
+//		glDrawElements( GL_QUADS, size / sizeof( GLushort ), GL_UNSIGNED_SHORT, 0 );
 		glDrawElements( GL_QUADS, size / sizeof( GLushort ), GL_UNSIGNED_SHORT, 0 );
 
 		glDisableVertexAttribArray( attribute_coord3d );

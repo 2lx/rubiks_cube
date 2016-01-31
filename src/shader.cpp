@@ -47,8 +47,10 @@ void Shader::loadFromFile( const string & filename ) const
 		"#ifdef GL_ES                        \n"
 		"#  ifdef GL_FRAGMENT_PRECISION_HIGH \n"
 		"     precision highp float;         \n"
+		"     precision highp ushort;        \n"
 		"#  else                             \n"
 		"     precision mediump float;       \n"
+		"     precision mediump ushort;       \n"
 		"#  endif                            \n"
 		"#else                               \n"
 		"#  define lowp                      \n"
@@ -75,12 +77,13 @@ void Shader::compile() const
 
 	if ( compile_ok == GL_FALSE )
 	{
-		std::cout << "Shader " << ( int ) m_id << "complie failed." << std::endl;
+		GLint infoLogLength;
+		glGetShaderiv( m_id, GL_INFO_LOG_LENGTH, &infoLogLength );
+		GLchar * strInfoLog = new GLchar[infoLogLength + 1];
+		glGetShaderInfoLog( m_id, infoLogLength, NULL, strInfoLog );
 
-//		GLint infoLogLength;
-//		glGetShaderiv( m_id, GL_INFO_LOG_LENGTH, &infoLogLength );
-//		GLchar * strInfoLog = new GLchar[infoLogLength + 1];
-//		glGetShaderInfoLog( m_id, infoLogLength, NULL, strInfoLog )
+		std::cout << "Shader " << ( int ) m_id << "complie failed. Error: " << strInfoLog << std::endl;
+
 
 //		glDeleteShader( m );
 		return;

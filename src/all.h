@@ -25,7 +25,7 @@ const float SCREEN_VERTMARGIN = 1 + RC::CUBIE_COUNT;
 const float SCREEN_HORIZMARGIN = SCREEN_VERTMARGIN * SCREEN_WDH;
 
 // Screen FPS
-const int SCREEN_FPS = 40;
+const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
 // rotation speed
