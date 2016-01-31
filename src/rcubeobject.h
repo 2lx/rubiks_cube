@@ -1,10 +1,11 @@
 #ifndef RUBIKSCUBE_H
 #define RUBIKSCUBE_H
 
-//#include <GL/gl.h>
 #include "gameobject.h"
-#include "rcubemodel.h"
+#include "myquaternion.h"
+#include <glm/gtc/type_ptr.hpp>
 
+namespace RC { class CubeModel; }
 class ShaderProgram;
 
 using namespace RC;
@@ -17,8 +18,8 @@ public:
 
 	void drawObject();
 	void setMove( const RCMoveType newRT );
-	void setMoveByCoords( const Point3D pBeg, const Point3D pEnd );
-	bool isMoving() const { return m_moveType != MT_NONE; }
+//	void setMoveByCoords( const Point3D pBeg, const Point3D pEnd );
+	bool isMoving() const { return ( m_moveMix >= 0 );/*m_moveType != MT_NONE;*/ }
 	void Update();
 
 protected:
@@ -26,9 +27,13 @@ private:
 	CubeModel * m_RCModel;
 
 //	MyQuaternion m_moveQuat;
+	glm::quat m_moveQuat;
+	glm::quat m_newQuat;
+	float m_moveMix = { -1 };
+
 //	GLfloat m_moveAngle = { 0 };
 	RCMoveType m_moveType = { MT_NONE };
-//	int m_moveLayer = -1;
+	int m_moveLayer = -1;
 
 	GLuint m_VBOTexCoords, m_VBOTexIndex, m_VBOCubeVertices;
 	GLint m_attrTexCoords, m_attrTexIndex, m_attrCubeVertices;
@@ -96,11 +101,11 @@ private:
 		 0.5,  0.5,  0.5, // 2
 	};
 
-	RCAxis getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const;
+//	RCAxis getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const;
 
 	void drawCubie( const int x, const int y, const int z ) const;
-	void setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const;
-	void setCubieVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int x, const int y, const int z ) const;
+//	void setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const;
+//	void setCubieVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int x, const int y, const int z ) const;
 };
 
 #endif // RUBIKSCUBE_H

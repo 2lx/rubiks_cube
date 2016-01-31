@@ -4,6 +4,8 @@
 #include "rcubeobject.h"
 #include "rcubeparams.h"
 #include "shaderprogram.h"
+#include "rcubemodel.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -45,6 +47,19 @@ void RCubeObject::Update( )
 
 void RCubeObject::setMove( const RCMoveType newRT )
 {
+	Vector3D vec = MoveParams::vec( newRT );
+	bool isPos = MoveParams::clockwise( newRT );
+
+//	glm::quat tempQuat = glm::angleAxis( ( isPos ) ? 90.0f : -90.0f, glm::vec3( vec.x(), vec.y(), vec.z() ) );
+//	glm::quat tempQuat = glm::angleAxis( -90.0f, glm::vec3( 0.0f, 0.0f, 1.0f ) );
+	m_newQuat = glm::angleAxis( -90.0f, glm::vec3( 0.0f, 0.0f, 1.0f ) );
+	m_moveMix = 0;
+
+	if ( isPos )
+		m_moveLayer = CUBIE_COUNT - 1;
+	else m_moveLayer = 0;
+	m_moveType = MT_FRONT;
+
 /*	MyQuaternion quatT( MoveParams::vec( newRT ) );
 
 	MyQuaternion quatR = m_rotateQuat * quatT * m_rotateQuat.inverse();
@@ -57,18 +72,18 @@ void RCubeObject::setMove( const RCMoveType newRT )
 		m_moveLayer = 0;
 	else m_moveLayer = CUBIE_COUNT - 1;*/
 }
-
+/*
 RCAxis RCubeObject::getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const
 {
-/*	Point3D pcDiff = pEnd - pBeg;
+	Point3D pcDiff = pEnd - pBeg;
 	Vector3D vec = Vector3D( pcDiff.x(), pcDiff.y(), pcDiff.z() );
 
-	return vec.getNearestAxis();*/
+	return vec.getNearestAxis();
 }
 
 void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 {
- /*   // get tangent axis
+    // get tangent axis
 	const float coorSurface = ( CUBIE_COUNT / 2.0 ) - 0.05;
 	RCAxis axBeg = pBeg.getTangentAxis( coorSurface, 0.14 );
 	RCAxis axTangent = pEnd.getTangentAxis( coorSurface, 0.14 );
@@ -105,11 +120,30 @@ void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 		m_moveLayer = floor( pp.y() );
 	else if ( axResult == AX_FRONT || axResult == AX_BACK )
 		m_moveLayer = floor( pp.z() );
-*/
 }
-
+*/
 void RCubeObject::drawObject()
 {
+	const float offCenter = CUBIE_COUNT / 2.0f - 0.5;
+
+	if ( isMoving() )
+	{
+		if ( m_moveMix < 1.0 )
+		{
+			m_moveQuat = glm::mix( m_moveQuat, m_newQuat, m_moveMix );
+			m_moveMix += 0.05;
+		}
+		else
+		{
+			m_RCModel->moveCubies( m_moveType, m_moveLayer );
+			m_moveType = MT_NONE;
+			m_moveLayer = -1;
+
+			m_moveQuat = glm::quat();
+			m_moveMix = -1;
+		}
+	}
+
 	glActiveTexture( GL_TEXTURE0 );
 	glUniform1i( m_UniTexUnionID, 0 );
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexUnionID );
@@ -121,11 +155,13 @@ void RCubeObject::drawObject()
 		glm::rotate( glm::mat4( 1.0f ), 0.0f, glm::vec3( 0, 0, 1 ) );  // Z axis
 
 	glm::mat4 rotation = glm::mat4_cast( m_rotateQuat );
+	glm::mat4 moving = glm::mat4_cast( m_moveQuat );
 
 	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0, 0.5, -20.0 ) );
-	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
 
-	const float offCenter = CUBIE_COUNT / 2.0f - 0.5;
+	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
+	glm::mat4 mvpPMVR = projection * model * view * rotation;
+	glm::mat4 mvpPMVRM = projection * model * view * rotation * moving;
 
 	for ( int x = 0; x < CUBIE_COUNT; ++x )
 		for ( int y = 0; y < CUBIE_COUNT; ++y )
@@ -146,9 +182,22 @@ void RCubeObject::drawObject()
 
 					m_VBOTexIndex = loadGLArrayBuffer( m_aTexIndex, sizeof( m_aTexIndex ) );
 
+					// calculate offset of cubie
 					glm::mat4 offset = glm::translate( glm::mat4( 1.0f ),
 							glm::vec3( x - offCenter, y - offCenter, z - offCenter ) );
-					glm::mat4 mvp = projection * model * view * rotation * offset  ;// + offset;
+
+					// calculate model view projection matrix
+					glm::mat4 mvp;
+
+					if ( ( m_moveType != MT_NONE && m_moveLayer != -1 ) &&
+						 ( z == m_moveLayer && MoveParams::vec( m_moveType ).z() != 0 ) ||
+						( x == m_moveLayer && MoveParams::vec( m_moveType ).x() != 0 ) ||
+						( y == m_moveLayer && MoveParams::vec( m_moveType ).y() != 0 )
+						)
+					{
+						mvp = mvpPMVRM * offset;
+					}
+					else mvp = mvpPMVR * offset;
 
 					glUniformMatrix4fv( m_UniMVP, 1, GL_FALSE, glm::value_ptr( mvp ) );
 
@@ -235,10 +284,10 @@ void RCubeObject::drawCubie( const int x, const int y, const int z ) const
 	else setCubieVertices( x + centerDiff, y + centerDiff, z + centerDiff, CUBE_EDGE, x, y, z );
 */
 }
-
+/*
 void RCubeObject::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const
 {
-/*	const GLfloat halfSize = cubeSize / 2.0 - 0.1;
+	const GLfloat halfSize = cubeSize / 2.0 - 0.1;
 
 	glColor3f( Colors::colR( RC_FG ), Colors::colG( RC_FG ), Colors::colB( RC_FG ) );
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
@@ -274,13 +323,13 @@ void RCubeObject::setCubeVertices( const GLfloat pX, const GLfloat pY, const GLf
 	glVertex3f( pX + halfSize, pY - halfSize, pZ + halfSize );
 	glVertex3f( pX + halfSize, pY - halfSize, pZ - halfSize );
 
-	glEnd();*/
+	glEnd();
 }
 
 void RCubeObject::setCubieVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize,
 	const int x, const int y, const int z ) const
 {
-	/*const GLfloat halfSize = cubeSize / 2 - 0.05;
+	const GLfloat halfSize = cubeSize / 2 - 0.05;
 
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	glBegin( GL_QUADS );
@@ -387,5 +436,6 @@ void RCubeObject::setCubieVertices( const GLfloat pX, const GLfloat pY, const GL
 		glVertex3f( pX + 2.0 + halfSize, pY - halfSize, pZ - halfSize );
 	}
 
-	glEnd();*/
+	glEnd();
 }
+*/

@@ -178,7 +178,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_q:
 				m_gkStates[ GK_ROTATECLOCKWISE ].setDown();
 				break;
-/*
+
 			case SDLK_i:
 				m_gkStates[ GK_MOVEFRONT ].setDown();
 				break;
@@ -226,7 +226,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_COMMA:
 				m_gkStates[ GK_MOVEDOWNINV ].setDown();
 				break;
-
+/*
 			case SDLK_SPACE:
 				m_gkStates[ GK_CHANGECOLOR ].setDown();
 				break;
@@ -284,7 +284,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 void CPlayState::Update( CGameEngine * game )
 {
-//	if ( /*!m_RCube->isRotating() && */m_pBegin.is0() )
+	if ( /*!m_RCube->isRotating() && */m_pBegin.is0() )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -329,7 +329,7 @@ void CPlayState::Update( CGameEngine * game )
 			m_pEnd.setXYZ( 0, 0, 0 );
 		}
 	}
-
+*/
 	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && m_pBegin.is0() )
 	{
 		for ( int i = 0; i < GK_MOVELAST - GK_MOVEFIRST + 1; i++ )
@@ -342,7 +342,7 @@ void CPlayState::Update( CGameEngine * game )
 			}
 		}
 	}
-
+/*
 	if ( m_gkStates[ GK_CHANGECOLOR ].isNewDown() )
 	{
 		RC::Colors::incScheme();
@@ -366,7 +366,7 @@ void CPlayState::Draw( CGameEngine * game )
 {
 	static int drCount = 0;
 
-//	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() )
+	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() )
 	{
 		Uint32 start = SDL_GetTicks();
 
@@ -392,16 +392,14 @@ void CPlayState::Draw( CGameEngine * game )
 		m_RCube->rotateObject();
 		m_RCube->drawObject();
 
-//		glFlush();
-
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
 
 		drCount++;
 		if ( drCount > 1 ) m_needRedraw = false;
 #ifdef MY_DEBUG
-//		if ( drCount % 5 == 0 )
-//			std::cout << "DrawCount: " << drCount << std::endl;
+		if ( drCount % 5 == 0 )
+			std::cout << "DrawCount: " << drCount << std::endl;
 #endif // MY_DEBUG
 	}
 }

@@ -33,7 +33,7 @@ protected:
 	GLuint loadGLTexture2D( const char * filename ) const;
 
 private:
-    float m_rotateMix = { 0 };
+    float m_rotateMix = { -1 };
 	glm::quat m_newQuat;
 //	RC::RCAxis m_axesPos[ RC::AX_COUNT ];
 
