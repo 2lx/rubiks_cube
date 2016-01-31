@@ -18,25 +18,14 @@ RCubeObject::RCubeObject( ShaderProgram * shaderPr )
 	m_VBOTexCoords = loadGLArrayBuffer( m_aTexCoords, sizeof( m_aTexCoords ) );
 	m_VBOTexIndex = loadGLArrayBuffer( m_aTexIndex, sizeof( m_aTexIndex ) );
 
-	m_VBOTexID[ AX_FRONT ]	= loadGLTexture2D( "glsl/blue.png" );
-	m_VBOTexID[ AX_UP ]		= loadGLTexture2D( "glsl/white.png" );
-	m_VBOTexID[ AX_BACK ]	= loadGLTexture2D( "glsl/green.png" );
-	m_VBOTexID[ AX_DOWN ]	= loadGLTexture2D( "glsl/yellow.png" );
-	m_VBOTexID[ AX_LEFT ]	= loadGLTexture2D( "glsl/red.png" );
-	m_VBOTexID[ AX_RIGHT ]	= loadGLTexture2D( "glsl/orange.png" );
-
 	m_attrCubeVertices = shaderPr->addAttribute( "cVertex" );
 	m_attrTexCoords = shaderPr->addAttribute( "texCoord" );
 	m_attrTexIndex = shaderPr->addAttribute( "texIndex" );
 
-	m_UniMVP = shaderPr->addUniform( "mvp" );
+	m_VBOTexUnionID = loadGLTexture2D( "glsl/texture.png" );
+	m_UniTexUnionID = shaderPr->addUniform( "texUnion" );
 
-	m_UniTexID[ AX_FRONT ]	= shaderPr->addUniform( "texBlue" );
-	m_UniTexID[ AX_UP ]		= shaderPr->addUniform( "texWhite" );
-	m_UniTexID[ AX_BACK ]	= shaderPr->addUniform( "texGreen" );
-	m_UniTexID[ AX_DOWN ]	= shaderPr->addUniform( "texYellow" );
-	m_UniTexID[ AX_LEFT ]	= shaderPr->addUniform( "texRed" );
-	m_UniTexID[ AX_RIGHT ]	= shaderPr->addUniform( "texOrange" );
+	m_UniMVP = shaderPr->addUniform( "mvp" );
 }
 
 RCubeObject::~RCubeObject()
@@ -44,9 +33,7 @@ RCubeObject::~RCubeObject()
 	glDeleteBuffers( 1, &m_VBOCubeVertices );
 	glDeleteBuffers( 1, &m_VBOTexCoords );
 	glDeleteBuffers( 1, &m_VBOTexIndex );
-//	glDeleteBuffers( 1, &ibo_cube_elements );
-	for ( int i = AX_FIRST; i < AX_COUNT; i++ )
-		glDeleteTextures( 1, &m_VBOTexID[ i ] );
+	glDeleteTextures( 1, &m_VBOTexUnionID );
 
 	delete m_RCModel;
 }
@@ -123,33 +110,8 @@ void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 void RCubeObject::drawObject()
 {
 	glActiveTexture( GL_TEXTURE0 );
-	glUniform1i( m_UniTexID[ AX_FRONT ], 0 );
-	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_FRONT ] );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
-	glActiveTexture( GL_TEXTURE1 );
-	glUniform1i( m_UniTexID[ AX_UP ], 1 );
-	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_UP ] );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
-	glActiveTexture( GL_TEXTURE2 );
-	glUniform1i( m_UniTexID[ AX_BACK ], 2 );
-	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_BACK ] );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
-	glActiveTexture( GL_TEXTURE3 );
-	glUniform1i( m_UniTexID[ AX_DOWN ], 3 );
-	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_DOWN ] );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
-	glActiveTexture( GL_TEXTURE4 );
-	glUniform1i( m_UniTexID[ AX_LEFT ], 4 );
-	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_LEFT ] );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
-	glActiveTexture( GL_TEXTURE5 );
-	glUniform1i( m_UniTexID[ AX_RIGHT], 5 );
-	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_RIGHT ] );
+	glUniform1i( m_UniTexUnionID, 0 );
+	glBindTexture( GL_TEXTURE_2D, m_VBOTexUnionID );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 	float angle = SDL_GetTicks() / 500.0 * 15.0;

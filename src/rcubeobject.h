@@ -33,8 +33,9 @@ private:
 	GLuint m_VBOTexCoords, m_VBOTexIndex, m_VBOCubeVertices;
 	GLint m_attrTexCoords, m_attrTexIndex, m_attrCubeVertices;
 
-	GLuint m_VBOTexID[ AX_COUNT ];
-	GLint m_UniTexID[ AX_COUNT ];
+	GLuint m_VBOTexUnionID;
+	GLint m_UniTexUnionID;
+
 	GLint m_UniMVP;			// ModelViewProjection
 
 	GLfloat m_aTexCoords[ 2*4*6 ] = {

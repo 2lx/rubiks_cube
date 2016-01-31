@@ -31,7 +31,7 @@ protected:
 		glBufferData( GL_ARRAY_BUFFER, arrSize, pArr, GL_STATIC_DRAW );
 
 		return bId;
-	};
+	}
 
 	GLuint loadGLTexture2D( const char * filename ) const;
 
