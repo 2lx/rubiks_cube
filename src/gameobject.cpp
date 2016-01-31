@@ -53,7 +53,7 @@ GLuint GameObject::loadGLTexture2D( const char * filename ) const
 void GameObject::setRotates( const int newDirX, const int newDirY, const int newDirZ, const bool isPos )
 {
 	glm::quat tempQuat = glm::angleAxis( ( isPos ) ? 90.0f : -90.0f, glm::vec3( newDirX, newDirY, newDirZ ) );
-	m_newQuat = tempQuat * m_newQuat;
+	m_newRotateQuat = tempQuat * m_newRotateQuat;
 	m_rotateMix = 0;
 }
 
@@ -89,12 +89,13 @@ void GameObject::rotateObject( )
 	{
 		if ( m_rotateMix < 1.0 )
 		{
-			m_rotateQuat = glm::mix( m_rotateQuat, m_newQuat, m_rotateMix );
+			// yes, it's an acceleration
+			m_rotateQuat = glm::mix( m_rotateQuat, m_newRotateQuat, m_rotateMix );
 			m_rotateMix += 0.05;
 		}
 		else
 		{
-			m_rotateQuat = m_newQuat;
+			m_rotateQuat = m_newRotateQuat;
 			m_rotateMix = -1;
 		}
 	}

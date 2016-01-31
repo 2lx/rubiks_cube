@@ -2,7 +2,6 @@
 #define RUBIKSCUBE_H
 
 #include "gameobject.h"
-#include "myquaternion.h"
 #include <glm/gtc/type_ptr.hpp>
 
 namespace RC { class CubeModel; }
@@ -28,7 +27,7 @@ private:
 
 //	MyQuaternion m_moveQuat;
 	glm::quat m_moveQuat;
-	glm::quat m_newQuat;
+	glm::quat m_newMoveQuat;
 	float m_moveMix = { -1 };
 
 //	GLfloat m_moveAngle = { 0 };
@@ -104,8 +103,6 @@ private:
 //	RCAxis getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const;
 
 	void drawCubie( const int x, const int y, const int z ) const;
-//	void setCubeVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize ) const;
-//	void setCubieVertices( const GLfloat pX, const GLfloat pY, const GLfloat pZ, const GLfloat cubeSize, const int x, const int y, const int z ) const;
 };
 
 #endif // RUBIKSCUBE_H

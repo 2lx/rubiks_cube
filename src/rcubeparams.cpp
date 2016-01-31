@@ -60,11 +60,13 @@ std::map< RCMoveType, MoveParams::OneParam * > MoveParams::InitMap()
 	return mp;
 }
 
-RCMoveType MoveParams::getMTypeForPars( const Vector3D & vec, const bool cw )
+RCMoveType MoveParams::getMTypeForPars( const glm::vec3 & vec, const bool cw )
 {
 	for ( int i = MT_FIRST; i < MT_COUNT; ++i )
 	{
-		if ( MoveParams::vec( RCMoveType( i ) ) == vec && MoveParams::clockwise( RCMoveType( i ) ) == cw )
+		const glm::vec3 vec2 = MoveParams::vec( RCMoveType( i ) );
+		const bool cw2 = MoveParams::clockwise( RCMoveType( i ) );
+		if ( std::abs( glm::length( vec2 - vec ) ) < 0.001 && cw2 == cw )
 			return RCMoveType( i );
 	}
 

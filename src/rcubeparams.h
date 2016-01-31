@@ -3,7 +3,8 @@
 
 #include <map>
 #include "rcubemodel.h"
-#include "myquaternion.h"
+//#include "myquaternion.h"
+#include <glm/gtc/type_ptr.hpp>
 
 namespace RC
 {
@@ -58,10 +59,10 @@ namespace RC
 	class MoveParams	// Singleton
 	{
 	public:
-		static Vector3D vec( const RCMoveType mt ) { return m_p[ mt ]->m_vec; };
+		static glm::vec3 vec( const RCMoveType mt ) { return m_p[ mt ]->m_vec; };
 		static RCAxis axis( const RCMoveType mt ) { return m_p[ mt ]->m_axis; };
 		static bool clockwise( const RCMoveType mt ) { return m_p[ mt ]->m_clockwise; };
-		static RCMoveType getMTypeForPars( const Vector3D & vec, const bool cw );
+		static RCMoveType getMTypeForPars( const glm::vec3 & vec, const bool cw );
 		static RCMoveType getMTypeForPars( const RCAxis ax, const bool cw );
 
 		static void cleanup();
@@ -74,7 +75,7 @@ namespace RC
 				: m_vec { x, y, z }, m_clockwise { clockwise }, m_axis{ ax }
 			{ };
 
-			const Vector3D m_vec;
+			const glm::vec3 m_vec;
 			const bool m_clockwise;
 			const RCAxis m_axis;
 		};

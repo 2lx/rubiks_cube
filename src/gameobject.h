@@ -34,7 +34,8 @@ protected:
 
 private:
     float m_rotateMix = { -1 };
-	glm::quat m_newQuat;
+	glm::quat m_newRotateQuat;
+
 //	RC::RCAxis m_axesPos[ RC::AX_COUNT ];
 
 	void updateAxesPos();
