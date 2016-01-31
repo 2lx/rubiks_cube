@@ -38,7 +38,7 @@ private:
 
 	GLint m_UniMVP;			// ModelViewProjection
 
-	GLfloat m_aTexCoords[ 2*4*6 ] = {
+	const GLfloat m_aTexCoords[ 2*4*6 ] = {
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,
@@ -47,7 +47,7 @@ private:
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,
 	};
 
-	GLushort m_aTexIndex[ 4*6 ] = {
+	GLshort m_aTexIndex[ 4*6 ] = {
 		AX_FRONT, AX_FRONT, AX_FRONT, AX_FRONT,
 		AX_UP, AX_UP, AX_UP, AX_UP,
 		AX_BACK, AX_BACK, AX_BACK, AX_BACK,
@@ -63,7 +63,7 @@ private:
 //		  |/    |/
 //		  0-----1
 
-	GLfloat m_aCubeVertices[ 3*4*6 ] = {
+	const GLfloat m_aCubeVertices[ 3*4*6 ] = {
 		// front
 		-0.5, -0.5,  0.5, // 0
 		 0.5, -0.5,  0.5, // 1

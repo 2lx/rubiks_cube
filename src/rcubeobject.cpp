@@ -16,7 +16,7 @@ RCubeObject::RCubeObject( ShaderProgram * shaderPr )
 
 	m_VBOCubeVertices = loadGLArrayBuffer( m_aCubeVertices, sizeof( m_aCubeVertices ) );
 	m_VBOTexCoords = loadGLArrayBuffer( m_aTexCoords, sizeof( m_aTexCoords ) );
-	m_VBOTexIndex = loadGLArrayBuffer( m_aTexIndex, sizeof( m_aTexIndex ) );
+	m_VBOTexIndex = loadGLArrayBuffer( m_aTexIndex, sizeof( m_aTexIndex ), GL_STREAM_DRAW );
 
 	m_attrCubeVertices = shaderPr->addAttribute( "cVertex" );
 	m_attrTexCoords = shaderPr->addAttribute( "texCoord" );
@@ -114,11 +114,10 @@ void RCubeObject::drawObject()
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexUnionID );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-	float angle = SDL_GetTicks() / 500.0 * 15.0;
 	glm::mat4 anim =
-		glm::rotate( glm::mat4( 1.0f ), angle * 3.0f, glm::vec3( 1, 0, 0 ) ) * // X axis
-		glm::rotate( glm::mat4( 1.0f ), angle * 2.0f, glm::vec3( 0, 1, 0 ) ) * // Y axis
-		glm::rotate( glm::mat4( 1.0f ), angle * 4.0f, glm::vec3( 0, 0, 1 ) );  // Z axis
+		glm::rotate( glm::mat4( 1.0f ), 35.264f, glm::vec3( 1, 0, 0 ) ) * // X axis
+		glm::rotate( glm::mat4( 1.0f ), 45.0f, glm::vec3( 0, 1, 0 ) ) * // Y axis
+		glm::rotate( glm::mat4( 1.0f ), 0.0f, glm::vec3( 0, 0, 1 ) );  // Z axis
 
 	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0, 0.5, -20.0 ) );
 	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
@@ -130,6 +129,19 @@ void RCubeObject::drawObject()
 				// only draw cubies in the outer layer
 				if ( x == 0 || x == CUBIE_COUNT - 1 || y == 0 || y == CUBIE_COUNT - 1 || z == 0 || z == CUBIE_COUNT - 1 )
 				{
+					// update texture index matrix
+					for ( int i = 0; i < 4; i++ )
+					{
+						m_aTexIndex[ 4*AX_FRONT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( AX_FRONT );
+						m_aTexIndex[ 4*AX_UP + i ] 		= m_RCModel->cubie( x, y, z ).colInd( AX_UP );
+						m_aTexIndex[ 4*AX_BACK + i ] 	= m_RCModel->cubie( x, y, z ).colInd( AX_BACK );
+						m_aTexIndex[ 4*AX_DOWN + i ] 	= m_RCModel->cubie( x, y, z ).colInd( AX_DOWN );
+						m_aTexIndex[ 4*AX_LEFT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( AX_LEFT );
+						m_aTexIndex[ 4*AX_RIGHT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( AX_RIGHT );
+					}
+
+					m_VBOTexIndex = loadGLArrayBuffer( m_aTexIndex, sizeof( m_aTexIndex ) );
+
 					glm::mat4 offset = glm::translate( glm::mat4( 1.0f ),
 							glm::vec3( x - offCenter, y - offCenter, z - offCenter ) );
 					glm::mat4 mvp = projection * model * anim * offset ;// + offset;
@@ -181,7 +193,7 @@ void RCubeObject::drawCubie( const int x, const int y, const int z ) const
 {
 	glEnableVertexAttribArray( m_attrTexIndex );
 	glBindBuffer( GL_ARRAY_BUFFER, m_VBOTexIndex );
-	glVertexAttribPointer( m_attrTexIndex, 1, GL_UNSIGNED_SHORT, GL_FALSE, 0, 0 );
+	glVertexAttribPointer( m_attrTexIndex, 1, GL_SHORT, GL_FALSE, 0, 0 );
 
 	glEnableVertexAttribArray( m_attrCubeVertices );
 	glBindBuffer( GL_ARRAY_BUFFER, m_VBOCubeVertices );

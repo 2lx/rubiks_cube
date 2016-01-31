@@ -15,6 +15,7 @@ namespace RC
 		float colR( const RCAxis ax ) const;
 		float colG( const RCAxis ax ) const;
 		float colB( const RCAxis ax ) const;
+		RCAxis colInd( const RCAxis ax ) const { return m_colourInd[ ax ]; };
 		inline void setColourInd( const RCAxis ax, const RCAxis cind ) { m_colourInd[ ax ] = cind; };
 
 	private:

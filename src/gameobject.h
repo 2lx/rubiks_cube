@@ -23,12 +23,12 @@ protected:
 	bool isAxisVisible( const RC::RCAxis ax ) const;
 
 	template < class T >
-	GLuint loadGLArrayBuffer( T * pArr, const int arrSize ) const
+	GLuint loadGLArrayBuffer( T * pArr, const int arrSize, const GLenum changeHint = GL_STATIC_DRAW ) const
 	{
 		GLuint bId;
 		glGenBuffers( 1, &bId );
 		glBindBuffer( GL_ARRAY_BUFFER, bId );
-		glBufferData( GL_ARRAY_BUFFER, arrSize, pArr, GL_STATIC_DRAW );
+		glBufferData( GL_ARRAY_BUFFER, arrSize, pArr, changeHint );
 
 		return bId;
 	}
