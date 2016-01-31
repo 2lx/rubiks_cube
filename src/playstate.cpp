@@ -61,7 +61,7 @@ void CPlayState::Cleanup()
 
 void CPlayState::setProjection( const ProjectionType pType ) const
 {
-	glMatrixMode( GL_PROJECTION );
+/*	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
 
 	if ( pType == PT_DIMETRIC )
@@ -81,7 +81,7 @@ void CPlayState::setProjection( const ProjectionType pType ) const
 		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 40.0 );
 	};
 
-	glMatrixMode( GL_MODELVIEW );
+	glMatrixMode( GL_MODELVIEW );*/
 }
 
 void CPlayState::Pause()

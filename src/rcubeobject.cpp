@@ -53,19 +53,6 @@ RCubeObject::~RCubeObject()
 
 void RCubeObject::Update( )
 {
-	float angle = SDL_GetTicks() / 500.0 * 15.0;
-	glm::mat4 anim =
-		glm::rotate( glm::mat4( 1.0f ), angle * 3.0f, glm::vec3( 1, 0, 0 ) ) * // X axis
-		glm::rotate( glm::mat4( 1.0f ), angle * 2.0f, glm::vec3( 0, 1, 0 ) ) * // Y axis
-		glm::rotate( glm::mat4( 1.0f ), angle * 4.0f, glm::vec3( 0, 0, 1 ) );  // Z axis
-
-	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0, 0.0, -4.0 ) );
-	glm::mat4 view = glm::lookAt( glm::vec3( 0.0, 2.0, 0.0 ), glm::vec3( 0.0, 0.0, -4.0 ), glm::vec3( 0.0, 1.0, 0.0 ) );
-	glm::mat4 projection = glm::perspective( 45.0f, 1.0f * SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 10.0f );
-
-	glm::mat4 mvp = projection * view * model * anim;
-
-	glUniformMatrix4fv( m_UniMVP, 1, GL_FALSE, glm::value_ptr( mvp ) );
 }
 
 void RCubeObject::setMove( const RCMoveType newRT )
@@ -138,44 +125,60 @@ void RCubeObject::drawObject()
 	glActiveTexture( GL_TEXTURE0 );
 	glUniform1i( m_UniTexID[ AX_FRONT ], 0 );
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_FRONT ] );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 	glActiveTexture( GL_TEXTURE1 );
 	glUniform1i( m_UniTexID[ AX_UP ], 1 );
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_UP ] );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 	glActiveTexture( GL_TEXTURE2 );
 	glUniform1i( m_UniTexID[ AX_BACK ], 2 );
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_BACK ] );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 	glActiveTexture( GL_TEXTURE3 );
 	glUniform1i( m_UniTexID[ AX_DOWN ], 3 );
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_DOWN ] );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 	glActiveTexture( GL_TEXTURE4 );
 	glUniform1i( m_UniTexID[ AX_LEFT ], 4 );
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_LEFT ] );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 	glActiveTexture( GL_TEXTURE5 );
 	glUniform1i( m_UniTexID[ AX_RIGHT], 5 );
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexID[ AX_RIGHT ] );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-	glEnableVertexAttribArray( m_attrTexIndex );
-	glBindBuffer( GL_ARRAY_BUFFER, m_VBOTexIndex );
-	glVertexAttribPointer( m_attrTexIndex, 1, GL_UNSIGNED_SHORT, GL_FALSE, 0, 0 );
+	float angle = SDL_GetTicks() / 500.0 * 15.0;
+	glm::mat4 anim =
+		glm::rotate( glm::mat4( 1.0f ), angle * 3.0f, glm::vec3( 1, 0, 0 ) ) * // X axis
+		glm::rotate( glm::mat4( 1.0f ), angle * 2.0f, glm::vec3( 0, 1, 0 ) ) * // Y axis
+		glm::rotate( glm::mat4( 1.0f ), angle * 4.0f, glm::vec3( 0, 0, 1 ) );  // Z axis
 
-	glEnableVertexAttribArray( m_attrCubeVertices );
-	glBindBuffer( GL_ARRAY_BUFFER, m_VBOCubeVertices );
-	glVertexAttribPointer( m_attrCubeVertices, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0, 0.5, -20.0 ) );
+	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
+	const float offCenter = CUBIE_COUNT / 2.0f;
 
-	glEnableVertexAttribArray( m_attrTexCoords );
-	glBindBuffer( GL_ARRAY_BUFFER, m_VBOTexCoords );
-	glVertexAttribPointer( m_attrTexCoords, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+	for ( int x = 0; x < CUBIE_COUNT; ++x )
+		for ( int y = 0; y < CUBIE_COUNT; ++y )
+			for ( int z = 0; z < CUBIE_COUNT; ++z )
+				// only draw cubies in the outer layer
+				if ( x == 0 || x == CUBIE_COUNT - 1 || y == 0 || y == CUBIE_COUNT - 1 || z == 0 || z == CUBIE_COUNT - 1 )
+				{
+					glm::mat4 offset = glm::translate( glm::mat4( 1.0f ),
+							glm::vec3( x - offCenter, y - offCenter, z - offCenter ) );
+					glm::mat4 mvp = projection * model * anim * offset ;// + offset;
 
-	glDrawArrays( GL_QUADS, 0, 4*6 );
+					glUniformMatrix4fv( m_UniMVP, 1, GL_FALSE, glm::value_ptr( mvp ) );
 
-	glDisableVertexAttribArray( m_attrTexIndex );
-	glDisableVertexAttribArray( m_attrCubeVertices );
-	glDisableVertexAttribArray( m_attrTexCoords );
+					drawCubie( x, y, z );
+				}
+
+
+//	drawCubie( 0, 0, 0 );
 
 /*	setCubeVertices( 0, 0, 0, CUBIE_COUNT * 2.0 / 3.0 );
 
@@ -214,9 +217,26 @@ void RCubeObject::drawObject()
 
 void RCubeObject::drawCubie( const int x, const int y, const int z ) const
 {
-	const GLfloat centerDiff = ( -1 * CUBIE_COUNT ) / 2.0 + 0.5;
+	glEnableVertexAttribArray( m_attrTexIndex );
+	glBindBuffer( GL_ARRAY_BUFFER, m_VBOTexIndex );
+	glVertexAttribPointer( m_attrTexIndex, 1, GL_UNSIGNED_SHORT, GL_FALSE, 0, 0 );
 
-/*	if ( m_moveType != MT_NONE && m_moveLayer != -1 )
+	glEnableVertexAttribArray( m_attrCubeVertices );
+	glBindBuffer( GL_ARRAY_BUFFER, m_VBOCubeVertices );
+	glVertexAttribPointer( m_attrCubeVertices, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+
+	glEnableVertexAttribArray( m_attrTexCoords );
+	glBindBuffer( GL_ARRAY_BUFFER, m_VBOTexCoords );
+	glVertexAttribPointer( m_attrTexCoords, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+
+	glDrawArrays( GL_QUADS, 0, 4*6 );
+
+	glDisableVertexAttribArray( m_attrTexIndex );
+	glDisableVertexAttribArray( m_attrCubeVertices );
+	glDisableVertexAttribArray( m_attrTexCoords );
+/*	const GLfloat centerDiff = ( -1 * CUBIE_COUNT ) / 2.0 + 0.5;
+
+	if ( m_moveType != MT_NONE && m_moveLayer != -1 )
 	{
 		if (	( z == m_moveLayer && MoveParams::vec( m_moveType ).z() != 0 ) ||
 				( x == m_moveLayer && MoveParams::vec( m_moveType ).x() != 0 ) ||

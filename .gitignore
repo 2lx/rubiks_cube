@@ -4,3 +4,5 @@
 obj/*
 bin/*
 TODO.txt
+*.save
+src/*.save
