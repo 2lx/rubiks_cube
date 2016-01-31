@@ -284,34 +284,34 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( !m_RCube->isRotating() && m_pBegin.is0() )
+//	if ( /*!m_RCube->isRotating() && */m_pBegin.is0() )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
 			m_RCube->setRotates( 1, 0, 0, false );
 			m_gkStates[ GK_LOOKDOWN ].releaseNewDown();
 		}
-		else if ( m_gkStates[ GK_LOOKUP ].isNewDown() )
+		if ( m_gkStates[ GK_LOOKUP ].isNewDown() )
 		{
 			m_RCube->setRotates( 1, 0, 0, true );
 			m_gkStates[ GK_LOOKUP ].releaseNewDown();
 		}
-		else if ( m_gkStates[ GK_LOOKRIGHT ].isNewDown() )
+		if ( m_gkStates[ GK_LOOKRIGHT ].isNewDown() )
 		{
 			m_RCube->setRotates( 0, 1, 0, false );
 			m_gkStates[ GK_LOOKRIGHT ].releaseNewDown();
 		}
-		else if ( m_gkStates[ GK_LOOKLEFT ].isNewDown() )
+		if ( m_gkStates[ GK_LOOKLEFT ].isNewDown() )
 		{
 			m_RCube->setRotates( 0, 1, 0, true );
 			m_gkStates[ GK_LOOKLEFT ].releaseNewDown();
 		}
-		else if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
+		if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
 		{
 			m_RCube->setRotates( 0, 0, 1, true );
 			m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].releaseNewDown();
 		}
-		else if ( m_gkStates[ GK_ROTATECLOCKWISE ].isNewDown() )
+		if ( m_gkStates[ GK_ROTATECLOCKWISE ].isNewDown() )
 		{
 			m_RCube->setRotates( 0, 0, 1, false );
 			m_gkStates[ GK_ROTATECLOCKWISE ].releaseNewDown();

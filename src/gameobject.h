@@ -1,12 +1,6 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-//#include <GL/gl.h>
-#include "shapes.h"
-#include "rcubemodel.h"
-//#include "myquaternion.h"
-//#include <glm/gtc/quaternion.hpp>
-//#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 class GameObject
@@ -17,7 +11,7 @@ public:
 	virtual void drawObject() = 0;
 	void rotateObject();
 	void setRotates( const int newDirX, const int newDirY, const int newDirZ, const bool isPos );
-	bool isRotating() const { return ( glm::length( m_rotateVec ) > 0  /*m_rotateVec.length() > 0*/ ); };
+	bool isRotating() const	{ return ( m_rotateMix >= 0 ); };
 
 protected:
 	glm::quat m_rotateQuat;
@@ -39,9 +33,8 @@ protected:
 	GLuint loadGLTexture2D( const char * filename ) const;
 
 private:
-	float m_rotateAngle = { 0 };
-	bool m_isPositive = { true };
-	glm::vec3 m_rotateVec;
+    float m_rotateMix = { 0 };
+	glm::quat m_newQuat;
 //	RC::RCAxis m_axesPos[ RC::AX_COUNT ];
 
 	void updateAxesPos();
