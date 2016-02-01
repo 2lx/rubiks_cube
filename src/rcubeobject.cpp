@@ -60,7 +60,8 @@ void RCubeObject::setMove( const RCMoveType newRT )
 		else m_moveLayer = CUBIE_COUNT - 1;
 
 		m_moveMix = 0;
-		m_newMoveQuat = glm::angleAxis( ( isPos ) ? -90.0f : 90.0f, MoveParams::vec( m_moveType ) );
+		float angle = glm::radians( 90.0f );
+		m_newMoveQuat = glm::angleAxis( ( isPos ) ? -angle : angle, MoveParams::vec( m_moveType ) );
 	}
 
 //	m_moveType = MT_FRONT;
@@ -127,7 +128,7 @@ void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 		m_moveLayer = floor( pp.z() );
 }
 */
-void RCubeObject::drawObject()
+void RCubeObject::drawObject( const glm::mat4 & mvp )
 {
 	const float offCenter = CUBIE_COUNT / 2.0f - 0.5;
 
@@ -136,7 +137,7 @@ void RCubeObject::drawObject()
 		if ( m_moveMix < 1.0 )
 		{
 			m_moveQuat = glm::mix( m_moveQuat, m_newMoveQuat, m_moveMix );
-			m_moveMix += 0.05;
+			m_moveMix += 0.04;
 		}
 		else
 		{
@@ -154,6 +155,7 @@ void RCubeObject::drawObject()
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexUnionID );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
+	// TODO: optimize matrix calculations
 	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
 
 	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0, 0.5, -20.0 ) );
@@ -166,8 +168,8 @@ void RCubeObject::drawObject()
 	glm::mat4 rotation = glm::mat4_cast( m_rotateQuat );
 	glm::mat4 moving = glm::mat4_cast( m_moveQuat );
 
-	glm::mat4 mvpPMVR = projection * model * view * rotation;
-	glm::mat4 mvpPMVRM = projection * model * view * rotation * moving;
+	glm::mat4 mvpR = mvp * rotation;
+	glm::mat4 mvpRM = mvp * rotation * moving;
 
 	for ( int x = 0; x < CUBIE_COUNT; ++x )
 		for ( int y = 0; y < CUBIE_COUNT; ++y )
@@ -193,19 +195,19 @@ void RCubeObject::drawObject()
 							glm::vec3( x - offCenter, y - offCenter, z - offCenter ) );
 
 					// calculate model view projection matrix
-					glm::mat4 mvp;
+					glm::mat4 mRes;
 
 					if ( ( m_moveType != MT_NONE && m_moveLayer != -1 ) &&
-						 ( z == m_moveLayer && MoveParams::vec( m_moveType ).z != 0 ) ||
+						( z == m_moveLayer && MoveParams::vec( m_moveType ).z != 0 ) ||
 						( x == m_moveLayer && MoveParams::vec( m_moveType ).x != 0 ) ||
 						( y == m_moveLayer && MoveParams::vec( m_moveType ).y != 0 )
 						)
 					{
-						mvp = mvpPMVRM * offset;
+						mRes = mvpRM * offset;
 					}
-					else mvp = mvpPMVR * offset;
+					else mRes = mvpR * offset;
 
-					glUniformMatrix4fv( m_UniMVP, 1, GL_FALSE, glm::value_ptr( mvp ) );
+					glUniformMatrix4fv( m_UniMVP, 1, GL_FALSE, glm::value_ptr( mRes ) );
 
 					drawCubie( x, y, z );
 				}

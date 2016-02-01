@@ -6,6 +6,8 @@
 #include "rcubeobject.h"
 #include "shapes.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 enum GameKeys
 {
     GK_LOOKUP, GK_LOOKDOWN, GK_LOOKLEFT, GK_LOOKRIGHT, GK_ROTATECLOCKWISE, GK_ROTATECOUNTERCLOCKWISE,
@@ -72,9 +74,10 @@ private:
 	bool m_needRedraw = { true };
 	GameKeysStates m_gkStates[ GK_COUNT ];
 	ProjectionType m_prType = { PT_ISOMETRIC };
-	Point3D m_pBegin, m_pEnd;
+//	Point3D m_pBegin, m_pEnd;
+	glm::mat4 m_matCamera;
 
-	void setProjection( const ProjectionType pType ) const;
+	void setProjection( const ProjectionType pType );
 	Point3D getGLPos( const int mX, const int mY ) const;
 
 	ShaderProgram * m_shaderPr;

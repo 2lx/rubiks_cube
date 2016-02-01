@@ -1,6 +1,8 @@
 #ifndef ALL_H_INCLUDED
 #define ALL_H_INCLUDED
 
+#define GLM_FORCE_RADIANS
+
 #if defined(NDEBUG)
 #define MY_DEBUG
 #endif

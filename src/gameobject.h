@@ -8,7 +8,7 @@ class GameObject
 public:
 	virtual ~GameObject();
 
-	virtual void drawObject() = 0;
+	virtual void drawObject( const glm::mat4 & ) = 0;
 	void rotateObject();
 	void setRotates( const int newDirX, const int newDirY, const int newDirZ, const bool isPos );
 	bool isRotating() const	{ return ( m_rotateMix >= 0 ); };
@@ -35,6 +35,7 @@ protected:
 private:
     float m_rotateMix = { -1 };
 	glm::quat m_newRotateQuat;
+	glm::quat m_oldRotateQuat;
 
 //	RC::RCAxis m_axesPos[ RC::AX_COUNT ];
 

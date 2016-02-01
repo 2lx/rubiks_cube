@@ -1,29 +1,29 @@
 #include "all.h"
 
 #include "playstate.h"
-#include "gamestate.h"
-#include "gameengine.h"
+//#include "gamestate.h"
+//#include "gameengine.h"
 #include "myquaternion.h"
 #include "rcubeparams.h"
 
 #include "shader.h"
 #include "shaderprogram.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 CPlayState CPlayState::m_PlayState;
 
 void CPlayState::Init()
 {
-	//
+	// Setup shader program
 	Shader vertexShader( GL_VERTEX_SHADER );
 	vertexShader.loadFromFile( "glsl/shader.v.glsl" );
 	vertexShader.compile();
 
-	// Set up fragment shader
 	Shader fragmentShader( GL_FRAGMENT_SHADER );
 	fragmentShader.loadFromFile( "glsl/shader.f.glsl" );
 	fragmentShader.compile();
 
-	// Set up shader program
 	m_shaderPr = new ShaderProgram();
 	m_shaderPr->attachShader( vertexShader );
 	m_shaderPr->attachShader( fragmentShader );
@@ -32,13 +32,12 @@ void CPlayState::Init()
 	m_RCube = new RCubeObject( m_shaderPr );
 
 	std::cout.flush();
-	//char f;
-	//std::cin >> f;
 
 	glEnable( GL_BLEND );
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
+	setProjection( m_prType );
 
 /*	glClearDepth( 1.0 );
 	glDepthFunc( GL_LESS );
@@ -59,29 +58,29 @@ void CPlayState::Cleanup()
 	AxisParams::cleanup();
 }
 
-void CPlayState::setProjection( const ProjectionType pType ) const
+void CPlayState::setProjection( const ProjectionType pType )
 {
-/*	glMatrixMode( GL_PROJECTION );
-	glLoadIdentity();
+	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
 
-	if ( pType == PT_DIMETRIC )
+	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0f, 0.5f, -20.0f ) );
+
+	glm::mat4 view =
+		glm::rotate( glm::mat4( 1.0f ), glm::radians( 35.264f ), glm::vec3( 1, 0, 0 ) ) * // X axis
+		glm::rotate( glm::mat4( 1.0f ), glm::radians( 45.0f ), glm::vec3( 0, 1, 0 ) ) * // Y axis
+		glm::rotate( glm::mat4( 1.0f ), glm::radians( 0.0f ), glm::vec3( 0, 0, 1 ) );  // Z axis
+
+	if ( pType == PT_ISOMETRIC )
+		m_matCamera = projection * model * view;
+	else
 	{
-		GLfloat cavalierPMatrix[ 16 ] = {
-			1 , 0 , 0 , 0,
-			0 , 1 , 0 , 0,
-			0.3345, -0.3345, 1 , 0,
-			0 , 0 , 0 , 1
-		};
+		glm::mat4 cavalier = {
+			1.0f, 		0.0f, 0.0f, 0.0f,
+			0.0f, 		1.0f, 0.0f, 0.0f,
+		 0.3345f,	-0.3345f, 1.0f, 0.0f,
+			0.0f, 		0.0f, 0.0f, 1.0f };
 
-		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 40.0 );
-		glMultMatrixf( cavalierPMatrix );
+		m_matCamera = projection * model * cavalier * view;
 	}
-	else if ( pType == PT_ISOMETRIC )
-	{
-		glOrtho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0, 40.0 );
-	};
-
-	glMatrixMode( GL_MODELVIEW );*/
 }
 
 void CPlayState::Pause()
@@ -99,7 +98,7 @@ Point3D CPlayState::getGLPos( const int mX, const int mY ) const
 	GLint viewport[ 4 ];
 	glGetIntegerv( GL_VIEWPORT, viewport ); // 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT
 
-	GLdouble modelview[16];
+	GLdouble modelview[ 16 ];
 	glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
 
 	GLdouble projection[ 16 ];
@@ -124,7 +123,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 	const Uint32 start = SDL_GetTicks();
 	bool allEventsRunOut = false;
 
-	while ( SDL_PollEvent( &event ) && !allEventsRunOut/* && ( SDL_GetTicks() - start ) < 15 */)
+	while ( SDL_PollEvent( &event ) && !allEventsRunOut && ( SDL_GetTicks() - start ) < 15 )
 	{
 		switch( event.type )
 		{
@@ -270,8 +269,8 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				for ( int i = 0; i < GK_COUNT; ++i )
 					m_gkStates[ i ].releasePress();
 
-				m_pBegin.setXYZ( 0, 0, 0 );
-				m_pEnd.setXYZ( 0, 0, 0 );
+//				m_pBegin.setXYZ( 0, 0, 0 );
+//				m_pEnd.setXYZ( 0, 0, 0 );
 
 				lastEvent = false;
 				allEventsRunOut = true;
@@ -284,7 +283,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( /*!m_RCube->isRotating() && */m_pBegin.is0() )
+//	if ( /* !m_RCube->isRotating() && m_pBegin.is0() */)
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -330,7 +329,7 @@ void CPlayState::Update( CGameEngine * game )
 		}
 	}
 */
-	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && m_pBegin.is0() )
+	if ( !m_RCube->isMoving() && !m_RCube->isRotating()/* && m_pBegin.is0()*/ )
 	{
 		for ( int i = 0; i < GK_MOVELAST - GK_MOVEFIRST + 1; i++ )
 		{
@@ -390,7 +389,7 @@ void CPlayState::Draw( CGameEngine * game )
 		}
 */
 		m_RCube->rotateObject();
-		m_RCube->drawObject();
+		m_RCube->drawObject( m_matCamera );
 
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
