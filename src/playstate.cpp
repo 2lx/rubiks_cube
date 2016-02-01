@@ -81,28 +81,6 @@ void CPlayState::Resume()
 
 }
 
-Point3D CPlayState::getGLPos( const int mX, const int mY ) const
-{
-	GLint viewport[ 4 ];
-	glGetIntegerv( GL_VIEWPORT, viewport ); // 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT
-
-	GLdouble modelview[ 16 ];
-	glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-
-	GLdouble projection[ 16 ];
-	glGetDoublev( GL_PROJECTION_MATRIX, projection );
-
-	GLfloat winX, winY, winZ;
-	winX = ( float ) mX;
-	winY = ( float ) viewport[ 3 ] - ( float ) mY;
-	glReadPixels( winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
-
-	GLdouble posX, posY, posZ;
-	gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ );
-//	std::cout << posX << " " << posY << " " << posZ << std::endl;
-	return Point3D( posX, posY, posZ );
-}
-
 void CPlayState::HandleEvents( CGameEngine* game )
 {
 	static bool lastEvent = false;
@@ -227,12 +205,11 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			break;
 //		case SDL_KEYUP:
 //			break;
-/*		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONDOWN:
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
 				m_pBegin = getGLPos( event.button.x, event.button.y );
-//				std::cout << m_pBegin.x() << " " << m_pBegin.y() << " " << m_pBegin.z() << std::endl;
 
 				break;
 			case SDL_BUTTON_RIGHT:
@@ -244,7 +221,6 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			{
 			case SDL_BUTTON_LEFT:
 				m_pEnd = getGLPos( event.button.x, event.button.y );
-//				std::cout << m_pEnd.x() << " " << m_pEnd.y() << " " << m_pEnd.z() << std::endl;
 
 				m_gkStates[ GK_MOVEMOUSE ].setDown();
 				m_gkStates[ GK_MOVEMOUSE ].releasePress();
@@ -253,14 +229,14 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				break;
 			}
 			break;
-*/		default:
+		default:
 			if ( lastEvent )
 			{
 				for ( int i = 0; i < GK_COUNT; ++i )
 					m_gkStates[ i ].releasePress();
 
-//				m_pBegin.setXYZ( 0, 0, 0 );
-//				m_pEnd.setXYZ( 0, 0, 0 );
+				m_pBegin = { 0.0f, 0.0f, 0.0f };
+				m_pEnd = { 0.0f, 0.0f, 0.0f };
 
 				lastEvent = false;
 				allEventsRunOut = true;
@@ -271,9 +247,30 @@ void CPlayState::HandleEvents( CGameEngine* game )
 	}
 }
 
+glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
+{
+	GLint viewport[ 4 ];
+	glGetIntegerv( GL_VIEWPORT, viewport ); // 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT
+
+	glm::dmat4 modelView = m_mModel * m_mView;
+
+	GLfloat winX, winY, winZ;
+	winX = ( float ) mX;
+	winY = ( float ) viewport[ 3 ] - ( float ) mY;
+	glReadPixels( winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+
+	GLdouble posX, posY, posZ;
+	gluUnProject( winX, winY, winZ,
+		glm::value_ptr( modelView ), glm::value_ptr( m_mProjection ), viewport,
+		&posX, &posY, &posZ );
+
+//	std::cout << posX << " " << posY << " " << posZ << std::endl;
+	return glm::vec3( posX, posY, posZ );
+}
+
 void CPlayState::Update( CGameEngine * game )
 {
-//	if ( /* !m_RCube->isRotating() && m_pBegin.is0() */)
+	if ( !m_RCube->isRotating() && glm::length( m_pBegin ) == 0 )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -306,20 +303,20 @@ void CPlayState::Update( CGameEngine * game )
 			m_gkStates[ GK_ROTATECLOCKWISE ].releaseNewDown();
 		}
 	}
-/*
-	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && !m_pBegin.is0() )
+
+	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && glm::distance( m_pBegin, m_pEnd ) > 0.5 )
 	{
 		if ( m_gkStates[ GK_MOVEMOUSE ].isNewDown() )
 		{
 			m_RCube->setMoveByCoords( m_pBegin, m_pEnd );
 			m_gkStates[ GK_MOVEMOUSE ].releaseNewDown();
 
-			m_pBegin.setXYZ( 0, 0, 0 );
-			m_pEnd.setXYZ( 0, 0, 0 );
+			m_pBegin = { 0.0f, 0.0f, 0.0f };
+			m_pEnd = { 0.0f, 0.0f, 0.0f };
 		}
 	}
-*/
-	if ( !m_RCube->isMoving() && !m_RCube->isRotating()/* && m_pBegin.is0()*/ )
+
+	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && glm::length( m_pBegin ) == 0 )
 	{
 		for ( int i = 0; i < GK_MOVELAST - GK_MOVEFIRST + 1; i++ )
 		{
@@ -364,20 +361,6 @@ void CPlayState::Draw( CGameEngine * game )
 
 		glUseProgram( m_shaderPr->id() );
 
-/*		glLoadIdentity();
-
-		if ( m_prType == PT_DIMETRIC )
-		{
-			glTranslatef( RC::CUBIE_COUNT - 2, -RC::CUBIE_COUNT + 2.5, -20 );
-		}
-		else if ( m_prType == PT_ISOMETRIC )
-		{
-			glTranslatef( 0.0f, 0.5, -20 );
-
-			glRotatef( 35.264f, 1.0f, 0.0f, 0.0f );
-			glRotatef( 45.0f, 0.0f, 1.0f, 0.0f );
-		}
-*/
 		m_RCube->rotateObject();
 		m_RCube->drawObject( m_matrCamera );
 

@@ -17,7 +17,7 @@ public:
 
 	void drawObject( const glm::mat4 & pmv );
 	void setMove( const RCMoveType newRT );
-//	void setMoveByCoords( const Point3D pBeg, const Point3D pEnd );
+	void setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
 	bool isMoving() const { return ( m_moveMix >= 0 ); }
 	void Update();
 

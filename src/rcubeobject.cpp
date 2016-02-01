@@ -86,11 +86,13 @@ RCAxis RCubeObject::getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const
 
 	return vec.getNearestAxis();
 }
-
-void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
+*/
+void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
 {
+//	glm::cross() get third vector as product cross of two
+
     // get tangent axis
-	const float coorSurface = ( CUBIE_COUNT / 2.0 ) - 0.05;
+/*	const float coorSurface = ( CUBIE_COUNT / 2.0 ) - 0.05;
 	RCAxis axBeg = pBeg.getTangentAxis( coorSurface, 0.14 );
 	RCAxis axTangent = pEnd.getTangentAxis( coorSurface, 0.14 );
 
@@ -125,19 +127,20 @@ void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 	else if ( axResult == AX_UP || axResult == AX_DOWN )
 		m_moveLayer = floor( pp.y() );
 	else if ( axResult == AX_FRONT || axResult == AX_BACK )
-		m_moveLayer = floor( pp.z() );
+		m_moveLayer = floor( pp.z() );*/
 }
-*/
+
 void RCubeObject::drawObject( const glm::mat4 & pmv )
 {
 	const float offCenter = CUBIE_COUNT / 2.0f - 0.5;
 
+	// turn the face of cube
 	if ( isMoving() )
 	{
 		if ( m_moveMix < 1.0 )
 		{
 			m_moveQuat = glm::mix( m_moveQuat, m_newMoveQuat, m_moveMix );
-			m_moveMix += 0.04;
+			m_moveMix += 0.08;
 		}
 		else
 		{
@@ -150,11 +153,13 @@ void RCubeObject::drawObject( const glm::mat4 & pmv )
 		}
 	}
 
+	// use texture
 	glActiveTexture( GL_TEXTURE0 );
 	glUniform1i( m_UniTexUnionID, 0 );
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexUnionID );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
+	// calculate transformation matrix
 	glm::mat4 rotation = glm::mat4_cast( m_rotateQuat );
 	glm::mat4 moving = glm::mat4_cast( m_moveQuat );
 
