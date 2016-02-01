@@ -1,8 +1,6 @@
 #include "all.h"
 
 #include "playstate.h"
-//#include "gamestate.h"
-//#include "gameengine.h"
 #include "myquaternion.h"
 #include "rcubeparams.h"
 
@@ -38,14 +36,6 @@ void CPlayState::Init()
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	setProjection( m_prType );
-
-/*	glClearDepth( 1.0 );
-	glDepthFunc( GL_LESS );
-	glEnable( GL_DEPTH_TEST );
-	glShadeModel( GL_SMOOTH );
-	glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-
-	setProjection( m_prType );*/
 }
 
 void CPlayState::Cleanup()
@@ -61,16 +51,17 @@ void CPlayState::Cleanup()
 void CPlayState::setProjection( const ProjectionType pType )
 {
 	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
-
 	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0f, 0.5f, -20.0f ) );
 
-	glm::mat4 view =
-		glm::rotate( glm::mat4( 1.0f ), glm::radians( 35.264f ), glm::vec3( 1, 0, 0 ) ) * // X axis
-		glm::rotate( glm::mat4( 1.0f ), glm::radians( 45.0f ), glm::vec3( 0, 1, 0 ) ) * // Y axis
-		glm::rotate( glm::mat4( 1.0f ), glm::radians( 0.0f ), glm::vec3( 0, 0, 1 ) );  // Z axis
-
 	if ( pType == PT_ISOMETRIC )
-		m_matCamera = projection * model * view;
+	{
+		glm::mat4 view =
+			glm::rotate( glm::mat4( 1.0f ), glm::radians( 35.264f ), glm::vec3( 1, 0, 0 ) ) * // X axis
+			glm::rotate( glm::mat4( 1.0f ), glm::radians( 45.0f ), glm::vec3( 0, 1, 0 ) ) * // Y axis
+			glm::rotate( glm::mat4( 1.0f ), glm::radians( 0.0f ), glm::vec3( 0, 0, 1 ) );  // Z axis
+
+		m_matrCamera = projection * model * view;
+	}
 	else
 	{
 		glm::mat4 cavalier = {
@@ -79,7 +70,7 @@ void CPlayState::setProjection( const ProjectionType pType )
 		 0.3345f,	-0.3345f, 1.0f, 0.0f,
 			0.0f, 		0.0f, 0.0f, 1.0f };
 
-		m_matCamera = projection * model * cavalier * view;
+		m_matrCamera = projection *  model * cavalier;
 	}
 }
 
@@ -229,11 +220,11 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_SPACE:
 				m_gkStates[ GK_CHANGECOLOR ].setDown();
 				break;
-
+*/
 			case SDLK_RETURN:
 				m_gkStates[ GK_CHANGEPROJ ].setDown();
 				break;
-*/			}
+			}
 			break;
 //		case SDL_KEYUP:
 //			break;
@@ -348,7 +339,7 @@ void CPlayState::Update( CGameEngine * game )
 		m_gkStates[ GK_CHANGECOLOR ].releaseNewDown();
 		m_needRedraw = true;
 	}
-
+*/
 	if ( m_gkStates[ GK_CHANGEPROJ ].isNewDown() )
 	{
         m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
@@ -356,7 +347,7 @@ void CPlayState::Update( CGameEngine * game )
 		m_gkStates[ GK_CHANGEPROJ ].releaseNewDown();
 		m_needRedraw = true;
 	}
-*/
+
 
 	m_RCube->Update();
 }
@@ -389,7 +380,7 @@ void CPlayState::Draw( CGameEngine * game )
 		}
 */
 		m_RCube->rotateObject();
-		m_RCube->drawObject( m_matCamera );
+		m_RCube->drawObject( m_matrCamera );
 
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );

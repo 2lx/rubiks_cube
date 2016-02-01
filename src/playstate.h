@@ -75,7 +75,7 @@ private:
 	GameKeysStates m_gkStates[ GK_COUNT ];
 	ProjectionType m_prType = { PT_ISOMETRIC };
 //	Point3D m_pBegin, m_pEnd;
-	glm::mat4 m_matCamera;
+	glm::mat4 m_matrCamera;
 
 	void setProjection( const ProjectionType pType );
 	Point3D getGLPos( const int mX, const int mY ) const;

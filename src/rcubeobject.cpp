@@ -128,7 +128,7 @@ void RCubeObject::setMoveByCoords( const Point3D pBeg, const Point3D pEnd )
 		m_moveLayer = floor( pp.z() );
 }
 */
-void RCubeObject::drawObject( const glm::mat4 & mvp )
+void RCubeObject::drawObject( const glm::mat4 & pmv )
 {
 	const float offCenter = CUBIE_COUNT / 2.0f - 0.5;
 
@@ -155,21 +155,11 @@ void RCubeObject::drawObject( const glm::mat4 & mvp )
 	glBindTexture( GL_TEXTURE_2D, m_VBOTexUnionID );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-	// TODO: optimize matrix calculations
-	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
-
-	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0, 0.5, -20.0 ) );
-
-	glm::mat4 view =
-		glm::rotate( glm::mat4( 1.0f ), 35.264f, glm::vec3( 1, 0, 0 ) ) * // X axis
-		glm::rotate( glm::mat4( 1.0f ), 45.0f, glm::vec3( 0, 1, 0 ) ) * // Y axis
-		glm::rotate( glm::mat4( 1.0f ), 0.0f, glm::vec3( 0, 0, 1 ) );  // Z axis
-
 	glm::mat4 rotation = glm::mat4_cast( m_rotateQuat );
 	glm::mat4 moving = glm::mat4_cast( m_moveQuat );
 
-	glm::mat4 mvpR = mvp * rotation;
-	glm::mat4 mvpRM = mvp * rotation * moving;
+	glm::mat4 mvpR = pmv * rotation;
+	glm::mat4 mvpRM = pmv * rotation * moving;
 
 	for ( int x = 0; x < CUBIE_COUNT; ++x )
 		for ( int y = 0; y < CUBIE_COUNT; ++y )
@@ -198,9 +188,9 @@ void RCubeObject::drawObject( const glm::mat4 & mvp )
 					glm::mat4 mRes;
 
 					if ( ( m_moveType != MT_NONE && m_moveLayer != -1 ) &&
-						( z == m_moveLayer && MoveParams::vec( m_moveType ).z != 0 ) ||
-						( x == m_moveLayer && MoveParams::vec( m_moveType ).x != 0 ) ||
-						( y == m_moveLayer && MoveParams::vec( m_moveType ).y != 0 )
+						( 	( z == m_moveLayer && MoveParams::vec( m_moveType ).z != 0 ) ||
+							( x == m_moveLayer && MoveParams::vec( m_moveType ).x != 0 ) ||
+							( y == m_moveLayer && MoveParams::vec( m_moveType ).y != 0 ) )
 						)
 					{
 						mRes = mvpRM * offset;

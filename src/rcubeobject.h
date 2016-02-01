@@ -15,7 +15,7 @@ public:
 	RCubeObject( ShaderProgram * shaderPr );
 	virtual ~RCubeObject();
 
-	void drawObject( const glm::mat4 & mvp );
+	void drawObject( const glm::mat4 & pmv );
 	void setMove( const RCMoveType newRT );
 //	void setMoveByCoords( const Point3D pBeg, const Point3D pEnd );
 	bool isMoving() const { return ( m_moveMix >= 0 ); }
