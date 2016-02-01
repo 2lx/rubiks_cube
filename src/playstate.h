@@ -76,6 +76,8 @@ private:
 	ProjectionType m_prType = { PT_ISOMETRIC };
 //	Point3D m_pBegin, m_pEnd;
 	glm::mat4 m_matrCamera;
+	glm::mat4 m_mProjection, m_mModel, m_mView;
+	int m_screenWidth = 800, m_screenHeight = 600;
 
 	void setProjection( const ProjectionType pType );
 	Point3D getGLPos( const int mX, const int mY ) const;

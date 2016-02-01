@@ -19,12 +19,8 @@
 #include "rcdefines.h"
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
-
-const float SCREEN_WDH = ( float ) SCREEN_WIDTH / ( float ) SCREEN_HEIGHT;
-const float SCREEN_VERTMARGIN = 1 + RC::CUBIE_COUNT;
-const float SCREEN_HORIZMARGIN = SCREEN_VERTMARGIN * SCREEN_WDH;
+const int INIT_SCREEN_WIDTH = 800;
+const int INIT_SCREEN_HEIGHT = 600;
 
 // Screen FPS
 const int SCREEN_FPS = 60;

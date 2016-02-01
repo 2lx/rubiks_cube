@@ -50,28 +50,25 @@ void CPlayState::Cleanup()
 
 void CPlayState::setProjection( const ProjectionType pType )
 {
-	glm::mat4 projection = glm::ortho( -SCREEN_HORIZMARGIN, SCREEN_HORIZMARGIN, -SCREEN_VERTMARGIN, SCREEN_VERTMARGIN, 0.0f, 40.0f );
-	glm::mat4 model = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0f, 0.5f, -20.0f ) );
+	const float vMargin = ( 1 + RC::CUBIE_COUNT );
+	const float hMargin = vMargin * ( float ) m_screenWidth / ( float ) m_screenHeight;
+
+	m_mProjection = glm::ortho( -hMargin, hMargin, -vMargin, vMargin, 0.0f, 40.0f );
+	m_mModel = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0f, 0.5f, -20.0f ) );
 
 	if ( pType == PT_ISOMETRIC )
-	{
-		glm::mat4 view =
+		m_mView =
 			glm::rotate( glm::mat4( 1.0f ), glm::radians( 35.264f ), glm::vec3( 1, 0, 0 ) ) * // X axis
 			glm::rotate( glm::mat4( 1.0f ), glm::radians( 45.0f ), glm::vec3( 0, 1, 0 ) ) * // Y axis
 			glm::rotate( glm::mat4( 1.0f ), glm::radians( 0.0f ), glm::vec3( 0, 0, 1 ) );  // Z axis
-
-		m_matrCamera = projection * model * view;
-	}
-	else
-	{
-		glm::mat4 cavalier = {
+	else if ( pType == PT_DIMETRIC )
+		m_mView = { // cavalier view
 			1.0f, 		0.0f, 0.0f, 0.0f,
 			0.0f, 		1.0f, 0.0f, 0.0f,
 		 0.3345f,	-0.3345f, 1.0f, 0.0f,
 			0.0f, 		0.0f, 0.0f, 1.0f };
 
-		m_matrCamera = projection *  model * cavalier;
-	}
+	m_matrCamera = m_mProjection *  m_mModel * m_mView;
 }
 
 void CPlayState::Pause()
@@ -123,14 +120,16 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			break;
 
 		case SDL_WINDOWEVENT:
-/*			if ( event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED )
+			if ( event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED )
 			{
-				screen_width = width;
-				screen_height = height;
-				glViewport(0, 0, screen_width, screen_height);
+				m_screenWidth = event.window.data1;
+				m_screenHeight = event.window.data2;
+
+				glViewport( 0, 0, m_screenWidth, m_screenHeight );
+				m_needRedraw = true;
 			}
 			break;
-*/
+
 		case SDL_KEYDOWN:
 			lastEvent = true;
 			switch( event.key.keysym.sym )
