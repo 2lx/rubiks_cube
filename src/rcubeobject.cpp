@@ -73,7 +73,9 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 		return;
 
 	// get close rotation axis
-	glm::vec3 pRes = glm::cross( pBeg, pEnd ) * m_rotateQuat;
+	const glm::vec3 rvBeg = pBeg * m_rotateQuat;
+	const glm::vec3 rvEnd = pEnd * m_rotateQuat;
+	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
 
 	// get closest rotation axis
     glm::vec3 vAx;
@@ -104,8 +106,10 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 #ifdef NDEBUG
 	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
 	std::cout << pEnd.x << " " << pEnd.y << " " << pEnd.z << std::endl;
+	std::cout << rvBeg.x << " " << rvBeg.y << " " << rvBeg.z << std::endl;
+	std::cout << rvEnd.x << " " << rvEnd.y << " " << rvEnd.z << std::endl;
 	std::cout << pRes.x << " " << pRes.y << " " << pRes.z << std::endl;
-	std::cout << vAx.x << " " << vAx.y << " " << vAx.z << std::endl;
+	std::cout << vAx.x  << " " << vAx.y  << " " << vAx.z  << std::endl;
 	std::cout.flush();
 #endif // NDEBUG
 
@@ -123,11 +127,11 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 
 	// find move layer
 	if ( vAx.x != 0 )
-		m_moveLayer = floor( pBeg.x + cOffset );
+		m_moveLayer = floor( rvBeg.x + cOffset );
 	else if ( vAx.y != 0 )
-		m_moveLayer = floor( pBeg.y + cOffset );
+		m_moveLayer = floor( rvBeg.y + cOffset );
 	else if ( vAx.z != 0 )
-		m_moveLayer = floor( pBeg.z + cOffset );
+		m_moveLayer = floor( rvBeg.z + cOffset );
 	else m_moveLayer = 0;
 }
 
