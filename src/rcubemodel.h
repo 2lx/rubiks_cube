@@ -2,7 +2,6 @@
 #define RCUBEMODEL_H
 
 #include "rcdefines.h"
-#include "shapes.h"
 
 namespace RC
 {

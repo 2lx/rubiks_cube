@@ -2,8 +2,6 @@
 #define RCUBEPARAMS_H
 
 #include <map>
-#include "rcubemodel.h"
-//#include "myquaternion.h"
 #include <glm/gtc/type_ptr.hpp>
 
 namespace RC
@@ -27,9 +25,8 @@ namespace RC
 	class AxisParams	// Singleton
 	{
 	public:
-		static glm::vec3 vec( const RCAxis ax ) { return m_p[ ax ]->m_vec; };
-		static MyQuaternion quat( const RCAxis ax ) { return m_p[ ax ]->m_quat; };
-		static RCAxis getAxisForVector( const glm::vec3 & vec );
+	//	static glm::vec3 vec( const RCAxis ax ) { return m_p[ ax ]->m_vec; };
+	//	static RCAxis getAxisForVector( const glm::vec3 & vec );
 
 		static void cleanup();
 
@@ -37,15 +34,12 @@ namespace RC
 		class AxisParam	// Hidden class
 		{
 		public:
-			AxisParam( const GLfloat vX, const GLfloat vY, const GLfloat vZ,
-				const GLfloat qX, const GLfloat qY, const GLfloat qZ, const GLfloat qAngle )
+			AxisParam( const GLfloat vX, const GLfloat vY, const GLfloat vZ )
 				: m_vec { vX, vY, vZ }
 			{
-				m_quat.fromAxisAngle( qX, qY, qZ, qAngle );
 			};
 
 			const glm::vec3 m_vec;
-			MyQuaternion m_quat;
 		};
 
 		AxisParams() {};

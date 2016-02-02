@@ -1,7 +1,6 @@
 #include "all.h"
 
 #include "playstate.h"
-#include "myquaternion.h"
 #include "rcubeparams.h"
 
 #include "shader.h"
@@ -270,7 +269,7 @@ glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( !m_RCube->isRotating() && glm::length( m_pBegin ) == 0 )
+	if ( /*!m_RCube->isRotating() &&*/ glm::length( m_pBegin ) == 0 )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{

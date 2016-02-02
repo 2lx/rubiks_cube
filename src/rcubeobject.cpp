@@ -6,10 +6,8 @@
 #include "shaderprogram.h"
 #include "rcubemodel.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace RC;
 
@@ -55,6 +53,7 @@ void RCubeObject::setMove( const RCMoveType newRT )
 
 	if ( m_moveType != MT_NONE )
 	{
+		// TODO:
 		if ( isMTInvAxis( m_moveType ) )
 			m_moveLayer = 0;
 		else m_moveLayer = CUBIE_COUNT - 1;
@@ -63,47 +62,20 @@ void RCubeObject::setMove( const RCMoveType newRT )
 		float angle = glm::radians( 90.0f );
 		m_newMoveQuat = glm::angleAxis( ( isPos ) ? -angle : angle, MoveParams::vec( m_moveType ) );
 	}
-
-//	m_moveType = MT_FRONT;
-
-/*	MyQuaternion quatT( MoveParams::vec( newRT ) );
-
-	MyQuaternion quatR = m_rotateQuat * quatT * m_rotateQuat.inverse();
-	quatR = quatR.normalize();
-
-	Vector3D vec = Vector3D( quatR.x(), quatR.y(), quatR.z() );
-	m_moveType = MoveParams::getMTypeForPars( vec, MoveParams::clockwise( newRT ) );
-
-	if ( isMTInvAxis( m_moveType ) )
-		m_moveLayer = 0;
-	else m_moveLayer = CUBIE_COUNT - 1;*/
 }
-/*
-RCAxis RCubeObject::getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const
-{
-	Point3D pcDiff = pEnd - pBeg;
-	Vector3D vec = Vector3D( pcDiff.x(), pcDiff.y(), pcDiff.z() );
 
-	return vec.getNearestAxis();
-}
-*/
 void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
 {
 	const float cOffset = CUBIE_COUNT / 2.0f;
 
-	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
 	// if the points in different planes or don't lie on the surface of the cube
 	if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
 		return;
 
-//	std::cout << pEnd.x << " " << pEnd.y << " " << pEnd.z << std::endl;
-
 	// get close rotation axis
 	glm::vec3 pRes = glm::cross( pBeg, pEnd ) * m_rotateQuat;
 
-//	std::cout << pRes.x << " " << pRes.y << " " << pRes.z << std::endl;
-
-	// get rotation axis
+	// get closest rotation axis
     glm::vec3 vAx;
     const float aX = std::abs( pRes.x );
 	const float aY = std::abs( pRes.y );
@@ -129,8 +101,13 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 	}
 	else return;
 
-//	std::cout << vAx.x << " " << vAx.y << " " << vAx.z << std::endl;
-//	std::cout.flush();
+#ifdef NDEBUG
+	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
+	std::cout << pEnd.x << " " << pEnd.y << " " << pEnd.z << std::endl;
+	std::cout << pRes.x << " " << pRes.y << " " << pRes.z << std::endl;
+	std::cout << vAx.x << " " << vAx.y << " " << vAx.z << std::endl;
+	std::cout.flush();
+#endif // NDEBUG
 
 	// check clockwise
 	bool isCW;
@@ -138,11 +115,11 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 		isCW = true;
 	else isCW = false;
 
+	// choose parameters
 	m_moveType = MoveParams::getMTypeForPars( vAx, isCW );
 	m_moveMix = 0;
 	float angle = glm::radians( 90.0f );
 	m_newMoveQuat = glm::angleAxis( ( isCW ) ? -angle : angle, vAx );
-	m_moveLayer = 0;
 
 	// find move layer
 	if ( vAx.x != 0 )
@@ -151,44 +128,7 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 		m_moveLayer = floor( pBeg.y + cOffset );
 	else if ( vAx.z != 0 )
 		m_moveLayer = floor( pBeg.z + cOffset );
-
-    // get tangent axis
-/*	const float coorSurface = ( CUBIE_COUNT / 2.0 ) - 0.05;
-	RCAxis axBeg = pBeg.getTangentAxis( coorSurface, 0.14 );
-	RCAxis axTangent = pEnd.getTangentAxis( coorSurface, 0.14 );
-
-	// if the points in different planes or don't lie on the surface of the cube
-	if ( axBeg != axTangent || axBeg == AX_NONE || axTangent == AX_NONE )
-		return;
-
-	// get mouse move axis
-    RCAxis axMove = getMoveAxis( pBeg, pEnd );
-	if ( axMove == AX_NONE || axMove == axTangent )
-		return;
-
-	// get rotation axis
-    RCAxis axResult = getThirdAxis( axTangent, axMove );
-    if ( axResult == AX_NONE )
-		return;
-
-	// rotate the cube to the rotation axis looked at front
-	MyQuaternion rQt = AxisParams::quat( axResult );
-	Point3D pnBeg = pBeg.rotateByQuat( rQt );
-	Point3D pnEnd = pEnd.rotateByQuat( rQt );
-
-	// check clockwise
-	bool isCW = ( pnEnd.x() * pnBeg.y() - pnBeg.x() * pnEnd.y() ) >= 0;
-
-	m_moveType = MoveParams::getMTypeForPars( axResult, isCW );
-
-	// find move layer
-	Point3D pp = pBeg + Point3D( CUBIE_COUNT / 2.0, CUBIE_COUNT / 2.0, CUBIE_COUNT / 2.0 );
-	if ( axResult == AX_RIGHT || axResult == AX_LEFT )
-		m_moveLayer = floor( pp.x() );
-	else if ( axResult == AX_UP || axResult == AX_DOWN )
-		m_moveLayer = floor( pp.y() );
-	else if ( axResult == AX_FRONT || axResult == AX_BACK )
-		m_moveLayer = floor( pp.z() );*/
+	else m_moveLayer = 0;
 }
 
 void RCubeObject::drawObject( const glm::mat4 & pmv )

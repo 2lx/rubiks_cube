@@ -42,6 +42,8 @@ private:
 
 	GLint m_UniMVP;			// ModelViewProjection
 
+	void drawCubie( const int x, const int y, const int z ) const;
+
 	const GLfloat m_aTexCoords[ 2*4*6 ] = {
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,
@@ -99,10 +101,6 @@ private:
 		 0.5,  0.5, -0.5, // 4
 		 0.5,  0.5,  0.5, // 2
 	};
-
-//	RCAxis getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const;
-
-	void drawCubie( const int x, const int y, const int z ) const;
 };
 
 #endif // RUBIKSCUBE_H

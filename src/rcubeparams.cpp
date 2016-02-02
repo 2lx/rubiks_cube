@@ -10,16 +10,16 @@ std::map< RCAxis, AxisParams::AxisParam * > AxisParams::InitMap()
 {
 	std::map< RCAxis, AxisParam * > mp;
 
-	mp[ AX_FRONT ]	= new AxisParam(  0,  0,  1, 1, 0, 0,   0 );
-	mp[ AX_BACK ] 	= new AxisParam(  0,  0, -1, 1, 0, 0, 180 );
-	mp[ AX_UP ] 	= new AxisParam(  0,  1,  0, 1, 0, 0,  90 );
-	mp[ AX_DOWN ] 	= new AxisParam(  0, -1,  0, 1, 0, 0, -90 );
-	mp[ AX_RIGHT ] 	= new AxisParam(  1,  0,  0, 0, 1, 0, -90 );
-	mp[ AX_LEFT ] 	= new AxisParam( -1,  0,  0, 0, 1, 0,  90 );
+	mp[ AX_FRONT ]	= new AxisParam(  0,  0,  1 );
+	mp[ AX_BACK ] 	= new AxisParam(  0,  0, -1 );
+	mp[ AX_UP ] 	= new AxisParam(  0,  1,  0 );
+	mp[ AX_DOWN ] 	= new AxisParam(  0, -1,  0 );
+	mp[ AX_RIGHT ] 	= new AxisParam(  1,  0,  0 );
+	mp[ AX_LEFT ] 	= new AxisParam( -1,  0,  0 );
 
 	return mp;
 }
-
+/*
 RCAxis AxisParams::getAxisForVector( const glm::vec3 & vec )
 {
 	for ( int i = AX_FIRST; i < AX_COUNT; ++i )
@@ -32,7 +32,7 @@ RCAxis AxisParams::getAxisForVector( const glm::vec3 & vec )
 	std::cout << "error AP vec";
 	return AX_NONE;
 }
-
+*/
 void AxisParams::cleanup()
 {
 	for ( auto it = m_p.begin(); it != m_p.end(); ++it )
