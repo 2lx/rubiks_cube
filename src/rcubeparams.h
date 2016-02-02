@@ -27,9 +27,9 @@ namespace RC
 	class AxisParams	// Singleton
 	{
 	public:
-		static Vector3D vec( const RCAxis ax ) { return m_p[ ax ]->m_vec; };
+		static glm::vec3 vec( const RCAxis ax ) { return m_p[ ax ]->m_vec; };
 		static MyQuaternion quat( const RCAxis ax ) { return m_p[ ax ]->m_quat; };
-		static RCAxis getAxisForVector( const Vector3D & vec );
+		static RCAxis getAxisForVector( const glm::vec3 & vec );
 
 		static void cleanup();
 
@@ -44,7 +44,7 @@ namespace RC
 				m_quat.fromAxisAngle( qX, qY, qZ, qAngle );
 			};
 
-			const Vector3D m_vec;
+			const glm::vec3 m_vec;
 			MyQuaternion m_quat;
 		};
 

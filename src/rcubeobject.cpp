@@ -89,7 +89,68 @@ RCAxis RCubeObject::getMoveAxis( const Point3D pBeg, const Point3D pEnd ) const
 */
 void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
 {
-//	glm::cross() get third vector as product cross of two
+	const float cOffset = CUBIE_COUNT / 2.0f;
+
+	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
+	// if the points in different planes or don't lie on the surface of the cube
+	if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
+		return;
+
+//	std::cout << pEnd.x << " " << pEnd.y << " " << pEnd.z << std::endl;
+
+	// get close rotation axis
+	glm::vec3 pRes = glm::cross( pBeg, pEnd ) * m_rotateQuat;
+
+//	std::cout << pRes.x << " " << pRes.y << " " << pRes.z << std::endl;
+
+	// get rotation axis
+    glm::vec3 vAx;
+    const float aX = std::abs( pRes.x );
+	const float aY = std::abs( pRes.y );
+	const float aZ = std::abs( pRes.z );
+
+    if ( aX > aY && aX > aZ )
+	{
+        if ( pRes.x > 0 )
+			vAx = { 1.0f, 0.0f, 0.0f };
+		else vAx = { -1.0f, 0.0f, 0.0f };
+	}
+	else if ( aY > aX && aY > aZ )
+	{
+        if ( pRes.y > 0 )
+			vAx = { 0.0f, 1.0f, 0.0f };
+		else vAx = { 0.0f, -1.0f, 0.0f };
+	}
+	else if ( aZ > aX && aZ > aY )
+	{
+        if ( pRes.z > 0 )
+			vAx = { 0.0f, 0.0f, 1.0f };
+		else vAx = { 0.0f, 0.0f, -1.0f };
+	}
+	else return;
+
+//	std::cout << vAx.x << " " << vAx.y << " " << vAx.z << std::endl;
+//	std::cout.flush();
+
+	// check clockwise
+	bool isCW;
+	if ( glm::dot( glm::cross( vAx, pBeg ), pBeg ) > 0 )
+		isCW = true;
+	else isCW = false;
+
+	m_moveType = MoveParams::getMTypeForPars( vAx, isCW );
+	m_moveMix = 0;
+	float angle = glm::radians( 90.0f );
+	m_newMoveQuat = glm::angleAxis( ( isCW ) ? -angle : angle, vAx );
+	m_moveLayer = 0;
+
+	// find move layer
+	if ( vAx.x != 0 )
+		m_moveLayer = floor( pBeg.x + cOffset );
+	else if ( vAx.y != 0 )
+		m_moveLayer = floor( pBeg.y + cOffset );
+	else if ( vAx.z != 0 )
+		m_moveLayer = floor( pBeg.z + cOffset );
 
     // get tangent axis
 /*	const float coorSurface = ( CUBIE_COUNT / 2.0 ) - 0.05;

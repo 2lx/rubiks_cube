@@ -20,7 +20,7 @@ std::map< RCAxis, AxisParams::AxisParam * > AxisParams::InitMap()
 	return mp;
 }
 
-RCAxis AxisParams::getAxisForVector( const Vector3D & vec )
+RCAxis AxisParams::getAxisForVector( const glm::vec3 & vec )
 {
 	for ( int i = AX_FIRST; i < AX_COUNT; ++i )
 		if ( m_p[ RCAxis( i ) ]->m_vec == vec )
