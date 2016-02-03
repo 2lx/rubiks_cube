@@ -52,8 +52,8 @@ void RCubeObject::setMove( const RCMoveType newRT )
 
 	if ( m_moveType != MT_NONE )
 	{
-		// TODO:
-		if ( isMTInvAxis( m_moveType ) )
+//		if ( isMTInvAxis( m_moveType ) )
+		if ( glm::dot( vecRot, glm::vec3( 1.0f, 1.0f, 1.0f ) ) < 0 )
 			m_moveLayer = 0;
 		else m_moveLayer = CUBIE_COUNT - 1;
 

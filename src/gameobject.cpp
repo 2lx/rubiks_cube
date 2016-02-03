@@ -51,7 +51,6 @@ void GameObject::setRotates( const int newDirX, const int newDirY, const int new
 	float angle = glm::radians( 90.0f );
 	glm::quat tempQuat = glm::angleAxis( ( isPos ) ? angle : -angle, glm::vec3( newDirX, newDirY, newDirZ ) );
 
-	//TODO: normalize
 	m_newRotateQuat = tempQuat * m_newRotateQuat;
 	m_oldRotateQuat = m_rotateQuat;
 	m_rotateMix = 0;

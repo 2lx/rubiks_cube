@@ -91,6 +91,7 @@ CubeModel::~CubeModel()
 
 void CubeModel::moveCubies( const RCMoveType rt, const int mLayer )
 {
+	//TODO: size > 3
 	const int sc = ( CUBIE_COUNT - 1 );
 
 	Cubie tmpPiece[ sc ];

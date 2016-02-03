@@ -26,10 +26,6 @@ namespace RC
 		MT_NONE,
 		MT_FIRST = MT_FRONT
 	};
-
-	RCAxis getInvAxis( const RCAxis ax );
-	RCAxis getThirdAxis( const RCAxis ax1, const RCAxis ax2 );
-	bool isMTInvAxis( const RCMoveType mt );
 }
 
 #endif // RCDEFINES_H_INCLUDED
