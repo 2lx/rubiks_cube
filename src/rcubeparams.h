@@ -54,10 +54,10 @@ namespace RC
 	{
 	public:
 		static glm::vec3 vec( const RCMoveType mt ) { return m_p[ mt ]->m_vec; };
-		static RCAxis axis( const RCMoveType mt ) { return m_p[ mt ]->m_axis; };
+//		static RCAxis axis( const RCMoveType mt ) { return m_p[ mt ]->m_axis; };
 		static bool clockwise( const RCMoveType mt ) { return m_p[ mt ]->m_clockwise; };
 		static RCMoveType getMTypeForPars( const glm::vec3 & vec, const bool cw );
-		static RCMoveType getMTypeForPars( const RCAxis ax, const bool cw );
+//		static RCMoveType getMTypeForPars( const RCAxis ax, const bool cw );
 
 		static void cleanup();
 
@@ -81,7 +81,7 @@ namespace RC
 		static std::map< RCMoveType, OneParam * > InitMap();
 		static std::map< RCMoveType, OneParam * > m_p;
 	};
-
+/*
 	class Colors	// Singleton
 	{
 	public:
@@ -122,6 +122,6 @@ namespace RC
 
 		static RCColorScheme m_schemeId;
 	};
-
+*/
 }
 #endif // RCUBEPARAMS_H

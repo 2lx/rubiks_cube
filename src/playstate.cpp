@@ -43,7 +43,7 @@ void CPlayState::Cleanup()
 	delete m_shaderPr;
 
 	MoveParams::cleanup();
-	Colors::cleanup();
+//	Colors::cleanup();
 	AxisParams::cleanup();
 }
 
@@ -116,100 +116,67 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				break;
 
 			case SDLK_UP:
-			case SDLK_w:
-				m_gkStates[ GK_LOOKUP ].setDown();
-				break;
-
+			case SDLK_w: 	m_gkStates[ GK_LOOKUP ].keyDown(); break;
 			case SDLK_DOWN:
-			case SDLK_s:
-				m_gkStates[ GK_LOOKDOWN ].setDown();
-				break;
-
+			case SDLK_s: 	m_gkStates[ GK_LOOKDOWN ].keyDown(); break;
 			case SDLK_LEFT:
-			case SDLK_a:
-				m_gkStates[ GK_LOOKLEFT ].setDown();
-				break;
-
+			case SDLK_a:	m_gkStates[ GK_LOOKLEFT ].keyDown(); break;
 			case SDLK_RIGHT:
-			case SDLK_d:
-				m_gkStates[ GK_LOOKRIGHT ].setDown();
-				break;
-
+			case SDLK_d:	m_gkStates[ GK_LOOKRIGHT ].keyDown(); break;
 			case SDLK_PAGEDOWN:
-			case SDLK_e:
-				m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].setDown();
-				break;
-
-			case SDLK_DELETE:
-			case SDLK_q:
-				m_gkStates[ GK_ROTATECLOCKWISE ].setDown();
-				break;
-
-			case SDLK_i:
-				m_gkStates[ GK_MOVEFRONT ].setDown();
-				break;
-
-			case SDLK_u:
-				m_gkStates[ GK_MOVEFRONTINV ].setDown();
-				break;
-
-			case SDLK_p:
-				m_gkStates[ GK_MOVEBACK ].setDown();
-				break;
-
-			case SDLK_o:
-				m_gkStates[ GK_MOVEBACKINV ].setDown();
-				break;
-
-			case SDLK_k:
-				m_gkStates[ GK_MOVELEFT ].setDown();
-				break;
-
-			case SDLK_j:
-				m_gkStates[ GK_MOVELEFTINV ].setDown();
-				break;
-
-			case SDLK_SEMICOLON:
-				m_gkStates[ GK_MOVERIGHT ].setDown();
-				break;
-
-			case SDLK_l:
-				m_gkStates[ GK_MOVERIGHTINV ].setDown();
-				break;
-
-			case SDLK_m:
-				m_gkStates[ GK_MOVEUP ].setDown();
-				break;
-
-			case SDLK_n:
-				m_gkStates[ GK_MOVEUPINV ].setDown();
-				break;
-
-			case SDLK_PERIOD:
-				m_gkStates[ GK_MOVEDOWN ].setDown();
-				break;
-
-			case SDLK_COMMA:
-				m_gkStates[ GK_MOVEDOWNINV ].setDown();
-				break;
-/*
-			case SDLK_SPACE:
-				m_gkStates[ GK_CHANGECOLOR ].setDown();
-				break;
-*/
-			case SDLK_RETURN:
-				m_gkStates[ GK_CHANGEPROJ ].setDown();
-				break;
+			case SDLK_e:	m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].keyDown(); break;
+			case SDLK_q:	m_gkStates[ GK_ROTATECLOCKWISE ].keyDown(); break;
+			case SDLK_i:	m_gkStates[ GK_MOVEFRONT ].keyDown(); break;
+			case SDLK_u:	m_gkStates[ GK_MOVEFRONTINV ].keyDown(); break;
+			case SDLK_p:	m_gkStates[ GK_MOVEBACK ].keyDown(); break;
+			case SDLK_o:	m_gkStates[ GK_MOVEBACKINV ].keyDown(); break;
+			case SDLK_k:	m_gkStates[ GK_MOVELEFT ].keyDown(); break;
+			case SDLK_j:	m_gkStates[ GK_MOVELEFTINV ].keyDown();	break;
+			case SDLK_SEMICOLON: m_gkStates[ GK_MOVERIGHT ].keyDown(); break;
+			case SDLK_l:	m_gkStates[ GK_MOVERIGHTINV ].keyDown(); break;
+			case SDLK_m:	m_gkStates[ GK_MOVEUP ].keyDown(); break;
+			case SDLK_n:	m_gkStates[ GK_MOVEUPINV ].keyDown(); break;
+			case SDLK_PERIOD: m_gkStates[ GK_MOVEDOWN ].keyDown(); break;
+			case SDLK_COMMA: m_gkStates[ GK_MOVEDOWNINV ].keyDown(); break;
+			case SDLK_RETURN: m_gkStates[ GK_CHANGEPROJ ].keyDown(); break;
 			}
 			break;
-//		case SDL_KEYUP:
-//			break;
+		case SDL_KEYUP:
+			switch( event.key.keysym.sym )
+			{
+			case SDLK_UP:
+			case SDLK_w: 	m_gkStates[ GK_LOOKUP ].keyUp(); break;
+			case SDLK_DOWN:
+			case SDLK_s: 	m_gkStates[ GK_LOOKDOWN ].keyUp(); break;
+			case SDLK_LEFT:
+			case SDLK_a:	m_gkStates[ GK_LOOKLEFT ].keyUp(); break;
+			case SDLK_RIGHT:
+			case SDLK_d:	m_gkStates[ GK_LOOKRIGHT ].keyUp(); break;
+			case SDLK_PAGEDOWN:
+			case SDLK_e:	m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].keyUp(); break;
+			case SDLK_q:	m_gkStates[ GK_ROTATECLOCKWISE ].keyUp(); break;
+			case SDLK_i:	m_gkStates[ GK_MOVEFRONT ].keyUp(); break;
+			case SDLK_u:	m_gkStates[ GK_MOVEFRONTINV ].keyUp(); break;
+			case SDLK_p:	m_gkStates[ GK_MOVEBACK ].keyUp(); break;
+			case SDLK_o:	m_gkStates[ GK_MOVEBACKINV ].keyUp(); break;
+			case SDLK_k:	m_gkStates[ GK_MOVELEFT ].keyUp(); break;
+			case SDLK_j:	m_gkStates[ GK_MOVELEFTINV ].keyUp();	break;
+			case SDLK_SEMICOLON: m_gkStates[ GK_MOVERIGHT ].keyUp(); break;
+			case SDLK_l:	m_gkStates[ GK_MOVERIGHTINV ].keyUp(); break;
+			case SDLK_m:	m_gkStates[ GK_MOVEUP ].keyUp(); break;
+			case SDLK_n:	m_gkStates[ GK_MOVEUPINV ].keyUp(); break;
+			case SDLK_PERIOD: m_gkStates[ GK_MOVEDOWN ].keyUp(); break;
+			case SDLK_COMMA: m_gkStates[ GK_MOVEDOWNINV ].keyUp(); break;
+			case SDLK_RETURN: m_gkStates[ GK_CHANGEPROJ ].keyUp(); break;
+			}
+			break;
 		case SDL_MOUSEBUTTONDOWN:
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
 				m_pBegin = getGLPos( event.button.x, event.button.y );
 
+				m_gkStates[ GK_MOVEMOUSE ].keyDown();
 				break;
 			case SDL_BUTTON_RIGHT:
 				break;
@@ -221,8 +188,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDL_BUTTON_LEFT:
 				m_pEnd = getGLPos( event.button.x, event.button.y );
 
-				m_gkStates[ GK_MOVEMOUSE ].setDown();
-				m_gkStates[ GK_MOVEMOUSE ].releasePress();
+				m_gkStates[ GK_MOVEMOUSE ].keyUp();
 				break;
 			case SDL_BUTTON_RIGHT:
 				break;
@@ -231,8 +197,8 @@ void CPlayState::HandleEvents( CGameEngine* game )
 		default:
 			if ( lastEvent )
 			{
-				for ( int i = 0; i < GK_COUNT; ++i )
-					m_gkStates[ i ].releasePress();
+	//			for ( int i = 0; i < GK_COUNT; ++i )
+	//				m_gkStates[ i ].keyUp();
 
 				m_pBegin = { 0.0f, 0.0f, 0.0f };
 				m_pEnd = { 0.0f, 0.0f, 0.0f };
@@ -274,32 +240,32 @@ void CPlayState::Update( CGameEngine * game )
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
 			m_RCube->setRotates( 1, 0, 0, false );
-			m_gkStates[ GK_LOOKDOWN ].releaseNewDown();
+			m_gkStates[ GK_LOOKDOWN ].processKey();
 		}
 		if ( m_gkStates[ GK_LOOKUP ].isNewDown() )
 		{
 			m_RCube->setRotates( 1, 0, 0, true );
-			m_gkStates[ GK_LOOKUP ].releaseNewDown();
+			m_gkStates[ GK_LOOKUP ].processKey();
 		}
 		if ( m_gkStates[ GK_LOOKRIGHT ].isNewDown() )
 		{
 			m_RCube->setRotates( 0, 1, 0, false );
-			m_gkStates[ GK_LOOKRIGHT ].releaseNewDown();
+			m_gkStates[ GK_LOOKRIGHT ].processKey();
 		}
 		if ( m_gkStates[ GK_LOOKLEFT ].isNewDown() )
 		{
 			m_RCube->setRotates( 0, 1, 0, true );
-			m_gkStates[ GK_LOOKLEFT ].releaseNewDown();
+			m_gkStates[ GK_LOOKLEFT ].processKey();
 		}
 		if ( m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].isNewDown() )
 		{
 			m_RCube->setRotates( 0, 0, 1, true );
-			m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].releaseNewDown();
+			m_gkStates[ GK_ROTATECOUNTERCLOCKWISE ].processKey();
 		}
 		if ( m_gkStates[ GK_ROTATECLOCKWISE ].isNewDown() )
 		{
 			m_RCube->setRotates( 0, 0, 1, false );
-			m_gkStates[ GK_ROTATECLOCKWISE ].releaseNewDown();
+			m_gkStates[ GK_ROTATECLOCKWISE ].processKey();
 		}
 	}
 
@@ -308,7 +274,7 @@ void CPlayState::Update( CGameEngine * game )
 		if ( m_gkStates[ GK_MOVEMOUSE ].isNewDown() )
 		{
 			m_RCube->setMoveByCoords( m_pBegin, m_pEnd );
-			m_gkStates[ GK_MOVEMOUSE ].releaseNewDown();
+			m_gkStates[ GK_MOVEMOUSE ].processKey();
 
 			m_pBegin = { 0.0f, 0.0f, 0.0f };
 			m_pEnd = { 0.0f, 0.0f, 0.0f };
@@ -322,7 +288,7 @@ void CPlayState::Update( CGameEngine * game )
 			if ( m_gkStates[ GK_MOVEFRONT + i ].isNewDown() )
 			{
 				m_RCube->setMove( ( RCMoveType ) ( MT_FRONT + i ) );
-				m_gkStates[ GK_MOVEFRONT + i ].releaseNewDown();
+				m_gkStates[ GK_MOVEFRONT + i ].processKey();
 				break;
 			}
 		}
@@ -339,7 +305,7 @@ void CPlayState::Update( CGameEngine * game )
 	{
         m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
         setProjection( m_prType );
-		m_gkStates[ GK_CHANGEPROJ ].releaseNewDown();
+		m_gkStates[ GK_CHANGEPROJ ].processKey();
 		m_needRedraw = true;
 	}
 
@@ -355,7 +321,7 @@ void CPlayState::Draw( CGameEngine * game )
 	{
 		Uint32 start = SDL_GetTicks();
 
-		glClearColor( Colors::colR( RC_BG ), Colors::colG( RC_BG ), Colors::colB( RC_BG ), 0.0f );
+		glClearColor( 0.3f, 0.4f, 0.4f, 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		glUseProgram( m_shaderPr->id() );

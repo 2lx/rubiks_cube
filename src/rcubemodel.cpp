@@ -45,7 +45,7 @@ void Cubie::rotateCubie( const RCMoveType rt )
 	m_colourInd[ t3 ] = m_colourInd[ t4 ];
 	m_colourInd[ t4 ] = tt;
 }
-
+/*
 float Cubie::colR( const RCAxis ax ) const
 {
 	if ( m_colourInd[ ax ] == AX_NONE )
@@ -66,7 +66,7 @@ float Cubie::colB( const RCAxis ax ) const
 		return Colors::colB( RC_FG );
 	else return Colors::colB( m_colourInd[ ax ] );
 }
-
+*/
 CubeModel::CubeModel()
 {
 	srand( time( 0 ) );

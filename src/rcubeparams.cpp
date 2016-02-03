@@ -73,7 +73,7 @@ RCMoveType MoveParams::getMTypeForPars( const glm::vec3 & vec, const bool cw )
 	std::cout << "error MP";
 	return MT_NONE;
 }
-
+/*
 RCMoveType MoveParams::getMTypeForPars( const RCAxis ax, const bool cw )
 {
 	for ( int i = MT_FIRST; i < MT_COUNT; ++i )
@@ -85,13 +85,13 @@ RCMoveType MoveParams::getMTypeForPars( const RCAxis ax, const bool cw )
 	std::cout << "error MP";
 	return MT_NONE;
 }
-
+*/
 void MoveParams::cleanup()
 {
 	for ( auto it = m_p.begin(); it != m_p.end(); ++it )
 		delete it->second;
 }
-
+/*
 RCColorScheme Colors::m_schemeId = RCS_S1;
 std::map< RCColorScheme, std::map< RCAxis, Colors::OneColor * > > Colors::m_ax = InitMapAX();
 std::map< RCColorScheme, std::map< RCColor, Colors::OneColor * > > Colors::m_c = InitMapRC();
@@ -151,3 +151,4 @@ void Colors::cleanup()
 		for ( auto it2 = it->second.begin(); it2 != it->second.end(); ++it2 )
 			delete it2->second;
 }
+*/
