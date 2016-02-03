@@ -25,12 +25,10 @@ protected:
 private:
 	CubeModel * m_RCModel;
 
-//	MyQuaternion m_moveQuat;
 	glm::quat m_moveQuat;
 	glm::quat m_newMoveQuat;
 	float m_moveMix = { -1 };
 
-//	GLfloat m_moveAngle = { 0 };
 	RCMoveType m_moveType = { MT_NONE };
 	int m_moveLayer = -1;
 

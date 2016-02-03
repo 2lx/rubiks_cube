@@ -1,7 +1,6 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
-//#include "SDL2/SDL.h"
 #include <vector>
 
 struct SDL_Surface;

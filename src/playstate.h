@@ -1,12 +1,10 @@
 #ifndef PLAYSTATE_H
 #define PLAYSTATE_H
 
-//#include "SDL2/SDL.h"
 #include "gamestate.h"
-#include "rcubeobject.h"
-//#include "shapes.h"
-
 #include <glm/gtc/type_ptr.hpp>
+
+class RCubeObject;
 
 enum GameKeys
 {

@@ -1,7 +1,6 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
-#include "GL/glew.h"
 #include <string>
 #include <map>
 
@@ -25,7 +24,6 @@ private:
 
 	std::map< std::string, GLint > m_attributes;
 	std::map< std::string, GLint > m_uniforms;
-
 };
 
 #endif // SHADERPROGRAM_H

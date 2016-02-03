@@ -1,6 +1,5 @@
 #include "all.h"
 
-#include "rcdefines.h"
 #include "rcubeobject.h"
 #include "rcubeparams.h"
 #include "shaderprogram.h"

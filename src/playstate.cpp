@@ -2,7 +2,7 @@
 
 #include "playstate.h"
 #include "rcubeparams.h"
-
+#include "rcubeobject.h"
 #include "shader.h"
 #include "shaderprogram.h"
 

@@ -26,7 +26,4 @@ const int INIT_SCREEN_HEIGHT = 600;
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
-// rotation speed
-const float ANGLE_DIFF = 11.0;
-
 #endif // ALL_H_INCLUDED
