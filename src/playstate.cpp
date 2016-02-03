@@ -369,8 +369,8 @@ void CPlayState::Draw( CGameEngine * game )
 		drCount++;
 		if ( drCount > 1 ) m_needRedraw = false;
 #ifdef MY_DEBUG
-		if ( drCount % 5 == 0 )
-			std::cout << "DrawCount: " << drCount << std::endl;
+//		if ( drCount % 5 == 0 )
+//			std::cout << "DrawCount: " << drCount << std::endl;
 #endif // MY_DEBUG
 	}
 }

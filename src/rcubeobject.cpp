@@ -119,19 +119,30 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 	else isCW = false;
 
 	// choose parameters
-	m_moveType = MoveParams::getMTypeForPars( vAx, isCW );
-	m_moveMix = 0;
-	float angle = glm::radians( 90.0f );
-	m_newMoveQuat = glm::angleAxis( ( isCW ) ? -angle : angle, vAx );
+
+	RCMoveType nMT = MoveParams::getMTypeForPars( vAx, isCW );
+	if ( nMT == MT_NONE )
+		return;
+
+	int nmLayer = 0;
 
 	// find move layer
 	if ( vAx.x != 0 )
-		m_moveLayer = floor( rvBeg.x + cOffset );
+		nmLayer = floor( rvBeg.x + cOffset );
 	else if ( vAx.y != 0 )
-		m_moveLayer = floor( rvBeg.y + cOffset );
+		nmLayer = floor( rvBeg.y + cOffset );
 	else if ( vAx.z != 0 )
-		m_moveLayer = floor( rvBeg.z + cOffset );
-	else m_moveLayer = 0;
+		nmLayer = floor( rvBeg.z + cOffset );
+	else nmLayer = 0;
+
+	if ( nmLayer < 0 || nmLayer > CUBIE_COUNT - 1 )
+		return;
+
+	m_moveType = nMT;
+	m_moveLayer = nmLayer;
+	m_moveMix = 0;
+	float angle = glm::radians( 90.0f );
+	m_newMoveQuat = glm::angleAxis( ( isCW ) ? -angle : angle, vAx );
 }
 
 void RCubeObject::drawObject( const glm::mat4 & pmv )
