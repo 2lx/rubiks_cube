@@ -8,6 +8,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+using namespace RC;
+
 CPlayState CPlayState::m_PlayState;
 
 void CPlayState::Init()
@@ -124,8 +126,8 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_RIGHT:
 			case SDLK_d:	m_keyQ.keyDown( GK_LOOKRIGHT ); break;
 			case SDLK_PAGEDOWN:
-			case SDLK_e:	m_keyQ.keyDown( GK_ROTATECOUNTERCLOCKWISE ); break;
-			case SDLK_q:	m_keyQ.keyDown( GK_ROTATECLOCKWISE ); break;
+			case SDLK_e:	m_keyQ.keyDown( GK_ROTATEACW ); break;
+			case SDLK_q:	m_keyQ.keyDown( GK_ROTATECW ); break;
 			case SDLK_i:	m_keyQ.keyDown( GK_MOVEFRONT ); break;
 			case SDLK_u:	m_keyQ.keyDown( GK_MOVEFRONTINV ); break;
 			case SDLK_p:	m_keyQ.keyDown( GK_MOVEBACK ); break;
@@ -154,8 +156,8 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_RIGHT:
 			case SDLK_d:	m_keyQ.keyUp( GK_LOOKRIGHT ); break;
 			case SDLK_PAGEDOWN:
-			case SDLK_e:	m_keyQ.keyUp( GK_ROTATECOUNTERCLOCKWISE ); break;
-			case SDLK_q:	m_keyQ.keyUp( GK_ROTATECLOCKWISE ); break;
+			case SDLK_e:	m_keyQ.keyUp( GK_ROTATEACW ); break;
+			case SDLK_q:	m_keyQ.keyUp( GK_ROTATECW ); break;
 			case SDLK_i:	m_keyQ.keyUp( GK_MOVEFRONT ); break;
 			case SDLK_u:	m_keyQ.keyUp( GK_MOVEFRONTINV ); break;
 			case SDLK_p:	m_keyQ.keyUp( GK_MOVEBACK ); break;
@@ -178,7 +180,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDL_BUTTON_LEFT:
 				m_pBegin = getGLPos( event.button.x, event.button.y );
 
-				m_keyQ.keyDown( GK_MOVEMOUSE );
+				m_keyQ.keyDown( GK_MOVEMOUSE, false );
 				break;
 			case SDL_BUTTON_RIGHT:
 				break;
@@ -241,89 +243,72 @@ glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( /*!m_RCube->isRotating() &&*/ !m_keyQ.isHold( GK_MOVEMOUSE ) )
+	if ( m_keyQ.isHold( GK_MOVEMOUSE ) )
 	{
-        if ( m_keyQ.isNewDown( GK_LOOKDOWN ) )
+		// processing cube moves with mouse
+		if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
 		{
-			m_RCube->setRotates( 1, 0, 0, false );
-			m_keyQ.processKey( GK_LOOKDOWN );
-		}
-		if ( m_keyQ.isNewDown( GK_LOOKUP ) )
-		{
-			m_RCube->setRotates( 1, 0, 0, true );
-			m_keyQ.processKey( GK_LOOKUP );
-		}
-		if ( m_keyQ.isNewDown( GK_LOOKRIGHT ) )
-		{
-			m_RCube->setRotates( 0, 1, 0, false );
-			m_keyQ.processKey( GK_LOOKRIGHT );
-		}
-		if ( m_keyQ.isNewDown( GK_LOOKLEFT ) )
-		{
-			m_RCube->setRotates( 0, 1, 0, true );
-			m_keyQ.processKey( GK_LOOKLEFT );
-		}
-		if ( m_keyQ.isNewDown( GK_ROTATECOUNTERCLOCKWISE ) )
-		{
-			m_RCube->setRotates( 0, 0, 1, true );
-			m_keyQ.processKey( GK_ROTATECOUNTERCLOCKWISE );
-		}
-		if ( m_keyQ.isNewDown( GK_ROTATECLOCKWISE ) )
-		{
-			m_RCube->setRotates( 0, 0, 1, false );
-			m_keyQ.processKey( GK_ROTATECLOCKWISE );
-		}
-	}
-
-	if ( m_keyQ.isNewDown( GK_MOVEMOUSE ) && !m_RCube->isMoving() && !m_RCube->isRotating() )
-	{
-		if ( glm::distance( m_pBegin, m_pEnd ) > 0.5 && glm::length( m_pBegin ) > 0 && glm::length( m_pEnd ) > 0 )
-		{
-//			std::cout << m_pBegin.x << " " << m_pBegin.y << " " << m_pBegin.z << " " << std::endl;
-//			std::cout << m_pEnd.x << " " << m_pEnd.y << " " << m_pEnd.z << " " << std::endl;
-			m_RCube->setMoveByCoords( m_pBegin, m_pEnd );
-			m_keyQ.processKey( GK_MOVEMOUSE );
-
-			m_pBegin = { 0.0f, 0.0f, 0.0f };
-			m_pEnd = { 0.0f, 0.0f, 0.0f };
-		}
-		else if ( !m_keyQ.isHold( GK_MOVEMOUSE ) )
-		{
-			m_keyQ.processKey( GK_MOVEMOUSE );
-			m_pBegin = { 0.0f, 0.0f, 0.0f };
-			m_pEnd = { 0.0f, 0.0f, 0.0f };
-		}
-	}
-
-	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && !m_keyQ.isHold( GK_MOVEMOUSE ) )
-	{
-		for ( int i = 0; i < GK_MOVELAST - GK_MOVEFIRST + 1; i++ )
-		{
-			if ( m_keyQ.isNewDown( GameKeys ( GK_MOVEFRONT + i ) ) )
+			if ( glm::distance( m_pBegin, m_pEnd ) > 0.5 && glm::length( m_pBegin ) > 0 && glm::length( m_pEnd ) > 0 )
 			{
-				m_RCube->setMove( ( RCMoveType ) ( MT_FRONT + i ) );
-				m_keyQ.processKey( GameKeys ( GK_MOVEFRONT + i ) );
+//				std::cout << m_pBegin.x << " " << m_pBegin.y << " " << m_pBegin.z << " " << std::endl;
+//				std::cout << m_pEnd.x << " " << m_pEnd.y << " " << m_pEnd.z << " " << std::endl;
+				m_RCube->setMoveByCoords( m_pBegin, m_pEnd );
+				m_keyQ.processKey( GK_MOVEMOUSE );
+
+				m_pBegin = { 0.0f, 0.0f, 0.0f };
+				m_pEnd = { 0.0f, 0.0f, 0.0f };
+			}
+			else if ( !m_keyQ.isHold( GK_MOVEMOUSE ) )
+			{
+				m_keyQ.processKey( GK_MOVEMOUSE );
+				m_pBegin = { 0.0f, 0.0f, 0.0f };
+				m_pEnd = { 0.0f, 0.0f, 0.0f };
+			}
+		}
+	}
+	else if ( m_keyQ.qSize() > 0 )
+	{
+		const GameKeys gk = m_keyQ.curKey();
+		const bool enableMoves = !m_RCube->isMoving() && !m_RCube->isRotating();
+
+		if ( gk < GK_MOVEFIRST || gk > GK_MOVELAST || enableMoves )
+		{
+			m_keyQ.popKey();
+
+			switch ( gk )
+			{
+			// processing cube rotates
+			case GK_LOOKDOWN:	m_RCube->setRotates( 1, 0, 0, false );	break;
+			case GK_LOOKUP:		m_RCube->setRotates( 1, 0, 0, true );	break;
+			case GK_LOOKRIGHT:	m_RCube->setRotates( 0, 1, 0, false );	break;
+			case GK_LOOKLEFT:	m_RCube->setRotates( 0, 1, 0, true );	break;
+			case GK_ROTATEACW:	m_RCube->setRotates( 0, 0, 1, true );	break;
+			case GK_ROTATECW:	m_RCube->setRotates( 0, 0, 1, false );	break;
+			// processing projection setup
+			case GK_CHANGEPROJ:
+				m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
+				setProjection( m_prType );
+				m_keyQ.processKey( GK_CHANGEPROJ );
+				m_needRedraw = true;
+				break;
+			// processing cube moves
+			case GK_MOVEBACK: 		m_RCube->setMove( MT_BACK );		break;
+			case GK_MOVEBACKINV: 	m_RCube->setMove( MT_BACKINV );		break;
+			case GK_MOVEDOWN: 		m_RCube->setMove( MT_DOWN );		break;
+			case GK_MOVEDOWNINV: 	m_RCube->setMove( MT_DOWNINV );		break;
+			case GK_MOVEFRONT: 		m_RCube->setMove( MT_FRONT );		break;
+			case GK_MOVEFRONTINV: 	m_RCube->setMove( MT_FRONTINV );	break;
+			case GK_MOVELEFT: 		m_RCube->setMove( MT_LEFT );		break;
+			case GK_MOVELEFTINV: 	m_RCube->setMove( MT_LEFTINV );		break;
+			case GK_MOVERIGHT: 		m_RCube->setMove( MT_RIGHT );		break;
+			case GK_MOVERIGHTINV: 	m_RCube->setMove( MT_RIGHTINV );	break;
+			case GK_MOVEUP: 		m_RCube->setMove( MT_UP );			break;
+			case GK_MOVEUPINV: 		m_RCube->setMove( MT_UPINV );		break;
+			default:
 				break;
 			}
 		}
 	}
-/*
-	if ( m_gkStates[ GK_CHANGECOLOR ].isNewDown() )
-	{
-		RC::Colors::incScheme();
-		m_gkStates[ GK_CHANGECOLOR ].releaseNewDown();
-		m_needRedraw = true;
-	}
-*/
-	if ( m_keyQ.isNewDown( GK_CHANGEPROJ ) && !m_keyQ.isHold( GK_MOVEMOUSE ) )
-	{
-        m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
-        setProjection( m_prType );
-		m_keyQ.processKey( GK_CHANGEPROJ );
-		m_needRedraw = true;
-	}
-
-	m_RCube->Update();
 }
 
 void CPlayState::Draw( CGameEngine * game )

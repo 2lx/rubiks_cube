@@ -10,14 +10,15 @@ class KeyQueue
 public:
     KeyQueue() { }
 
-	inline void keyDown( const RC::GameKeys gk )
+	inline void keyDown( const RC::GameKeys gk, const bool pushQ = true )
 	{
 		if ( !m_map[ gk ].isHold )
 		{
 			m_map[ gk ].isNewDown = true;
 			m_map[ gk ].isHold = true;
 
-			m_queue.push( gk );
+			if ( pushQ )
+				m_queue.push( gk );
 		}
 	};
 
@@ -43,10 +44,14 @@ public:
 		return m_map[ gk ].isNewDown;
 	};
 
-	inline RC::GameKeys getKey()
+	inline RC::GameKeys curKey() const { return m_queue.front(); }
+
+	inline RC::GameKeys popKey()
 	{
 		const RC::GameKeys gk = m_queue.front();
 		m_queue.pop();
+		processKey( gk );
+
 		return gk;
 	}
 
