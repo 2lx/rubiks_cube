@@ -182,11 +182,22 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				break;
 			}
 			break;
+		case SDL_MOUSEMOTION:
+			switch( event.button.button )
+			{
+			case SDL_BUTTON_LEFT:
+				if ( glm::length( m_pBegin ) > 0 )
+					m_pEnd = getGLPos( event.button.x, event.button.y );
+
+				break;
+			case SDL_BUTTON_RIGHT:
+				break;
+			}
+			break;
 		case SDL_MOUSEBUTTONUP:
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
-				m_pEnd = getGLPos( event.button.x, event.button.y );
 
 				m_gkStates[ GK_MOVEMOUSE ].keyUp();
 				break;
@@ -200,8 +211,8 @@ void CPlayState::HandleEvents( CGameEngine* game )
 	//			for ( int i = 0; i < GK_COUNT; ++i )
 	//				m_gkStates[ i ].keyUp();
 
-				m_pBegin = { 0.0f, 0.0f, 0.0f };
-				m_pEnd = { 0.0f, 0.0f, 0.0f };
+//				m_pBegin = { 0.0f, 0.0f, 0.0f };
+//				m_pEnd = { 0.0f, 0.0f, 0.0f };
 
 				lastEvent = false;
 				allEventsRunOut = true;
@@ -235,7 +246,7 @@ glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
 
 void CPlayState::Update( CGameEngine * game )
 {
-	if ( /*!m_RCube->isRotating() &&*/ glm::length( m_pBegin ) == 0 )
+	if ( /*!m_RCube->isRotating() &&*/ !m_gkStates[ GK_MOVEMOUSE ].isHold() )
 	{
         if ( m_gkStates[ GK_LOOKDOWN ].isNewDown() )
 		{
@@ -269,19 +280,27 @@ void CPlayState::Update( CGameEngine * game )
 		}
 	}
 
-	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && glm::distance( m_pBegin, m_pEnd ) > 0.5 )
+	if ( m_gkStates[ GK_MOVEMOUSE ].isNewDown() && !m_RCube->isMoving() && !m_RCube->isRotating() )
 	{
-		if ( m_gkStates[ GK_MOVEMOUSE ].isNewDown() )
+		if ( glm::distance( m_pBegin, m_pEnd ) > 0.5 && glm::length( m_pBegin ) > 0 && glm::length( m_pEnd ) > 0 )
 		{
+//			std::cout << m_pBegin.x << " " << m_pBegin.y << " " << m_pBegin.z << " " << std::endl;
+//			std::cout << m_pEnd.x << " " << m_pEnd.y << " " << m_pEnd.z << " " << std::endl;
 			m_RCube->setMoveByCoords( m_pBegin, m_pEnd );
 			m_gkStates[ GK_MOVEMOUSE ].processKey();
 
 			m_pBegin = { 0.0f, 0.0f, 0.0f };
 			m_pEnd = { 0.0f, 0.0f, 0.0f };
 		}
+		else if ( !m_gkStates[ GK_MOVEMOUSE ].isHold() )
+		{
+			m_gkStates[ GK_MOVEMOUSE ].processKey();
+			m_pBegin = { 0.0f, 0.0f, 0.0f };
+			m_pEnd = { 0.0f, 0.0f, 0.0f };
+		}
 	}
 
-	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && glm::length( m_pBegin ) == 0 )
+	if ( !m_RCube->isMoving() && !m_RCube->isRotating() && !m_gkStates[ GK_MOVEMOUSE ].isHold() )
 	{
 		for ( int i = 0; i < GK_MOVELAST - GK_MOVEFIRST + 1; i++ )
 		{
@@ -301,14 +320,13 @@ void CPlayState::Update( CGameEngine * game )
 		m_needRedraw = true;
 	}
 */
-	if ( m_gkStates[ GK_CHANGEPROJ ].isNewDown() )
+	if ( m_gkStates[ GK_CHANGEPROJ ].isNewDown() && !m_gkStates[ GK_MOVEMOUSE ].isHold() )
 	{
         m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
         setProjection( m_prType );
 		m_gkStates[ GK_CHANGEPROJ ].processKey();
 		m_needRedraw = true;
 	}
-
 
 	m_RCube->Update();
 }
