@@ -1,27 +1,66 @@
 #ifndef KEYSTATE_H
 #define KEYSTATE_H
 
-class KeyState
+#include <queue>
+#include <map>
+#include "rcdefines.h"
+
+class KeyQueue
 {
 public:
-	KeyState() : m_isNewDown{ 0 }, m_isHold{ 0 }  {}
+    KeyQueue() { }
 
-	inline void keyDown()
+	inline void keyDown( const RC::GameKeys gk )
 	{
-		if ( !m_isHold )
+		if ( !m_map[ gk ].isHold )
 		{
-			m_isNewDown = true;
-			m_isHold = true;
+			m_map[ gk ].isNewDown = true;
+			m_map[ gk ].isHold = true;
+
+			m_queue.push( gk );
 		}
 	};
-	inline void keyUp() { if ( m_isHold ) m_isHold = false; };
-	inline void processKey() { if ( m_isNewDown ) m_isNewDown = false; };
-	inline bool isHold() const { return m_isHold; };
-	inline bool isNewDown() const { return m_isNewDown; };
+
+    inline void keyUp( const RC::GameKeys gk )
+    {
+		if ( m_map[ gk ].isHold )
+			m_map[ gk ].isHold = false;
+	};
+
+	inline void processKey( const RC::GameKeys gk )
+	{
+		if ( m_map[ gk ].isNewDown )
+			m_map[ gk ].isNewDown = false;
+	};
+
+	inline bool isHold( const RC::GameKeys gk ) const
+	{
+		return m_map[ gk ].isHold;
+	};
+
+	inline bool isNewDown( const RC::GameKeys gk ) const
+	{
+		return m_map[ gk ].isNewDown;
+	};
+
+	inline RC::GameKeys getKey()
+	{
+		const RC::GameKeys gk = m_queue.front();
+		m_queue.pop();
+		return gk;
+	}
+
+	inline int qSize() const { return m_queue.size(); }
 
 private:
-    bool m_isNewDown;
-    bool m_isHold;
+	struct KeyState
+	{
+		bool isNewDown;
+		bool isHold;
+	};
+
+	KeyState m_map[ RC::GK_COUNT ];
+	std::queue< RC::GameKeys > m_queue;
 };
 
 #endif // KEYSTATE_H

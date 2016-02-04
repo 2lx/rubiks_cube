@@ -35,7 +35,7 @@ private:
 	static CPlayState m_PlayState;
 	RCubeObject * m_RCube;
 	bool m_needRedraw = { true };
-	KeyState m_gkStates[ RC::GK_COUNT ];
+	KeyQueue m_keyQ;
 	ProjectionType m_prType = { PT_ISOMETRIC };
 	glm::vec3 m_pBegin, m_pEnd;
 	glm::mat4 m_matrCamera;
