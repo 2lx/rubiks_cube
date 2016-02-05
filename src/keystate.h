@@ -45,6 +45,7 @@ public:
 	};
 
 	inline RC::GameKeys curKey() const { return m_queue.front(); }
+	inline void pushKey( const RC::GameKeys gk ) { m_queue.push( gk ); }
 
 	inline RC::GameKeys popKey()
 	{

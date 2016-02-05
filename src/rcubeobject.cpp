@@ -79,7 +79,7 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 {
 	const float cOffset = CUBIE_COUNT / 2.0f;
 
-	// if the points in different planes or don't lie on the surface of the cube
+	// if 1st point don't lie on the surface of the cube
 	if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
 		return;
 

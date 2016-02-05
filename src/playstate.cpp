@@ -143,6 +143,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_RETURN: m_keyQ.keyDown( GK_CHANGEPROJ ); break;
 			case SDLK_SPACE: m_keyQ.keyDown( GK_CHANGECOLOR ); break;
 			case SDLK_F1: 	m_keyQ.keyDown( GK_CUBERESET ); break;
+			case SDLK_F4: 	m_keyQ.keyDown( GK_CUBEMIX ); break;
 			}
 			break;
 		case SDL_KEYUP:
@@ -175,8 +176,10 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_RETURN: m_keyQ.keyUp( GK_CHANGEPROJ ); break;
 			case SDLK_SPACE: m_keyQ.keyUp( GK_CHANGECOLOR ); break;
 			case SDLK_F1: 	m_keyQ.keyUp( GK_CUBERESET ); break;
+			case SDLK_F4: 	m_keyQ.keyUp( GK_CUBEMIX ); break;
 			}
 			break;
+		// mouse events
 		case SDL_MOUSEBUTTONDOWN:
 			lastEvent = true;
 			switch( event.button.button )
@@ -212,9 +215,13 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			{
 			case SDL_BUTTON_LEFT:
 				m_keyQ.keyUp( GK_MOUSEMOVE );
+				m_pMBegin = { 0.0f, 0.0f, 0.0f };
+				m_pMEnd = { 0.0f, 0.0f, 0.0f };
 				break;
 			case SDL_BUTTON_RIGHT:
 				m_keyQ.keyUp( GK_MOUSEROTATE );
+				m_pRBegin = { 0.0f, 0.0f, 0.0f };
+				m_pREnd = { 0.0f, 0.0f, 0.0f };
 				break;
 			}
 			break;
@@ -258,17 +265,9 @@ void CPlayState::Update( CGameEngine * game )
 		{
 			if ( glm::distance( m_pMBegin, m_pMEnd ) > 0.5 && glm::length( m_pMBegin ) > 0 && glm::length( m_pMEnd ) > 0 )
 			{
-//				std::cout << m_pBegin.x << " " << m_pBegin.y << " " << m_pBegin.z << " " << std::endl;
-//				std::cout << m_pEnd.x << " " << m_pEnd.y << " " << m_pEnd.z << " " << std::endl;
 				m_RCube->setMoveByCoords( m_pMBegin, m_pMEnd );
 				m_keyQ.processKey( GK_MOUSEMOVE );
 
-				m_pMBegin = { 0.0f, 0.0f, 0.0f };
-				m_pMEnd = { 0.0f, 0.0f, 0.0f };
-			}
-			else if ( !m_keyQ.isHold( GK_MOUSEMOVE ) )
-			{
-				m_keyQ.processKey( GK_MOUSEMOVE );
 				m_pMBegin = { 0.0f, 0.0f, 0.0f };
 				m_pMEnd = { 0.0f, 0.0f, 0.0f };
 			}
@@ -281,17 +280,9 @@ void CPlayState::Update( CGameEngine * game )
 		{
 			if ( glm::distance( m_pRBegin, m_pREnd ) > 0.5 && glm::length( m_pRBegin ) > 0 && glm::length( m_pREnd ) > 0 )
 			{
-//				std::cout << m_pRBegin.x << " " << m_pRBegin.y << " " << m_pRBegin.z << " " << std::endl;
-//				std::cout << m_pREnd.x << " " << m_pREnd.y << " " << m_pREnd.z << " " << std::endl;
 				m_RCube->setRotateByCoords( m_pRBegin, m_pREnd );
 				m_keyQ.processKey( GK_MOUSEROTATE );
 
-				m_pRBegin = { 0.0f, 0.0f, 0.0f };
-				m_pREnd = { 0.0f, 0.0f, 0.0f };
-			}
-			else if ( !m_keyQ.isHold( GK_MOUSEROTATE ) )
-			{
-				m_keyQ.processKey( GK_MOUSEROTATE );
 				m_pRBegin = { 0.0f, 0.0f, 0.0f };
 				m_pREnd = { 0.0f, 0.0f, 0.0f };
 			}
@@ -345,6 +336,15 @@ void CPlayState::Update( CGameEngine * game )
 				m_RCube->reset();
 				m_needRedraw = true;
 				break;
+			case GK_CUBEMIX:
+			{
+				srand( time( 0 ) );
+				const int mCount = 50 + rand() % 10;
+
+				for ( int i = 0; i < mCount; i++ )
+					m_keyQ.pushKey( GameKeys( rand() % GK_MOVELAST ) );
+				break;
+			}
 			default:
 				break;
 			}
