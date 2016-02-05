@@ -55,8 +55,61 @@ void GameObject::setRotate( const int newDirX, const int newDirY, const int newD
 	m_newRotateQuat = tempQuat * m_newRotateQuat;
 	m_oldRotateQuat = m_rotateQuat;
 	m_rotateMix = 0;
+}
 
-//	std::cout << m_newRotateQuat.x << " " << m_newRotateQuat.y << " " << m_newRotateQuat.z << " " << m_newRotateQuat.w << " " << std::endl;
+void GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
+{
+	const float cOffset = CUBIE_COUNT / 2.0f;
+
+	// if the points in different planes or don't lie on the surface of the cube
+	if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
+		return;
+
+	// get close rotation axis
+	const glm::vec3 rvBeg = pBeg * m_rotateQuat;
+	const glm::vec3 rvEnd = pEnd * m_rotateQuat;
+	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
+
+	// get closest rotation axis vector
+    glm::vec3 vAx;
+    const float aX = std::abs( pRes.x );
+	const float aY = std::abs( pRes.y );
+	const float aZ = std::abs( pRes.z );
+
+    if ( aX > aY && aX > aZ )
+	{
+        if ( pRes.x > 0 )
+			vAx = { 1.0f, 0.0f, 0.0f };
+		else vAx = { -1.0f, 0.0f, 0.0f };
+	}
+	else if ( aY > aX && aY > aZ )
+	{
+        if ( pRes.y > 0 )
+			vAx = { 0.0f, 1.0f, 0.0f };
+		else vAx = { 0.0f, -1.0f, 0.0f };
+	}
+	else if ( aZ > aX && aZ > aY )
+	{
+        if ( pRes.z > 0 )
+			vAx = { 0.0f, 0.0f, 1.0f };
+		else vAx = { 0.0f, 0.0f, -1.0f };
+	}
+	else return;
+
+#ifdef NDEBUG
+	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
+	std::cout << pEnd.x << " " << pEnd.y << " " << pEnd.z << std::endl;
+	std::cout << rvBeg.x << " " << rvBeg.y << " " << rvBeg.z << std::endl;
+	std::cout << rvEnd.x << " " << rvEnd.y << " " << rvEnd.z << std::endl;
+	std::cout << pRes.x << " " << pRes.y << " " << pRes.z << std::endl;
+	std::cout << vAx.x  << " " << vAx.y  << " " << vAx.z  << std::endl;
+	std::cout << std::endl;
+	std::cout.flush();
+#endif // NDEBUG
+
+	m_newRotateQuat = m_newRotateQuat * glm::angleAxis( glm::radians( 90.0f ), vAx );
+	m_oldRotateQuat = m_rotateQuat;
+	m_rotateMix = 0;
 }
 
 void GameObject::updateAxesPos()

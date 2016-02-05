@@ -37,7 +37,8 @@ private:
 	bool m_needRedraw = { true };
 	KeyQueue m_keyQ;
 	ProjectionType m_prType = { PT_ISOMETRIC };
-	glm::vec3 m_pBegin, m_pEnd;
+	glm::vec3 m_pMBegin, m_pMEnd;
+	glm::vec3 m_pRBegin, m_pREnd;
 	glm::mat4 m_matrCamera;
 	glm::dmat4 m_mProjection, m_mModel, m_mView;
 	int m_screenWidth = 800, m_screenHeight = 600;

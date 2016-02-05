@@ -11,6 +11,7 @@ public:
 	virtual void drawObject( const glm::mat4 & ) = 0;
 	void rotateObject();
 	void setRotate( const int newDirX, const int newDirY, const int newDirZ, const bool isPos );
+	void setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
 	bool isRotating() const	{ return ( m_rotateMix >= 0 ); };
 
 protected:

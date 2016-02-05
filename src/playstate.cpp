@@ -104,6 +104,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				m_screenHeight = event.window.data2;
 
 				glViewport( 0, 0, m_screenWidth, m_screenHeight );
+				setProjection( m_prType );
 				m_needRedraw = true;
 			}
 			break;
@@ -181,11 +182,13 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
-				m_pBegin = getGLPos( event.button.x, event.button.y );
+				m_pMBegin = getGLPos( event.button.x, event.button.y );
 
-				m_keyQ.keyDown( GK_MOVEMOUSE, false );
+				m_keyQ.keyDown( GK_MOUSEMOVE, false );
 				break;
 			case SDL_BUTTON_RIGHT:
+				m_pRBegin = getGLPos( event.button.x, event.button.y );
+				m_keyQ.keyDown( GK_MOUSEROTATE, false );
 				break;
 			}
 			break;
@@ -194,11 +197,12 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
-				if ( glm::length( m_pBegin ) > 0 )
-					m_pEnd = getGLPos( event.button.x, event.button.y );
-
+				if ( glm::length( m_pMBegin ) > 0 )
+					m_pMEnd = getGLPos( event.button.x, event.button.y );
 				break;
-			case SDL_BUTTON_RIGHT:
+			case SDL_BUTTON( SDL_BUTTON_RIGHT ): // SDL2 bug
+				if ( glm::length( m_pRBegin ) > 0 )
+					m_pREnd = getGLPos( event.button.x, event.button.y );
 				break;
 			}
 			break;
@@ -207,10 +211,10 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
-
-				m_keyQ.keyUp( GK_MOVEMOUSE );
+				m_keyQ.keyUp( GK_MOUSEMOVE );
 				break;
 			case SDL_BUTTON_RIGHT:
+				m_keyQ.keyUp( GK_MOUSEROTATE );
 				break;
 			}
 			break;
@@ -247,26 +251,49 @@ glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
 void CPlayState::Update( CGameEngine * game )
 {
 	// primarily processing mouse events
-	if ( m_keyQ.isHold( GK_MOVEMOUSE ) )
+	if ( m_keyQ.isHold( GK_MOUSEMOVE ) )
 	{
 		// processing cube moves with mouse
 		if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
 		{
-			if ( glm::distance( m_pBegin, m_pEnd ) > 0.5 && glm::length( m_pBegin ) > 0 && glm::length( m_pEnd ) > 0 )
+			if ( glm::distance( m_pMBegin, m_pMEnd ) > 0.5 && glm::length( m_pMBegin ) > 0 && glm::length( m_pMEnd ) > 0 )
 			{
 //				std::cout << m_pBegin.x << " " << m_pBegin.y << " " << m_pBegin.z << " " << std::endl;
 //				std::cout << m_pEnd.x << " " << m_pEnd.y << " " << m_pEnd.z << " " << std::endl;
-				m_RCube->setMoveByCoords( m_pBegin, m_pEnd );
-				m_keyQ.processKey( GK_MOVEMOUSE );
+				m_RCube->setMoveByCoords( m_pMBegin, m_pMEnd );
+				m_keyQ.processKey( GK_MOUSEMOVE );
 
-				m_pBegin = { 0.0f, 0.0f, 0.0f };
-				m_pEnd = { 0.0f, 0.0f, 0.0f };
+				m_pMBegin = { 0.0f, 0.0f, 0.0f };
+				m_pMEnd = { 0.0f, 0.0f, 0.0f };
 			}
-			else if ( !m_keyQ.isHold( GK_MOVEMOUSE ) )
+			else if ( !m_keyQ.isHold( GK_MOUSEMOVE ) )
 			{
-				m_keyQ.processKey( GK_MOVEMOUSE );
-				m_pBegin = { 0.0f, 0.0f, 0.0f };
-				m_pEnd = { 0.0f, 0.0f, 0.0f };
+				m_keyQ.processKey( GK_MOUSEMOVE );
+				m_pMBegin = { 0.0f, 0.0f, 0.0f };
+				m_pMEnd = { 0.0f, 0.0f, 0.0f };
+			}
+		}
+	}
+	else if ( m_keyQ.isHold( GK_MOUSEROTATE ) )
+	{
+		// processing cube rotates with mouse
+		if ( !m_RCube->isRotating() )
+		{
+			if ( glm::distance( m_pRBegin, m_pREnd ) > 0.5 && glm::length( m_pRBegin ) > 0 && glm::length( m_pREnd ) > 0 )
+			{
+//				std::cout << m_pRBegin.x << " " << m_pRBegin.y << " " << m_pRBegin.z << " " << std::endl;
+//				std::cout << m_pREnd.x << " " << m_pREnd.y << " " << m_pREnd.z << " " << std::endl;
+				m_RCube->setRotateByCoords( m_pRBegin, m_pREnd );
+				m_keyQ.processKey( GK_MOUSEROTATE );
+
+				m_pRBegin = { 0.0f, 0.0f, 0.0f };
+				m_pREnd = { 0.0f, 0.0f, 0.0f };
+			}
+			else if ( !m_keyQ.isHold( GK_MOUSEROTATE ) )
+			{
+				m_keyQ.processKey( GK_MOUSEROTATE );
+				m_pRBegin = { 0.0f, 0.0f, 0.0f };
+				m_pREnd = { 0.0f, 0.0f, 0.0f };
 			}
 		}
 	}
