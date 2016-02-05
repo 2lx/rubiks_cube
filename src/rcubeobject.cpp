@@ -30,7 +30,7 @@ RCubeObject::RCubeObject( ShaderProgram * shaderPr )
 	}
 
 	m_texCount = res_texture->h / ( res_texture->w / 6 );
-	m_texCurScheme = 0;
+	m_texCurScheme = 1;
 
 	SDL_FreeSurface( res_texture );
 
