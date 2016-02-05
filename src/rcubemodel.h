@@ -11,9 +11,6 @@ namespace RC
 		Cubie() { };
 
 		void rotateCubie( const RCMoveType rt );
-//		float colR( const RCAxis ax ) const;
-//		float colG( const RCAxis ax ) const;
-//		float colB( const RCAxis ax ) const;
 		RCAxis colInd( const RCAxis ax ) const { return m_colourInd[ ax ]; };
 		inline void setColourInd( const RCAxis ax, const RCAxis cind ) { m_colourInd[ ax ] = cind; };
 
@@ -29,6 +26,7 @@ namespace RC
 
 			void moveCubies( const RCMoveType rt, const int mLayer );
 			const Cubie cubie( const int x, const int y, const int z ) const { return m_cubies[ x ][ y ][ z ]; };
+			void reset();
 		protected:
 
 		private:

@@ -22,20 +22,21 @@ RCubeObject::RCubeObject( ShaderProgram * shaderPr )
 	m_attrTexCoords = shaderPr->addAttribute( "texCoord" );
 	m_attrTexIndex = shaderPr->addAttribute( "texIndex" );
 
+	// get texture params
 	SDL_Surface * res_texture = IMG_Load( "glsl/texture.png" );
 	if ( res_texture == NULL )
-	{
 		std::cout << "IMG_Load: " << SDL_GetError() << std::endl;
-		return;
+	else
+	{
+		m_texCount = res_texture->h / ( res_texture->w / 6 );
+		m_texCurScheme = 1;
+
+		SDL_FreeSurface( res_texture );
+
+		// load texture
+		m_VBOTexUnionID = loadGLTexture2D( "glsl/texture.png" );
+		m_UniTexUnionID = shaderPr->addUniform( "texUnion" );
 	}
-
-	m_texCount = res_texture->h / ( res_texture->w / 6 );
-	m_texCurScheme = 1;
-
-	SDL_FreeSurface( res_texture );
-
-	m_VBOTexUnionID = loadGLTexture2D( "glsl/texture.png" );
-	m_UniTexUnionID = shaderPr->addUniform( "texUnion" );
 
 	m_UniMVP = shaderPr->addUniform( "mvp" );
 	m_UniTexCount = shaderPr->addUniform( "texCount" );
@@ -52,20 +53,16 @@ RCubeObject::~RCubeObject()
 	delete m_RCModel;
 }
 
-void RCubeObject::Update( )
+void RCubeObject::setMove( const RCMoveType rt )
 {
-	glUniform1f( m_UniTexCount, m_texCount );
-	glUniform1f( m_UniTexCurScheme, m_texCurScheme );
-}
+	// calculate new move type
+	const glm::vec3 vec = MoveParams::vec( rt );
+	const bool cw = MoveParams::clockwise( rt );
+	const glm::vec3 vecRot = vec * m_rotateQuat;
 
-void RCubeObject::setMove( const RCMoveType newRT )
-{
-	glm::vec3 vec = MoveParams::vec( newRT );
-	bool isPos = MoveParams::clockwise( newRT );
+	m_moveType = MoveParams::getMTypeForPars( vecRot, cw );
 
-	glm::vec3 vecRot = vec * m_rotateQuat;
-	m_moveType = MoveParams::getMTypeForPars( vecRot, isPos );
-
+	// calculate move params
 	if ( m_moveType != MT_NONE )
 	{
 		if ( glm::dot( vecRot, glm::vec3( 1.0f, 1.0f, 1.0f ) ) < 0 )
@@ -74,7 +71,7 @@ void RCubeObject::setMove( const RCMoveType newRT )
 
 		m_moveMix = 0;
 		float angle = glm::radians( 90.0f );
-		m_newMoveQuat = glm::angleAxis( ( isPos ) ? -angle : angle, MoveParams::vec( m_moveType ) );
+		m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, MoveParams::vec( m_moveType ) );
 	}
 }
 
@@ -91,7 +88,7 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 	const glm::vec3 rvEnd = pEnd * m_rotateQuat;
 	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
 
-	// get closest rotation axis
+	// get closest rotation axis vector
     glm::vec3 vAx;
     const float aX = std::abs( pRes.x );
 	const float aY = std::abs( pRes.y );
@@ -133,8 +130,7 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 		isCW = true;
 	else isCW = false;
 
-	// choose parameters
-
+	// get move type
 	RCMoveType nMT = MoveParams::getMTypeForPars( vAx, isCW );
 	if ( nMT == MT_NONE )
 		return;
@@ -160,9 +156,15 @@ void RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEn
 	m_newMoveQuat = glm::angleAxis( ( isCW ) ? -angle : angle, vAx );
 }
 
-void RCubeObject::drawObject( const glm::mat4 & pmv )
+void RCubeObject::reset()
 {
-	const float offCenter = CUBIE_COUNT / 2.0f - 0.5;
+	m_RCModel->reset();
+}
+
+void RCubeObject::update()
+{
+	glUniform1f( m_UniTexCount, m_texCount );
+	glUniform1f( m_UniTexCurScheme, m_texCurScheme );
 
 	// turn the face of cube
 	if ( isMoving() )
@@ -182,6 +184,11 @@ void RCubeObject::drawObject( const glm::mat4 & pmv )
 			m_moveMix = -1;
 		}
 	}
+}
+
+void RCubeObject::drawObject( const glm::mat4 & pmv )
+{
+	const float offCenter = CUBIE_COUNT / 2.0f - 0.5;
 
 	// use texture
 	glActiveTexture( GL_TEXTURE0 );

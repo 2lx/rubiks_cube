@@ -45,31 +45,19 @@ void Cubie::rotateCubie( const RCMoveType rt )
 	m_colourInd[ t3 ] = m_colourInd[ t4 ];
 	m_colourInd[ t4 ] = tt;
 }
-/*
-float Cubie::colR( const RCAxis ax ) const
-{
-	if ( m_colourInd[ ax ] == AX_NONE )
-		return Colors::colR( RC_FG );
-	else return Colors::colR( m_colourInd[ ax ] );
-}
 
-float Cubie::colG( const RCAxis ax ) const
-{
-	if ( m_colourInd[ ax ] == AX_NONE )
-		return Colors::colG( RC_FG );
-	else return Colors::colG( m_colourInd[ ax ] );
-}
-
-float Cubie::colB( const RCAxis ax ) const
-{
-	if ( m_colourInd[ ax ] == AX_NONE )
-		return Colors::colB( RC_FG );
-	else return Colors::colB( m_colourInd[ ax ] );
-}
-*/
 CubeModel::CubeModel()
 {
-	srand( time( 0 ) );
+	reset();
+}
+
+CubeModel::~CubeModel()
+{
+
+}
+
+void CubeModel::reset()
+{
 	const int k = CUBIE_COUNT - 1;
 
 	for( int i = 0; i < CUBIE_COUNT; ++i )
@@ -82,11 +70,6 @@ CubeModel::CubeModel()
 			m_cubies[ 0 ][ i ][ j ].setColourInd( AX_LEFT, AX_LEFT );
 			m_cubies[ k ][ i ][ j ].setColourInd( AX_RIGHT, AX_RIGHT );
 		}
-}
-
-CubeModel::~CubeModel()
-{
-
 }
 
 void CubeModel::moveCubies( const RCMoveType rt, const int mLayer )

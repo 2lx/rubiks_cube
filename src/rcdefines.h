@@ -42,6 +42,9 @@ namespace RC
 
 		GK_CHANGECOLOR,
 		GK_CHANGEPROJ,
+
+		GK_CUBERESET,
+
 		GK_COUNT,
 		GK_FIRST = GK_LOOKUP
 	};

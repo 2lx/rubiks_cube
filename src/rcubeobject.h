@@ -16,11 +16,12 @@ public:
 	virtual ~RCubeObject();
 
 	void drawObject( const glm::mat4 & pmv );
-	void setMove( const RCMoveType newRT );
+	void setMove( const RCMoveType rt );
 	void setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
 	bool isMoving() const { return ( m_moveMix >= 0 ); }
-	void Update();
+	void update();
 	void incCurScheme() { m_texCurScheme = ( m_texCurScheme + 1 ) % m_texCount; };
+	void reset();
 
 protected:
 private:

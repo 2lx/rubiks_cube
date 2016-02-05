@@ -141,6 +141,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_COMMA: m_keyQ.keyDown( GK_MOVEDOWNINV ); break;
 			case SDLK_RETURN: m_keyQ.keyDown( GK_CHANGEPROJ ); break;
 			case SDLK_SPACE: m_keyQ.keyDown( GK_CHANGECOLOR ); break;
+			case SDLK_F1: 	m_keyQ.keyDown( GK_CUBERESET ); break;
 			}
 			break;
 		case SDL_KEYUP:
@@ -172,6 +173,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_COMMA: m_keyQ.keyUp( GK_MOVEDOWNINV ); break;
 			case SDLK_RETURN: m_keyQ.keyUp( GK_CHANGEPROJ ); break;
 			case SDLK_SPACE: m_keyQ.keyUp( GK_CHANGECOLOR ); break;
+			case SDLK_F1: 	m_keyQ.keyUp( GK_CUBERESET ); break;
 			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
@@ -311,13 +313,18 @@ void CPlayState::Update( CGameEngine * game )
 				m_RCube->incCurScheme();
 				m_needRedraw = true;
 				break;
+			// other
+			case GK_CUBERESET:
+				m_RCube->reset();
+				m_needRedraw = true;
+				break;
 			default:
 				break;
 			}
 		}
 	}
 
-	m_RCube->Update();
+	m_RCube->update();
 }
 
 void CPlayState::Draw( CGameEngine * game )
