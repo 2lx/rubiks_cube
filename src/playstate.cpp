@@ -45,7 +45,6 @@ void CPlayState::Cleanup()
 	delete m_shaderPr;
 
 	MoveParams::cleanup();
-//	Colors::cleanup();
 	AxisParams::cleanup();
 }
 
@@ -141,6 +140,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_PERIOD: m_keyQ.keyDown( GK_MOVEDOWN ); break;
 			case SDLK_COMMA: m_keyQ.keyDown( GK_MOVEDOWNINV ); break;
 			case SDLK_RETURN: m_keyQ.keyDown( GK_CHANGEPROJ ); break;
+			case SDLK_SPACE: m_keyQ.keyDown( GK_CHANGECOLOR ); break;
 			}
 			break;
 		case SDL_KEYUP:
@@ -171,6 +171,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_PERIOD: m_keyQ.keyUp( GK_MOVEDOWN ); break;
 			case SDLK_COMMA: m_keyQ.keyUp( GK_MOVEDOWNINV ); break;
 			case SDLK_RETURN: m_keyQ.keyUp( GK_CHANGEPROJ ); break;
+			case SDLK_SPACE: m_keyQ.keyUp( GK_CHANGECOLOR ); break;
 			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
@@ -305,11 +306,18 @@ void CPlayState::Update( CGameEngine * game )
 			case GK_MOVERIGHTINV: 	m_RCube->setMove( MT_RIGHTINV );	break;
 			case GK_MOVEUP: 		m_RCube->setMove( MT_UP );			break;
 			case GK_MOVEUPINV: 		m_RCube->setMove( MT_UPINV );		break;
+			// processing colors setup
+			case GK_CHANGECOLOR:
+				m_RCube->incCurScheme();
+				m_needRedraw = true;
+				break;
 			default:
 				break;
 			}
 		}
 	}
+
+	m_RCube->Update();
 }
 
 void CPlayState::Draw( CGameEngine * game )

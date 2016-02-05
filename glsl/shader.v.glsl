@@ -9,7 +9,7 @@ flat varying float f_texIndex;
 
 void main(void) 
 {
-  gl_Position = mvp * vec4(cVertex, 1.0);
-  f_texCoord = texCoord;
-  f_texIndex = texIndex;
+	gl_Position = mvp * vec4(cVertex, 1.0);
+	f_texCoord = texCoord;
+	f_texIndex = texIndex;
 }

@@ -20,6 +20,7 @@ public:
 	void setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
 	bool isMoving() const { return ( m_moveMix >= 0 ); }
 	void Update();
+	void incCurScheme() { m_texCurScheme = ( m_texCurScheme + 1 ) % m_texCount; };
 
 protected:
 private:
@@ -38,7 +39,9 @@ private:
 	GLuint m_VBOTexUnionID;
 	GLint m_UniTexUnionID;
 
-	GLint m_UniMVP;			// ModelViewProjection
+	GLint m_UniMVP, m_UniTexCount, m_UniTexCurScheme;
+	int m_texCount;
+	int m_texCurScheme;
 
 	void drawCubie( const int x, const int y, const int z ) const;
 

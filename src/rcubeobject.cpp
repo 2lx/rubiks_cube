@@ -22,10 +22,24 @@ RCubeObject::RCubeObject( ShaderProgram * shaderPr )
 	m_attrTexCoords = shaderPr->addAttribute( "texCoord" );
 	m_attrTexIndex = shaderPr->addAttribute( "texIndex" );
 
+	SDL_Surface * res_texture = IMG_Load( "glsl/texture.png" );
+	if ( res_texture == NULL )
+	{
+		std::cout << "IMG_Load: " << SDL_GetError() << std::endl;
+		return;
+	}
+
+	m_texCount = res_texture->h / ( res_texture->w / 6 );
+	m_texCurScheme = 0;
+
+	SDL_FreeSurface( res_texture );
+
 	m_VBOTexUnionID = loadGLTexture2D( "glsl/texture.png" );
 	m_UniTexUnionID = shaderPr->addUniform( "texUnion" );
 
 	m_UniMVP = shaderPr->addUniform( "mvp" );
+	m_UniTexCount = shaderPr->addUniform( "texCount" );
+	m_UniTexCurScheme = shaderPr->addUniform( "texCurScheme" );
 }
 
 RCubeObject::~RCubeObject()
@@ -40,6 +54,8 @@ RCubeObject::~RCubeObject()
 
 void RCubeObject::Update( )
 {
+	glUniform1f( m_UniTexCount, m_texCount );
+	glUniform1f( m_UniTexCurScheme, m_texCurScheme );
 }
 
 void RCubeObject::setMove( const RCMoveType newRT )

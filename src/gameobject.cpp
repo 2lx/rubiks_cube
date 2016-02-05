@@ -30,6 +30,7 @@ GLuint GameObject::loadGLTexture2D( const char * filename ) const
 	glGenTextures( 1, &bId );
 	glBindTexture( GL_TEXTURE_2D, bId );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+
 	glTexImage2D( GL_TEXTURE_2D,	// target
 		0,							// level, 0 = base, no minimap,
 		GL_RGBA,					// internalformat
