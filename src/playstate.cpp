@@ -243,6 +243,7 @@ glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
 
 void CPlayState::Update( CGameEngine * game )
 {
+	// primarily processing mouse events
 	if ( m_keyQ.isHold( GK_MOVEMOUSE ) )
 	{
 		// processing cube moves with mouse
@@ -278,12 +279,12 @@ void CPlayState::Update( CGameEngine * game )
 			switch ( gk )
 			{
 			// processing cube rotates
-			case GK_LOOKDOWN:	m_RCube->setRotates( 1, 0, 0, false );	break;
-			case GK_LOOKUP:		m_RCube->setRotates( 1, 0, 0, true );	break;
-			case GK_LOOKRIGHT:	m_RCube->setRotates( 0, 1, 0, false );	break;
-			case GK_LOOKLEFT:	m_RCube->setRotates( 0, 1, 0, true );	break;
-			case GK_ROTATEACW:	m_RCube->setRotates( 0, 0, 1, true );	break;
-			case GK_ROTATECW:	m_RCube->setRotates( 0, 0, 1, false );	break;
+			case GK_LOOKDOWN:	m_RCube->setRotate( 1, 0, 0, false );	break;
+			case GK_LOOKUP:		m_RCube->setRotate( 1, 0, 0, true );	break;
+			case GK_LOOKRIGHT:	m_RCube->setRotate( 0, 1, 0, false );	break;
+			case GK_LOOKLEFT:	m_RCube->setRotate( 0, 1, 0, true );	break;
+			case GK_ROTATEACW:	m_RCube->setRotate( 0, 0, 1, true );	break;
+			case GK_ROTATECW:	m_RCube->setRotate( 0, 0, 1, false );	break;
 			// processing projection setup
 			case GK_CHANGEPROJ:
 				m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
@@ -319,7 +320,7 @@ void CPlayState::Draw( CGameEngine * game )
 	{
 		Uint32 start = SDL_GetTicks();
 
-		glClearColor( 0.3f, 0.4f, 0.4f, 0.0f );
+		glClearColor( 47.0 / 255.0, 47.0 / 255.0, 47.0 / 255.0, 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		glUseProgram( m_shaderPr->id() );

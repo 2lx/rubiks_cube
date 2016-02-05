@@ -6,22 +6,6 @@
 
 namespace RC
 {
-	enum RCColor
-	{
-		RC_BG,
-		RC_FG,
-		RC_COUNT
-	};
-
-	enum RCColorScheme
-	{
-		RCS_S1,
-		RCS_S2,
-		RCS_S3,
-		RCS_COUNT
-	};
-
-
 	class AxisParams	// Singleton
 	{
 	public:
@@ -81,47 +65,5 @@ namespace RC
 		static std::map< RCMoveType, OneParam * > InitMap();
 		static std::map< RCMoveType, OneParam * > m_p;
 	};
-/*
-	class Colors	// Singleton
-	{
-	public:
-		static float colR( const RCColor colId ) { return m_c[ m_schemeId ][ colId ]->m_R; };
-		static float colG( const RCColor colId ) { return m_c[ m_schemeId ][ colId ]->m_G; };
-		static float colB( const RCColor colId ) { return m_c[ m_schemeId ][ colId ]->m_B; };
-
-		static float colR( const RCAxis colId ) { return m_ax[ m_schemeId ][ colId ]->m_R; };
-		static float colG( const RCAxis colId ) { return m_ax[ m_schemeId ][ colId ]->m_G; };
-		static float colB( const RCAxis colId ) { return m_ax[ m_schemeId ][ colId ]->m_B; };
-
-		static void setScheme( const RCColorScheme sc ) { m_schemeId = sc; };
-		static void incScheme() { m_schemeId = RCColorScheme( ( m_schemeId + 1 ) % RCS_COUNT ); };
-		static void cleanup();
-
-	private:
-		class OneColor
-		{
-		public:
-			OneColor( const int r, const int g, const int b )
-				: m_R( r / 255.0 ), m_G( g / 255.0 ), m_B( b / 255.0 )
-			{ };
-
-			const float m_R;
-			const float m_G;
-			const float m_B;
-		};
-
-		Colors() {};
-		Colors( const Colors & ) = delete;
-		Colors & operator= ( const Colors & ) = delete;
-
-		static std::map< RCColorScheme, std::map< RCColor, OneColor * > > InitMapRC();
-		static std::map< RCColorScheme, std::map< RCAxis, OneColor * > > InitMapAX();
-
-		static std::map< RCColorScheme, std::map< RCAxis, OneColor * > > m_ax;
-		static std::map< RCColorScheme, std::map< RCColor, OneColor * > > m_c;
-
-		static RCColorScheme m_schemeId;
-	};
-*/
 }
 #endif // RCUBEPARAMS_H

@@ -46,7 +46,7 @@ GLuint GameObject::loadGLTexture2D( const char * filename ) const
 	return bId;
 }
 
-void GameObject::setRotates( const int newDirX, const int newDirY, const int newDirZ, const bool isPos )
+void GameObject::setRotate( const int newDirX, const int newDirY, const int newDirZ, const bool isPos )
 {
 	float angle = glm::radians( 90.0f );
 	glm::quat tempQuat = glm::angleAxis( ( isPos ) ? angle : -angle, glm::vec3( newDirX, newDirY, newDirZ ) );

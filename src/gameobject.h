@@ -10,7 +10,7 @@ public:
 
 	virtual void drawObject( const glm::mat4 & ) = 0;
 	void rotateObject();
-	void setRotates( const int newDirX, const int newDirY, const int newDirZ, const bool isPos );
+	void setRotate( const int newDirX, const int newDirY, const int newDirZ, const bool isPos );
 	bool isRotating() const	{ return ( m_rotateMix >= 0 ); };
 
 protected:
