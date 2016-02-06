@@ -3,8 +3,6 @@
 #include "gameobject.h"
 #include "rcubeparams.h"
 
-using namespace RC;
-
 GameObject::GameObject()
 {
 //    for ( int i = AX_FIRST; i < AX_COUNT; i++ )
@@ -47,23 +45,37 @@ GLuint GameObject::loadGLTexture2D( const char * filename ) const
 	return bId;
 }
 
-void GameObject::setRotate( const int newDirX, const int newDirY, const int newDirZ, const bool isPos )
+void GameObject::setRotate( const RC::RotateType lt )
 {
+	glm::vec3 vec;
+	bool cw;
+
+	switch( lt )
+	{
+	case RC::RT_DOWN:	vec = { 1, 0, 0 }; cw = false;	break;
+	case RC::RT_UP:		vec = { 1, 0, 0 }; cw = true;	break;
+	case RC::RT_RIGHT:	vec = { 0, 1, 0 }; cw = false;	break;
+	case RC::RT_LEFT:	vec = { 0, 1, 0 }; cw = true;	break;
+	case RC::RT_ACW:	vec = { 0, 0, 1 }; cw = true;	break;
+	case RC::RT_CW:		vec = { 0, 0, 1 }; cw = false;	break;
+	default: return;
+	}
+
 	float angle = glm::radians( 90.0f );
-	glm::quat tempQuat = glm::angleAxis( ( isPos ) ? angle : -angle, glm::vec3( newDirX, newDirY, newDirZ ) );
+	glm::quat tempQuat = glm::angleAxis( cw ? angle : -angle, vec );
 
 	m_newRotateQuat = tempQuat * m_newRotateQuat;
 	m_oldRotateQuat = m_rotateQuat;
 	m_rotateMix = 0;
 }
 
-void GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
+RC::RotateType GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
 {
-	const float cOffset = CUBIE_COUNT / 2.0f;
+	const float cOffset = RC::CUBIE_COUNT / 2.0f;
 
 	// if the points in different planes or don't lie on the surface of the cube
 	if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
-		return;
+		return RC::RT_NONE;
 
 	// get close rotation axis
 	const glm::vec3 rvBeg = pBeg * m_rotateQuat;
@@ -94,7 +106,7 @@ void GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pE
 			vAx = { 0.0f, 0.0f, 1.0f };
 		else vAx = { 0.0f, 0.0f, -1.0f };
 	}
-	else return;
+	else return RC::RT_NONE;
 
 #ifdef NDEBUG
 	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
@@ -111,10 +123,10 @@ void GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pE
 	m_oldRotateQuat = m_rotateQuat;
 	m_rotateMix = 0;
 }
-
+/*
 void GameObject::updateAxesPos()
 {
- /*   for ( int i = AX_FIRST; i < AX_COUNT; i++ )
+    for ( int i = AX_FIRST; i < AX_COUNT; i++ )
     {
 		MyQuaternion quatT( AxisParams::vec( RCAxis( i ) ) );
 
@@ -128,16 +140,16 @@ void GameObject::updateAxesPos()
 		writeVector3D( vec );
 		std::cout << std::endl;
 #endif // MY_DEBUG
-	}*/
+	}
 }
 
 bool GameObject::isAxisVisible( const RCAxis ax ) const
 {
- /*   if ( m_axesPos[ ax ] == AX_FRONT || m_axesPos[ ax ] == AX_UP || m_axesPos[ ax ] == AX_LEFT )
+    if ( m_axesPos[ ax ] == AX_FRONT || m_axesPos[ ax ] == AX_UP || m_axesPos[ ax ] == AX_LEFT )
 		return true;
-	else return false;*/
+	else return false;
 }
-
+*/
 void GameObject::rotateObject( )
 {
 	if ( isRotating() )

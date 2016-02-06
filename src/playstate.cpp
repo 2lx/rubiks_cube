@@ -8,8 +8,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-using namespace RC;
-
 CPlayState CPlayState::m_PlayState;
 
 void CPlayState::Init()
@@ -44,8 +42,8 @@ void CPlayState::Cleanup()
 	delete m_RCube;
 	delete m_shaderPr;
 
-	MoveParams::cleanup();
-	AxisParams::cleanup();
+	RC::MoveParams::cleanup();
+//	AxisParams::cleanup();
 }
 
 void CPlayState::setProjection( const ProjectionType pType )
@@ -118,33 +116,33 @@ void CPlayState::HandleEvents( CGameEngine* game )
 				break;
 
 			case SDLK_UP:
-			case SDLK_w: 	m_keyQ.keyDown( GK_LOOKUP ); break;
+			case SDLK_w: 	m_keyQ.keyDown( RC::GK_ROTATEUP ); break;
 			case SDLK_DOWN:
-			case SDLK_s: 	m_keyQ.keyDown( GK_LOOKDOWN ); break;
+			case SDLK_s: 	m_keyQ.keyDown( RC::GK_ROTATEDOWN ); break;
 			case SDLK_LEFT:
-			case SDLK_a:	m_keyQ.keyDown( GK_LOOKLEFT ); break;
+			case SDLK_a:	m_keyQ.keyDown( RC::GK_ROTATELEFT ); break;
 			case SDLK_RIGHT:
-			case SDLK_d:	m_keyQ.keyDown( GK_LOOKRIGHT ); break;
+			case SDLK_d:	m_keyQ.keyDown( RC::GK_ROTATERIGHT ); break;
 			case SDLK_PAGEDOWN:
-			case SDLK_e:	m_keyQ.keyDown( GK_LOOKACW ); break;
-			case SDLK_q:	m_keyQ.keyDown( GK_LOOKCW ); break;
-			case SDLK_i:	m_keyQ.keyDown( GK_MOVEFRONT ); break;
-			case SDLK_u:	m_keyQ.keyDown( GK_MOVEFRONTINV ); break;
-			case SDLK_p:	m_keyQ.keyDown( GK_MOVEBACK ); break;
-			case SDLK_o:	m_keyQ.keyDown( GK_MOVEBACKINV ); break;
-			case SDLK_k:	m_keyQ.keyDown( GK_MOVELEFT ); break;
-			case SDLK_j:	m_keyQ.keyDown( GK_MOVELEFTINV );	break;
-			case SDLK_SEMICOLON: m_keyQ.keyDown( GK_MOVERIGHT ); break;
-			case SDLK_l:	m_keyQ.keyDown( GK_MOVERIGHTINV ); break;
-			case SDLK_m:	m_keyQ.keyDown( GK_MOVEUP ); break;
-			case SDLK_n:	m_keyQ.keyDown( GK_MOVEUPINV ); break;
-			case SDLK_PERIOD: m_keyQ.keyDown( GK_MOVEDOWN ); break;
-			case SDLK_COMMA: m_keyQ.keyDown( GK_MOVEDOWNINV ); break;
-			case SDLK_RETURN: m_keyQ.keyDown( GK_CHANGEPROJ ); break;
-			case SDLK_SPACE: m_keyQ.keyDown( GK_CHANGECOLOR ); break;
-			case SDLK_F1: 	m_keyQ.keyDown( GK_CUBERESET ); break;
-			case SDLK_F4: 	m_keyQ.keyDown( GK_CUBEMIX ); break;
-			case SDLK_z: 	m_keyQ.keyDown( GK_CUBEUNDO ); break;
+			case SDLK_e:	m_keyQ.keyDown( RC::GK_ROTATEACW ); break;
+			case SDLK_q:	m_keyQ.keyDown( RC::GK_ROTATECW ); break;
+			case SDLK_i:	m_keyQ.keyDown( RC::GK_MOVEFRONT ); break;
+			case SDLK_u:	m_keyQ.keyDown( RC::GK_MOVEFRONTINV ); break;
+			case SDLK_p:	m_keyQ.keyDown( RC::GK_MOVEBACK ); break;
+			case SDLK_o:	m_keyQ.keyDown( RC::GK_MOVEBACKINV ); break;
+			case SDLK_k:	m_keyQ.keyDown( RC::GK_MOVELEFT ); break;
+			case SDLK_j:	m_keyQ.keyDown( RC::GK_MOVELEFTINV );	break;
+			case SDLK_SEMICOLON: m_keyQ.keyDown( RC::GK_MOVERIGHT ); break;
+			case SDLK_l:	m_keyQ.keyDown( RC::GK_MOVERIGHTINV ); break;
+			case SDLK_m:	m_keyQ.keyDown( RC::GK_MOVEUP ); break;
+			case SDLK_n:	m_keyQ.keyDown( RC::GK_MOVEUPINV ); break;
+			case SDLK_PERIOD: m_keyQ.keyDown( RC::GK_MOVEDOWN ); break;
+			case SDLK_COMMA: m_keyQ.keyDown( RC::GK_MOVEDOWNINV ); break;
+			case SDLK_RETURN: m_keyQ.keyDown( RC::GK_CHANGEPROJ ); break;
+			case SDLK_SPACE: m_keyQ.keyDown( RC::GK_CHANGECOLOR ); break;
+			case SDLK_F1: 	m_keyQ.keyDown( RC::GK_CUBERESET ); break;
+			case SDLK_F4: 	m_keyQ.keyDown( RC::GK_CUBEMIX ); break;
+			case SDLK_z: 	m_keyQ.keyDown( RC::GK_CUBEUNDO ); break;
 			}
 			break;
 		case SDL_KEYUP:
@@ -152,33 +150,33 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			switch( event.key.keysym.sym )
 			{
 			case SDLK_UP:
-			case SDLK_w: 	m_keyQ.keyUp( GK_LOOKUP ); break;
+			case SDLK_w: 	m_keyQ.keyUp( RC::GK_ROTATEUP ); break;
 			case SDLK_DOWN:
-			case SDLK_s: 	m_keyQ.keyUp( GK_LOOKDOWN ); break;
+			case SDLK_s: 	m_keyQ.keyUp( RC::GK_ROTATEDOWN ); break;
 			case SDLK_LEFT:
-			case SDLK_a:	m_keyQ.keyUp( GK_LOOKLEFT ); break;
+			case SDLK_a:	m_keyQ.keyUp( RC::GK_ROTATELEFT ); break;
 			case SDLK_RIGHT:
-			case SDLK_d:	m_keyQ.keyUp( GK_LOOKRIGHT ); break;
+			case SDLK_d:	m_keyQ.keyUp( RC::GK_ROTATERIGHT ); break;
 			case SDLK_PAGEDOWN:
-			case SDLK_e:	m_keyQ.keyUp( GK_LOOKACW ); break;
-			case SDLK_q:	m_keyQ.keyUp( GK_LOOKCW ); break;
-			case SDLK_i:	m_keyQ.keyUp( GK_MOVEFRONT ); break;
-			case SDLK_u:	m_keyQ.keyUp( GK_MOVEFRONTINV ); break;
-			case SDLK_p:	m_keyQ.keyUp( GK_MOVEBACK ); break;
-			case SDLK_o:	m_keyQ.keyUp( GK_MOVEBACKINV ); break;
-			case SDLK_k:	m_keyQ.keyUp( GK_MOVELEFT ); break;
-			case SDLK_j:	m_keyQ.keyUp( GK_MOVELEFTINV );	break;
-			case SDLK_SEMICOLON: m_keyQ.keyUp( GK_MOVERIGHT ); break;
-			case SDLK_l:	m_keyQ.keyUp( GK_MOVERIGHTINV ); break;
-			case SDLK_m:	m_keyQ.keyUp( GK_MOVEUP ); break;
-			case SDLK_n:	m_keyQ.keyUp( GK_MOVEUPINV ); break;
-			case SDLK_PERIOD: m_keyQ.keyUp( GK_MOVEDOWN ); break;
-			case SDLK_COMMA: m_keyQ.keyUp( GK_MOVEDOWNINV ); break;
-			case SDLK_RETURN: m_keyQ.keyUp( GK_CHANGEPROJ ); break;
-			case SDLK_SPACE: m_keyQ.keyUp( GK_CHANGECOLOR ); break;
-			case SDLK_F1: 	m_keyQ.keyUp( GK_CUBERESET ); break;
-			case SDLK_F4: 	m_keyQ.keyUp( GK_CUBEMIX ); break;
-			case SDLK_z: 	m_keyQ.keyUp( GK_CUBEUNDO ); break;
+			case SDLK_e:	m_keyQ.keyUp( RC::GK_ROTATEACW ); break;
+			case SDLK_q:	m_keyQ.keyUp( RC::GK_ROTATECW ); break;
+			case SDLK_i:	m_keyQ.keyUp( RC::GK_MOVEFRONT ); break;
+			case SDLK_u:	m_keyQ.keyUp( RC::GK_MOVEFRONTINV ); break;
+			case SDLK_p:	m_keyQ.keyUp( RC::GK_MOVEBACK ); break;
+			case SDLK_o:	m_keyQ.keyUp( RC::GK_MOVEBACKINV ); break;
+			case SDLK_k:	m_keyQ.keyUp( RC::GK_MOVELEFT ); break;
+			case SDLK_j:	m_keyQ.keyUp( RC::GK_MOVELEFTINV );	break;
+			case SDLK_SEMICOLON: m_keyQ.keyUp( RC::GK_MOVERIGHT ); break;
+			case SDLK_l:	m_keyQ.keyUp( RC::GK_MOVERIGHTINV ); break;
+			case SDLK_m:	m_keyQ.keyUp( RC::GK_MOVEUP ); break;
+			case SDLK_n:	m_keyQ.keyUp( RC::GK_MOVEUPINV ); break;
+			case SDLK_PERIOD: m_keyQ.keyUp( RC::GK_MOVEDOWN ); break;
+			case SDLK_COMMA: m_keyQ.keyUp( RC::GK_MOVEDOWNINV ); break;
+			case SDLK_RETURN: m_keyQ.keyUp( RC::GK_CHANGEPROJ ); break;
+			case SDLK_SPACE: m_keyQ.keyUp( RC::GK_CHANGECOLOR ); break;
+			case SDLK_F1: 	m_keyQ.keyUp( RC::GK_CUBERESET ); break;
+			case SDLK_F4: 	m_keyQ.keyUp( RC::GK_CUBEMIX ); break;
+			case SDLK_z: 	m_keyQ.keyUp( RC::GK_CUBEUNDO ); break;
 			}
 			break;
 		// mouse events
@@ -189,11 +187,11 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDL_BUTTON_LEFT:
 				m_pMBegin = getGLPos( event.button.x, event.button.y );
 
-				m_keyQ.keyDown( GK_MOUSEMOVE, false );
+				m_keyQ.keyDown( RC::GK_MOUSEMOVE, false );
 				break;
 			case SDL_BUTTON_RIGHT:
 				m_pRBegin = getGLPos( event.button.x, event.button.y );
-				m_keyQ.keyDown( GK_MOUSEROTATE, false );
+				m_keyQ.keyDown( RC::GK_MOUSEROTATE, false );
 				break;
 			}
 			break;
@@ -216,12 +214,12 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			switch( event.button.button )
 			{
 			case SDL_BUTTON_LEFT:
-				m_keyQ.keyUp( GK_MOUSEMOVE );
+				m_keyQ.keyUp( RC::GK_MOUSEMOVE );
 				m_pMBegin = { 0.0f, 0.0f, 0.0f };
 				m_pMEnd = { 0.0f, 0.0f, 0.0f };
 				break;
 			case SDL_BUTTON_RIGHT:
-				m_keyQ.keyUp( GK_MOUSEROTATE );
+				m_keyQ.keyUp( RC::GK_MOUSEROTATE );
 				m_pRBegin = { 0.0f, 0.0f, 0.0f };
 				m_pREnd = { 0.0f, 0.0f, 0.0f };
 				break;
@@ -257,57 +255,26 @@ glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
 	return glm::vec3( posX, posY, posZ );
 }
 
-void CPlayState::setLook( const RC::GameKeys gk ) const
-{
-	switch( gk )
-	{
-	case GK_LOOKDOWN:	m_RCube->setRotate( 1, 0, 0, false );	break;
-	case GK_LOOKUP:		m_RCube->setRotate( 1, 0, 0, true );	break;
-	case GK_LOOKRIGHT:	m_RCube->setRotate( 0, 1, 0, false );	break;
-	case GK_LOOKLEFT:	m_RCube->setRotate( 0, 1, 0, true );	break;
-	case GK_LOOKACW:	m_RCube->setRotate( 0, 0, 1, true );	break;
-	case GK_LOOKCW:		m_RCube->setRotate( 0, 0, 1, false );	break;
-	}
-}
-
-void CPlayState::setMove( const RC::GameKeys gk ) const
-{
-	switch( gk )
-	{
-	case GK_MOVEBACK: 		m_RCube->setMove( MT_BACK );		break;
-	case GK_MOVEBACKINV: 	m_RCube->setMove( MT_BACKINV );		break;
-	case GK_MOVEDOWN: 		m_RCube->setMove( MT_DOWN );		break;
-	case GK_MOVEDOWNINV: 	m_RCube->setMove( MT_DOWNINV );		break;
-	case GK_MOVEFRONT: 		m_RCube->setMove( MT_FRONT );		break;
-	case GK_MOVEFRONTINV: 	m_RCube->setMove( MT_FRONTINV );	break;
-	case GK_MOVELEFT: 		m_RCube->setMove( MT_LEFT );		break;
-	case GK_MOVELEFTINV: 	m_RCube->setMove( MT_LEFTINV );		break;
-	case GK_MOVERIGHT: 		m_RCube->setMove( MT_RIGHT );		break;
-	case GK_MOVERIGHTINV: 	m_RCube->setMove( MT_RIGHTINV );	break;
-	case GK_MOVEUP: 		m_RCube->setMove( MT_UP );			break;
-	case GK_MOVEUPINV: 		m_RCube->setMove( MT_UPINV );		break;
-	}
-}
-
 void CPlayState::Update( CGameEngine * game )
 {
 	// primarily processing mouse events
-	if ( m_keyQ.isHold( GK_MOUSEMOVE ) )
+	if ( m_keyQ.isHold( RC::GK_MOUSEMOVE ) )
 	{
 		// processing cube moves with mouse
 		if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
 		{
 			if ( glm::distance( m_pMBegin, m_pMEnd ) > 0.5 && glm::length( m_pMBegin ) > 0 && glm::length( m_pMEnd ) > 0 )
 			{
-				m_RCube->setMoveByCoords( m_pMBegin, m_pMEnd );
-				m_keyQ.processKey( GK_MOUSEMOVE );
+				RC::MoveType mt = m_RCube->setMoveByCoords( m_pMBegin, m_pMEnd );
+				m_keyQ.prevPush( RC::GameKey( mt ) );
+				m_keyQ.processKey( RC::GK_MOUSEMOVE );
 
 				m_pMBegin = { 0.0f, 0.0f, 0.0f };
 				m_pMEnd = { 0.0f, 0.0f, 0.0f };
 			}
 		}
 	}
-	else if ( m_keyQ.isHold( GK_MOUSEROTATE ) )
+	else if ( m_keyQ.isHold( RC::GK_MOUSEROTATE ) )
 	{
 		// processing cube rotates with mouse
 		if ( !m_RCube->isRotating() )
@@ -315,7 +282,7 @@ void CPlayState::Update( CGameEngine * game )
 			if ( glm::distance( m_pRBegin, m_pREnd ) > 0.5 && glm::length( m_pRBegin ) > 0 && glm::length( m_pREnd ) > 0 )
 			{
 				m_RCube->setRotateByCoords( m_pRBegin, m_pREnd );
-				m_keyQ.processKey( GK_MOUSEROTATE );
+				m_keyQ.processKey( RC::GK_MOUSEROTATE );
 
 				m_pRBegin = { 0.0f, 0.0f, 0.0f };
 				m_pREnd = { 0.0f, 0.0f, 0.0f };
@@ -324,80 +291,77 @@ void CPlayState::Update( CGameEngine * game )
 	}
 	else if ( m_keyQ.qSize() > 0 )
 	{
-		const GameKeys gk = m_keyQ.qCurKey();
+		const RC::GameKey gk = m_keyQ.qCurKey();
 		const bool enableAll = !m_RCube->isMoving() && !m_RCube->isRotating();
 
 		if ( m_keyQ.isEnableWithMove( gk ) || enableAll )
 		{
 			m_keyQ.qPopKey();
-//			static int cnt = 0;
-//			std::cout <<  cnt++ << " ";
-//			std::cout.flush();
 
 			switch ( gk )
 			{
 			// processing cube rotates
-			case GK_LOOKDOWN:
-			case GK_LOOKUP:
-			case GK_LOOKRIGHT:
-			case GK_LOOKLEFT:
-			case GK_LOOKACW:
-			case GK_LOOKCW:
-				setLook( gk );
+			case RC::GK_ROTATEDOWN:
+			case RC::GK_ROTATEUP:
+			case RC::GK_ROTATERIGHT:
+			case RC::GK_ROTATELEFT:
+			case RC::GK_ROTATEACW:
+			case RC::GK_ROTATECW:
+				m_RCube->setRotate( RC::RotateType( gk ) );
 				break;
 			// processing cube moves
-			case GK_MOVEBACK:
-			case GK_MOVEBACKINV:
-			case GK_MOVEDOWN:
-			case GK_MOVEDOWNINV:
-			case GK_MOVEFRONT:
-			case GK_MOVEFRONTINV:
-			case GK_MOVELEFT:
-			case GK_MOVELEFTINV:
-			case GK_MOVERIGHT:
-			case GK_MOVERIGHTINV:
-			case GK_MOVEUP:
-			case GK_MOVEUPINV:
-				setMove( gk );
+			case RC::GK_MOVEBACK:
+			case RC::GK_MOVEBACKINV:
+			case RC::GK_MOVEDOWN:
+			case RC::GK_MOVEDOWNINV:
+			case RC::GK_MOVEFRONT:
+			case RC::GK_MOVEFRONTINV:
+			case RC::GK_MOVELEFT:
+			case RC::GK_MOVELEFTINV:
+			case RC::GK_MOVERIGHT:
+			case RC::GK_MOVERIGHTINV:
+			case RC::GK_MOVEUP:
+			case RC::GK_MOVEUPINV:
+				m_RCube->setMove( RC::MoveType( gk ) );
 				break;
 			// processing projection setup
-			case GK_CHANGEPROJ:
+			case RC::GK_CHANGEPROJ:
 				m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
 				setProjection( m_prType );
-				m_keyQ.processKey( GK_CHANGEPROJ );
+				m_keyQ.processKey( RC::GK_CHANGEPROJ );
 				m_needRedraw = true;
 				break;
 			// processing colors setup
-			case GK_CHANGECOLOR:
+			case RC::GK_CHANGECOLOR:
 				m_RCube->incCurScheme();
 				m_needRedraw = true;
 				break;
 			// other
-			case GK_CUBERESET:
+			case RC::GK_CUBERESET:
 				m_RCube->reset();
 				m_needRedraw = true;
 				break;
-			case GK_CUBEMIX:
+			case RC::GK_CUBEMIX:
 			{
 				srand( time( 0 ) );
 				const int mCount = 60;
 
 				for ( int i = 0; i < mCount; i++ )
-					m_keyQ.qPushKey( GameKeys( rand() % ( GK_MOVELAST + 1 ) ) );
+					m_keyQ.qPushKey( RC::GameKey( rand() % ( RC::GK_MOVELAST + 1 ) ) );
 //					m_keyQ.qPushKey( GameKeys( GK_MOVEFIRST + rand() % ( GK_MOVELAST - GK_LOOKLAST + 1 ) ) );
 
 				break;
 			}
-			case GK_CUBEUNDO:
+			case RC::GK_CUBEUNDO:
 			{
-				const RC::GameKeys gk = m_keyQ.prevPop();
-				if ( gk == GK_NONE )
+				const RC::GameKey gk = m_keyQ.prevPop();
+				if ( gk == RC::GK_NONE )
 					break;
 
-				if ( gk < GK_MOVEFIRST )
-					setLook( gk );
-				else if ( gk <= GK_MOVELAST )
-					setMove( gk );
+				if ( gk < RC::GK_MOVEFIRST )
+					m_RCube->setRotate( RC::RotateType( gk ) );
+				else if ( gk <= RC::GK_MOVELAST )
+					m_RCube->setMove( RC::MoveType( gk ) );
 
 				break;
 			}

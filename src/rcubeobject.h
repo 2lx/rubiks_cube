@@ -7,8 +7,6 @@
 namespace RC { class CubeModel; }
 class ShaderProgram;
 
-using namespace RC;
-
 class RCubeObject : public GameObject
 {
 public:
@@ -16,8 +14,8 @@ public:
 	virtual ~RCubeObject();
 
 	void drawObject( const glm::mat4 & pmv );
-	void setMove( const RCMoveType rt );
-	void setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
+	void setMove( const RC::MoveType rt );
+	RC::MoveType setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
 	bool isMoving() const { return ( m_moveMix >= 0 ); }
 	void update();
 	void incCurScheme() { m_texCurScheme = ( m_texCurScheme + 1 ) % m_texCount; };
@@ -25,13 +23,13 @@ public:
 
 protected:
 private:
-	CubeModel * m_RCModel;
+	RC::CubeModel * m_RCModel;
 
 	glm::quat m_moveQuat;
 	glm::quat m_newMoveQuat;
 	float m_moveMix = { -1 };
 
-	RCMoveType m_moveType = { MT_NONE };
+	RC::MoveType m_moveType = { RC::MT_NONE };
 	int m_moveLayer = -1;
 
 	GLuint m_VBOTexCoords, m_VBOTexIndex, m_VBOCubeVertices;
@@ -56,12 +54,12 @@ private:
 	};
 
 	GLshort m_aTexIndex[ 4*6 ] = {
-		AX_FRONT, AX_FRONT, AX_FRONT, AX_FRONT,
-		AX_UP, AX_UP, AX_UP, AX_UP,
-		AX_BACK, AX_BACK, AX_BACK, AX_BACK,
-		AX_DOWN, AX_DOWN, AX_DOWN, AX_DOWN,
-		AX_LEFT, AX_LEFT, AX_LEFT, AX_LEFT,
-		AX_RIGHT, AX_RIGHT, AX_RIGHT, AX_RIGHT
+		RC::CF_FRONT, 	RC::CF_FRONT, 	RC::CF_FRONT, 	RC::CF_FRONT,
+		RC::CF_UP, 		RC::CF_UP, 		RC::CF_UP, 		RC::CF_UP,
+		RC::CF_BACK, 	RC::CF_BACK, 	RC::CF_BACK, 	RC::CF_BACK,
+		RC::CF_DOWN, 	RC::CF_DOWN, 	RC::CF_DOWN, 	RC::CF_DOWN,
+		RC::CF_LEFT, 	RC::CF_LEFT, 	RC::CF_LEFT, 	RC::CF_LEFT,
+		RC::CF_RIGHT, 	RC::CF_RIGHT, 	RC::CF_RIGHT, 	RC::CF_RIGHT
 	};
 
 //		    5-----4

@@ -6,35 +6,35 @@
 
 using namespace RC;
 
-void Cubie::rotateCubie( const RCMoveType rt )
+void Cubie::rotateCubie( const MoveType rt )
 {
-	RCAxis tt, t1, t2, t3, t4;
+	CubeFace tt, t1, t2, t3, t4;
 
 	switch ( rt )
 	{
 		case MT_FRONT:
 		case MT_BACKINV:
-			t1 = AX_LEFT; t2 = AX_DOWN; t3 = AX_RIGHT; t4 = AX_UP;
+			t1 = CF_LEFT; t2 = CF_DOWN; t3 = CF_RIGHT; t4 = CF_UP;
 			break;
 		case MT_FRONTINV:
 		case MT_BACK:
-			t1 = AX_LEFT; t2 = AX_UP; t3 = AX_RIGHT; t4 = AX_DOWN;
+			t1 = CF_LEFT; t2 = CF_UP; t3 = CF_RIGHT; t4 = CF_DOWN;
 			break;
 		case MT_LEFT:
 		case MT_RIGHTINV:
-			t1 = AX_BACK; t2 = AX_DOWN; t3 = AX_FRONT; t4 = AX_UP;
+			t1 = CF_BACK; t2 = CF_DOWN; t3 = CF_FRONT; t4 = CF_UP;
 			break;
 		case MT_LEFTINV:
 		case MT_RIGHT:
-			t1 = AX_BACK; t2 = AX_UP; t3 = AX_FRONT; t4 = AX_DOWN;
+			t1 = CF_BACK; t2 = CF_UP; t3 = CF_FRONT; t4 = CF_DOWN;
 			break;
 		case MT_UP:
 		case MT_DOWNINV:
-			t1 = AX_LEFT; t2 = AX_FRONT; t3 = AX_RIGHT; t4 = AX_BACK;
+			t1 = CF_LEFT; t2 = CF_FRONT; t3 = CF_RIGHT; t4 = CF_BACK;
 			break;
 		case MT_UPINV:
 		case MT_DOWN:
-			t1 = AX_LEFT; t2 = AX_BACK; t3 = AX_RIGHT; t4 = AX_FRONT;
+			t1 = CF_LEFT; t2 = CF_BACK; t3 = CF_RIGHT; t4 = CF_FRONT;
 			break;
 		default: return;
 	};
@@ -63,16 +63,16 @@ void CubeModel::reset()
 	for( int i = 0; i < CUBIE_COUNT; ++i )
 		for( int j = 0; j < CUBIE_COUNT; ++j )
 		{
-			m_cubies[ i ][ j ][ k ].setColourInd( AX_FRONT, AX_FRONT );
-			m_cubies[ i ][ k ][ j ].setColourInd( AX_UP, AX_UP );
-			m_cubies[ i ][ j ][ 0 ].setColourInd( AX_BACK, AX_BACK );
-			m_cubies[ i ][ 0 ][ j ].setColourInd( AX_DOWN, AX_DOWN );
-			m_cubies[ 0 ][ i ][ j ].setColourInd( AX_LEFT, AX_LEFT );
-			m_cubies[ k ][ i ][ j ].setColourInd( AX_RIGHT, AX_RIGHT );
+			m_cubies[ i ][ j ][ k ].setColourInd( CF_FRONT, CF_FRONT );
+			m_cubies[ i ][ k ][ j ].setColourInd( CF_UP, CF_UP );
+			m_cubies[ i ][ j ][ 0 ].setColourInd( CF_BACK, CF_BACK );
+			m_cubies[ i ][ 0 ][ j ].setColourInd( CF_DOWN, CF_DOWN );
+			m_cubies[ 0 ][ i ][ j ].setColourInd( CF_LEFT, CF_LEFT );
+			m_cubies[ k ][ i ][ j ].setColourInd( CF_RIGHT, CF_RIGHT );
 		}
 }
 
-void CubeModel::moveCubies( const RCMoveType rt, const int mLayer )
+void CubeModel::moveCubies( const MoveType rt, const int mLayer )
 {
 	//TODO: size > 3
 	const int sc = ( CUBIE_COUNT - 1 );
