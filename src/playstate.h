@@ -43,6 +43,8 @@ private:
 	glm::dmat4 m_mProjection, m_mModel, m_mView;
 	int m_screenWidth = 800, m_screenHeight = 600;
 
+	void setLook( const RC::GameKeys gk ) const;
+	void setMove( const RC::GameKeys gk ) const;
 	void setProjection( const ProjectionType pType );
 	glm::vec3 getGLPos( const int mX, const int mY ) const;
 
