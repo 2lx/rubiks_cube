@@ -55,18 +55,22 @@ void RCubeObject::setMove( const RC::MoveType rt )
 {
 	// calculate new move type
 	const glm::vec3 vec = RC::MoveParams::vec( rt );
-	const bool cw = RC::MoveParams::clockwise( rt );
+	bool cw = RC::MoveParams::clockwise( rt );
+	int lay = RC::MoveParams::layer( rt );
 	const glm::vec3 vecRot = vec * m_rotateQuat;
 
-	m_moveType = RC::MoveParams::getMTypeForPars( vecRot, cw );
+	if ( glm::dot( vecRot, glm::vec3( 1.0f, 1.0f, 1.0f ) ) < 0 )
+	{
+		lay = RC::CUBIE_COUNT - 1 - lay;
+		cw = !cw;
+	}
+
+	m_moveType = RC::MoveParams::getMTypeForPars( vecRot, cw, lay );
 
 	// calculate move params
 	if ( m_moveType != RC::MT_NONE )
 	{
-		if ( glm::dot( vecRot, glm::vec3( 1.0f, 1.0f, 1.0f ) ) < 0 )
-			m_moveLayer = 0;
-		else m_moveLayer = RC::CUBIE_COUNT - 1;
-
+		m_moveLayer = lay;
 		m_moveMix = 0;
 		float angle = glm::radians( 90.0f );
 		m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, RC::MoveParams::vec( m_moveType ) );
@@ -87,30 +91,11 @@ RC::MoveType RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::ve
 	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
 
 	// get closest rotation axis vector
-    glm::vec3 vAx;
-    const float aX = std::abs( pRes.x );
-	const float aY = std::abs( pRes.y );
-	const float aZ = std::abs( pRes.z );
+    const RC::RotAxis ra = RC::RAPar::getClosestAxis( pRes );
+	if ( ra == RC::RA_NONE )
+		return RC::MT_NONE;
 
-    if ( aX > aY && aX > aZ )
-	{
-        if ( pRes.x > 0 )
-			vAx = { 1.0f, 0.0f, 0.0f };
-		else vAx = { -1.0f, 0.0f, 0.0f };
-	}
-	else if ( aY > aX && aY > aZ )
-	{
-        if ( pRes.y > 0 )
-			vAx = { 0.0f, 1.0f, 0.0f };
-		else vAx = { 0.0f, -1.0f, 0.0f };
-	}
-	else if ( aZ > aX && aZ > aY )
-	{
-        if ( pRes.z > 0 )
-			vAx = { 0.0f, 0.0f, 1.0f };
-		else vAx = { 0.0f, 0.0f, -1.0f };
-	}
-	else return RC::MT_NONE;
+	const glm::vec3 vAx = RC::RAPar::getVecForRA( ra );
 
 #ifdef NDEBUG
 	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
@@ -122,36 +107,36 @@ RC::MoveType RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::ve
 	std::cout.flush();
 #endif // NDEBUG
 
-	// check clockwise
-	bool isCW;
-	if ( glm::dot( glm::cross( vAx, pBeg ), pBeg ) > 0 )
-		isCW = true;
-	else isCW = false;
+	// calculate clockwise
+	bool cw;
+	if ( glm::dot( glm::cross( vAx, rvEnd ), rvBeg ) > 0 )
+		cw = true;
+	else cw = false;
+
+	// find move layer
+	int lay = 0;
+
+	if ( ra == RC::RA_X )
+		lay = floor( rvBeg.x + cOffset );
+	else if ( ra == RC::RA_Y )
+		lay = floor( rvBeg.y + cOffset );
+	else if ( ra == RC::RA_Z )
+		lay = floor( rvBeg.z + cOffset );
+	else lay = -1;
+
+	if ( lay < 0 || lay > RC::CUBIE_COUNT - 1 )
+		return RC::MT_NONE;
 
 	// get move type
-	RC::MoveType nMT = RC::MoveParams::getMTypeForPars( vAx, isCW );
+	RC::MoveType nMT = RC::MoveParams::getMTypeForPars( vAx, cw, lay );
 	if ( nMT == RC::MT_NONE )
 		return RC::MT_NONE;
 
-	int nmLayer = 0;
-
-	// find move layer
-	if ( vAx.x != 0 )
-		nmLayer = floor( rvBeg.x + cOffset );
-	else if ( vAx.y != 0 )
-		nmLayer = floor( rvBeg.y + cOffset );
-	else if ( vAx.z != 0 )
-		nmLayer = floor( rvBeg.z + cOffset );
-	else nmLayer = 0;
-
-	if ( nmLayer < 0 || nmLayer > RC::CUBIE_COUNT - 1 )
-		return RC::MT_NONE;
-
 	m_moveType = nMT;
-	m_moveLayer = nmLayer;
+	m_moveLayer = lay;
 	m_moveMix = 0;
 	float angle = glm::radians( 90.0f );
-	m_newMoveQuat = glm::angleAxis( ( isCW ) ? -angle : angle, vAx );
+	m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, vAx );
 
 	return m_moveType;
 }

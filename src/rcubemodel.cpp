@@ -14,26 +14,32 @@ void Cubie::rotateCubie( const MoveType rt )
 	{
 		case MT_FRONT:
 		case MT_BACKINV:
+		case MT_FRONTMID:
 			t1 = CF_LEFT; t2 = CF_DOWN; t3 = CF_RIGHT; t4 = CF_UP;
 			break;
 		case MT_FRONTINV:
 		case MT_BACK:
+		case MT_FRONTMIDINV:
 			t1 = CF_LEFT; t2 = CF_UP; t3 = CF_RIGHT; t4 = CF_DOWN;
 			break;
 		case MT_LEFT:
 		case MT_RIGHTINV:
+		case MT_RIGHTMIDINV:
 			t1 = CF_BACK; t2 = CF_DOWN; t3 = CF_FRONT; t4 = CF_UP;
 			break;
 		case MT_LEFTINV:
 		case MT_RIGHT:
+		case MT_RIGHTMID:
 			t1 = CF_BACK; t2 = CF_UP; t3 = CF_FRONT; t4 = CF_DOWN;
 			break;
 		case MT_UP:
 		case MT_DOWNINV:
+		case MT_UPMID:
 			t1 = CF_LEFT; t2 = CF_FRONT; t3 = CF_RIGHT; t4 = CF_BACK;
 			break;
 		case MT_UPINV:
 		case MT_DOWN:
+		case MT_UPMIDINV:
 			t1 = CF_LEFT; t2 = CF_BACK; t3 = CF_RIGHT; t4 = CF_FRONT;
 			break;
 		default: return;
@@ -108,26 +114,32 @@ void CubeModel::moveCubies( const MoveType rt, const int mLayer )
     {
 	case MT_FRONT:
 	case MT_BACKINV:
+	case MT_FRONTMID:
 		mv1 = mvX; mv2 = mvY; mv3 = mvZ;
 		break;
 	case MT_BACK:
 	case MT_FRONTINV:
+	case MT_FRONTMIDINV:
 		mv1 = mvY; mv2 = mvX; mv3 = mvZ;
 		break;
 	case MT_LEFT:
 	case MT_RIGHTINV:
+	case MT_RIGHTMIDINV:
 		mv1 = mvZ; mv2 = mvY; mv3 = mvX;
 		break;
 	case MT_LEFTINV:
 	case MT_RIGHT:
+	case MT_RIGHTMID:
 		mv1 = mvZ; mv2 = mvX; mv3 = mvY;
 		break;
 	case MT_UP:
 	case MT_DOWNINV:
+	case MT_UPMID:
 		mv1 = mvY; mv2 = mvZ; mv3 = mvX;
 		break;
 	case MT_UPINV:
 	case MT_DOWN:
+	case MT_UPMIDINV:
 		mv1 = mvX; mv2 = mvZ; mv3 = mvY;
 		break;
 	default:

@@ -4,84 +4,81 @@
 
 using namespace RC;
 
-const glm::vec3 RC::RAPar[ RA_COUNT ] = { glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 1.0f, 0.0f, 0.0f } };
+const glm::vec3 RC::RCDetail::m_RAPar[ RA_COUNT ] = {
+	glm::vec3( 1.0f, 0.0f, 0.0f ),
+	glm::vec3( 0.0f, 1.0f, 0.0f ),
+	glm::vec3( 0.0f, 0.0f, 1.0f ) };
 
-glm::vec3 getVecForRA( const RotAxis ra )
+glm::vec3 RC::RAPar::getVecForRA( const RotAxis ra )
 {
-	return RAPar[ ra ];
-//	return glm::vec3( 1.0f );
+	return RCDetail::m_RAPar[ ra ];
 }
 
-/*
-std::map< RCAxis, AxisParams::AxisParam * > AxisParams::m_p = InitMap();
-
-std::map< RCAxis, AxisParams::AxisParam * > AxisParams::InitMap()
+RotAxis RC::RAPar::getClosestAxis( glm::vec3 vec )
 {
-	std::map< RCAxis, AxisParam * > mp;
+    const float aX = std::abs( vec.x );
+	const float aY = std::abs( vec.y );
+	const float aZ = std::abs( vec.z );
 
-	mp[ AX_FRONT ]	= new AxisParam(  0,  0,  1 );
-	mp[ AX_BACK ] 	= new AxisParam(  0,  0, -1 );
-	mp[ AX_UP ] 	= new AxisParam(  0,  1,  0 );
-	mp[ AX_DOWN ] 	= new AxisParam(  0, -1,  0 );
-	mp[ AX_RIGHT ] 	= new AxisParam(  1,  0,  0 );
-	mp[ AX_LEFT ] 	= new AxisParam( -1,  0,  0 );
-
-	return mp;
+    if ( aX > aY && aX > aZ )
+		return RC::RA_X;
+	else if ( aY > aX && aY > aZ )
+		return RC::RA_Y;
+	else if ( aZ > aX && aZ > aY )
+		return RC::RA_Z;
+	else return RC::RA_NONE;
 }
 
-RCAxis AxisParams::getAxisForVector( const glm::vec3 & vec )
-{
-	for ( int i = AX_FIRST; i < AX_COUNT; ++i )
-		if ( m_p[ RCAxis( i ) ]->m_vec == vec )
-		{
-			return RCAxis( i );
-			break;
-		}
-
-	std::cout << "error AP vec";
-	return AX_NONE;
-}
-
-void AxisParams::cleanup()
-{
-	for ( auto it = m_p.begin(); it != m_p.end(); ++it )
-		delete it->second;
-}
-*/
+// MoveParams
 std::map< MoveType, MoveParams::OneParam * > MoveParams::m_p = InitMap();
 
 std::map< MoveType, MoveParams::OneParam * > MoveParams::InitMap()
 {
+	const int ll = CUBIE_COUNT - 1;
 	std::map< MoveType, OneParam * > mp;
-	mp[ MT_FRONT ] 		= new OneParam(  0,  0,  1, true );
-	mp[ MT_FRONTINV ] 	= new OneParam(  0,  0,  1, false );
-	mp[ MT_BACK ] 		= new OneParam(  0,  0, -1, true );
-	mp[ MT_BACKINV ] 	= new OneParam(  0,  0, -1, false );
-	mp[ MT_RIGHT ] 		= new OneParam(  1,  0,  0, true );
-	mp[ MT_RIGHTINV ] 	= new OneParam(  1,  0,  0, false );
-	mp[ MT_LEFT ] 		= new OneParam( -1,  0,  0, true );
-	mp[ MT_LEFTINV ] 	= new OneParam( -1,  0,  0, false );
-	mp[ MT_UP ] 		= new OneParam(  0,  1,  0, true );
-	mp[ MT_UPINV ] 		= new OneParam(  0,  1,  0, false );
-	mp[ MT_DOWN ] 		= new OneParam(  0, -1,  0, true );
-	mp[ MT_DOWNINV ] 	= new OneParam(  0, -1,  0, false );
+
+	mp[ MT_FRONT ] 		= new OneParam( RA_Z, ll, true );
+	mp[ MT_FRONTINV ] 	= new OneParam( RA_Z, ll, false );
+	mp[ MT_BACK ] 		= new OneParam( RA_Z, 0, false );
+	mp[ MT_BACKINV ] 	= new OneParam( RA_Z, 0, true );
+	mp[ MT_RIGHT ] 		= new OneParam( RA_X, ll, true );
+	mp[ MT_RIGHTINV ] 	= new OneParam( RA_X, ll, false );
+	mp[ MT_LEFT ] 		= new OneParam( RA_X, 0, false );
+	mp[ MT_LEFTINV ] 	= new OneParam( RA_X, 0, true );
+	mp[ MT_UP ] 		= new OneParam( RA_Y, ll, true );
+	mp[ MT_UPINV ] 		= new OneParam( RA_Y, ll, false );
+	mp[ MT_DOWN ] 		= new OneParam( RA_Y, 0, false );
+	mp[ MT_DOWNINV ] 	= new OneParam( RA_Y, 0, true );
+	mp[ MT_FRONTMID ] 	= new OneParam( RA_Z, -1, true );
+	mp[ MT_FRONTMIDINV ]= new OneParam( RA_Z, -1, false );
+	mp[ MT_UPMID ]		= new OneParam( RA_Y, -1, true );
+	mp[ MT_UPMIDINV ]	= new OneParam( RA_Y, -1, false );
+	mp[ MT_RIGHTMID ] 	= new OneParam( RA_X, -1, true );
+	mp[ MT_RIGHTMIDINV ]= new OneParam( RA_X, -1, false );
 
 	return mp;
 }
 
-MoveType MoveParams::getMTypeForPars( const glm::vec3 & vec, const bool cw )
+MoveType MoveParams::getMTypeForPars( const glm::vec3 & vec, const bool cw, const int lay )
 {
+	const RotAxis ra = RAPar::getClosestAxis( vec );
+	const int lay1 = ( 0 < lay && lay < CUBIE_COUNT - 1 ) ? -1 : lay;
+
 	for ( int i = MT_FIRST; i < MT_LAST + 1; ++i )
 	{
-		const glm::vec3 vec2 = MoveParams::vec( MoveType( i ) );
-		const bool cw2 = MoveParams::clockwise( MoveType( i ) );
-		if ( std::abs( glm::length( vec2 - vec ) ) < 0.001 && cw2 == cw )
+		const RotAxis ra2 = m_p[ MoveType( i ) ]->m_RA;
+		const bool cw2 = m_p[ MoveType( i ) ]->m_clockwise;
+		const int lay2 = m_p[ MoveType( i ) ]->m_layer;
+
+		if ( ra2 == ra && cw2 == cw && lay2 == lay1 )
 			return MoveType( i );
 	}
 
-	std::cout << "error MP";
+	std::cout << "error MT";
+
 	return MT_NONE;
 }
+
 /*
 RCMoveType MoveParams::getMTypeForPars( const RCAxis ax, const bool cw )
 {

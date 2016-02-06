@@ -6,57 +6,46 @@
 
 namespace RC
 {
-	extern const glm::vec3 RAPar[ RA_COUNT ];
-	glm::vec3 getVecForRA( const RotAxis ra );
+	namespace RCDetail
+	{
+		extern const glm::vec3 m_RAPar[ RA_COUNT ];
+	}
 
-/*	class AxisParams	// Singleton
+	namespace RAPar
+	{
+		glm::vec3 getVecForRA( const RotAxis ra );
+		RotAxis getClosestAxis( glm::vec3 vec );
+	}
+
+
+	class MoveParams	// singleton
 	{
 	public:
-	//	static glm::vec3 vec( const RCAxis ax ) { return m_p[ ax ]->m_vec; };
-	//	static RCAxis getAxisForVector( const glm::vec3 & vec );
-
-		static void cleanup();
-
-	private:
-		const glm::vec3 m_vec;
-
-		AxisParams() {};
-		AxisParams( const AxisParams & ) = delete;
-		AxisParams & operator= ( const AxisParams & ) = delete;
-
-
-
-		static std::map< RotAxis, glm::vec3 > InitMap();
-		static std::map< RotAxis, AxisParam * > m_p;
-	};
-*/
-	class MoveParams	// Singleton
-	{
-	public:
-		static glm::vec3 vec( const MoveType mt ) { return m_p[ mt ]->m_vec; };
-//		static RCAxis axis( const RCMoveType mt ) { return m_p[ mt ]->m_axis; };
+//		static RotAxis rotAxis( const MoveType mt ) { return m_p[ mt ]->m_RA; };
+		static glm::vec3 vec( const MoveType mt ) { return RAPar::getVecForRA( m_p[ mt ]->m_RA ); };
 		static bool clockwise( const MoveType mt ) { return m_p[ mt ]->m_clockwise; };
-		static MoveType getMTypeForPars( const glm::vec3 & vec, const bool cw );
-//		static RCMoveType getMTypeForPars( const RCAxis ax, const bool cw );
+		static int layer( const MoveType mt ) { return m_p[ mt ]->m_layer; };
+
+		static MoveType getMTypeForPars( const glm::vec3 & vec, const bool cw, const int lay );
 
 		static void cleanup();
 
 	private:
-		class OneParam	// Hidden class
+		class OneParam	// hidden class
 		{
 		public:
-			OneParam( const GLfloat x, const GLfloat y, const GLfloat z,/* const RotAxis ra, */const bool clockwise )
-				: m_vec { x, y, z }, m_clockwise { clockwise }//, m_RA{ ra }
+			OneParam( const RotAxis ra, const int lay, const bool clockwise )
+				: m_clockwise { clockwise }, m_RA{ ra }, m_layer( lay )
 			{ };
 
-			const glm::vec3 m_vec;
 			const bool m_clockwise;
-//			const RotAxis m_RA;
+			const RotAxis m_RA;
+			const int m_layer;
 		};
 
 		MoveParams() {};
 		MoveParams( const MoveParams & ) = delete;
-		MoveParams & operator= ( const MoveParams & ) = delete;
+		MoveParams & operator = ( const MoveParams & ) = delete;
 
 		static std::map< MoveType, OneParam * > InitMap();
 		static std::map< MoveType, OneParam * > m_p;

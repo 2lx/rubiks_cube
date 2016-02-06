@@ -37,6 +37,7 @@ int main( int argc, char * args[] )
 //		if ( startDR - startHE > 0 )
 //			std::cout << "Handles: " << startDR - startHE << "    Draw: " << endAll - startDR << std::endl;
 #endif // MY_DEBUG
+		std::cout.flush();
 	}
 
 	game.Cleanup();
