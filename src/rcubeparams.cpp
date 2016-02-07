@@ -228,6 +228,56 @@ RT RC::GKPar::toRT( const GK gk )
 	case GK::ROTATERIGHT:return RT::RIGHT;
 	case GK::ROTATECW: 	return RT::CW;
 	case GK::ROTATEACW: 	return RT::ACW;
+
 	default: return RT::NONE;
+	}
+}
+
+GK RC::GKPar::fromRT( const RT rt )
+{
+	switch ( rt )
+	{
+	case RT::UP:		return GK::ROTATEUP;
+	case RT::DOWN:		return GK::ROTATEDOWN;
+	case RT::LEFT:		return GK::ROTATELEFT;
+	case RT::RIGHT:		return GK::ROTATERIGHT;
+	case RT::CW:		return GK::ROTATECW;
+	case RT::ACW:		return GK::ROTATEACW;
+
+	default: return GK::NONE;
+	}
+}
+
+RC::GK RC::GKPar::prevGK( const RC::GK gk )
+{
+	switch( gk )
+	{
+	case RC::GK::ROTATEDOWN: 	return RC::GK::ROTATEUP;
+	case RC::GK::ROTATEUP: 		return RC::GK::ROTATEDOWN;
+	case RC::GK::ROTATELEFT: 	return RC::GK::ROTATERIGHT;
+	case RC::GK::ROTATERIGHT: 	return RC::GK::ROTATELEFT;
+	case RC::GK::ROTATECW: 		return RC::GK::ROTATEACW;
+	case RC::GK::ROTATEACW: 	return RC::GK::ROTATECW;
+
+	case RC::GK::MOVEB: 	return RC::GK::MOVEBI;
+	case RC::GK::MOVEBI: 	return RC::GK::MOVEB;
+	case RC::GK::MOVED: 	return RC::GK::MOVEDI;
+	case RC::GK::MOVEDI: 	return RC::GK::MOVED;
+	case RC::GK::MOVEF: 	return RC::GK::MOVEFI;
+	case RC::GK::MOVEFI: 	return RC::GK::MOVEF;
+	case RC::GK::MOVEL: 	return RC::GK::MOVELI;
+	case RC::GK::MOVELI: 	return RC::GK::MOVEL;
+	case RC::GK::MOVER: 	return RC::GK::MOVERI;
+	case RC::GK::MOVERI: 	return RC::GK::MOVER;
+	case RC::GK::MOVEU:		return RC::GK::MOVEUI;
+	case RC::GK::MOVEUI:	return RC::GK::MOVEU;
+	case RC::GK::MOVEFM:	return RC::GK::MOVEFMI;
+	case RC::GK::MOVEFMI:	return RC::GK::MOVEFM;
+	case RC::GK::MOVEUM:	return RC::GK::MOVEUMI;
+	case RC::GK::MOVEUMI:	return RC::GK::MOVEUM;
+	case RC::GK::MOVERM:	return RC::GK::MOVERMI;
+	case RC::GK::MOVERMI:	return RC::GK::MOVERM;
+
+	default: return RC::GK::NONE;
 	}
 }

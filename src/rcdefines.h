@@ -34,13 +34,11 @@ namespace RC
 
 		MOUSEMOVE, MOUSEROTATE,
 
-		CHANGECOLOR, CHANGEPROJ,
-
-		CUBERESET, CUBEMIX,	CUBEUNDO,
+		GAMECOLOR, GAMEPROJ, GAMERESET, GAMEMIX, GAMEUNDO,
 
 		COUNT,
 		FIRST = MOVEF,
-		LAST = CUBEUNDO,
+		LAST = GAMEUNDO,
 		NONE = -1
 	};
 
@@ -52,7 +50,7 @@ namespace RC
         NONE = -1
 	};
 
-	// move type F=Front, B=Back, L=Left, R=Right, U=Up, D=Dowb, I=Inverse (anti clock-wise), M=Middle
+	// move type F=Front, B=Back, L=Left, R=Right, U=Up, D=Dowb, I=Inverse (anticlockwise), M=Middle
 	enum class MT : int
 	{
 		F = 0, FI, B, BI, L, LI, R, RI, U, UI, D, DI, FM, FMI, UM, UMI, RM, RMI,

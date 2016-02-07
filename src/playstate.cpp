@@ -135,11 +135,11 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_n:		m_keyQ.keyDown( RC::GK::MOVEUI ); break;
 			case SDLK_PERIOD: 	m_keyQ.keyDown( RC::GK::MOVED ); break;
 			case SDLK_COMMA: 	m_keyQ.keyDown( RC::GK::MOVEDI ); break;
-			case SDLK_RETURN: 	m_keyQ.keyDown( RC::GK::CHANGEPROJ ); break;
-			case SDLK_SPACE: 	m_keyQ.keyDown( RC::GK::CHANGECOLOR ); break;
-			case SDLK_F1: 		m_keyQ.keyDown( RC::GK::CUBERESET ); break;
-			case SDLK_F4: 		m_keyQ.keyDown( RC::GK::CUBEMIX ); break;
-			case SDLK_z: 		m_keyQ.keyDown( RC::GK::CUBEUNDO ); break;
+			case SDLK_RETURN: 	m_keyQ.keyDown( RC::GK::GAMEPROJ ); break;
+			case SDLK_SPACE: 	m_keyQ.keyDown( RC::GK::GAMECOLOR ); break;
+			case SDLK_F1: 		m_keyQ.keyDown( RC::GK::GAMERESET ); break;
+			case SDLK_F4: 		m_keyQ.keyDown( RC::GK::GAMEMIX ); break;
+			case SDLK_z: 		m_keyQ.keyDown( RC::GK::GAMEUNDO ); break;
 			}
 			break;
 		case SDL_KEYUP:
@@ -169,11 +169,11 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			case SDLK_n:		m_keyQ.keyUp( RC::GK::MOVEUI ); break;
 			case SDLK_PERIOD: 	m_keyQ.keyUp( RC::GK::MOVED ); break;
 			case SDLK_COMMA: 	m_keyQ.keyUp( RC::GK::MOVEDI ); break;
-			case SDLK_RETURN: 	m_keyQ.keyUp( RC::GK::CHANGEPROJ ); break;
-			case SDLK_SPACE: 	m_keyQ.keyUp( RC::GK::CHANGECOLOR ); break;
-			case SDLK_F1: 		m_keyQ.keyUp( RC::GK::CUBERESET ); break;
-			case SDLK_F4: 		m_keyQ.keyUp( RC::GK::CUBEMIX ); break;
-			case SDLK_z: 		m_keyQ.keyUp( RC::GK::CUBEUNDO ); break;
+			case SDLK_RETURN: 	m_keyQ.keyUp( RC::GK::GAMEPROJ ); break;
+			case SDLK_SPACE: 	m_keyQ.keyUp( RC::GK::GAMECOLOR ); break;
+			case SDLK_F1: 		m_keyQ.keyUp( RC::GK::GAMERESET ); break;
+			case SDLK_F4: 		m_keyQ.keyUp( RC::GK::GAMEMIX ); break;
+			case SDLK_z: 		m_keyQ.keyUp( RC::GK::GAMEUNDO ); break;
 			}
 			break;
 		// mouse events
@@ -277,7 +277,8 @@ void CPlayState::Update( CGameEngine * game )
 		{
 			if ( glm::distance( m_pRBegin, m_pREnd ) > 0.5 && glm::length( m_pRBegin ) > 0 && glm::length( m_pREnd ) > 0 )
 			{
-				m_RCube->setRotateByCoords( m_pRBegin, m_pREnd );
+				RC::RT rt = m_RCube->setRotateByCoords( m_pRBegin, m_pREnd );
+				m_keyQ.prevPush( RC::GKPar::fromRT( rt ) );
 				m_keyQ.processKey( RC::GK::MOUSEROTATE );
 
 				m_pRBegin = { 0.0f, 0.0f, 0.0f };
@@ -318,36 +319,45 @@ void CPlayState::Update( CGameEngine * game )
 			case RC::GK::MOVERI:
 			case RC::GK::MOVEU:
 			case RC::GK::MOVEUI:
+			case RC::GK::MOVEFM:
+			case RC::GK::MOVEFMI:
+			case RC::GK::MOVEUM:
+			case RC::GK::MOVEUMI:
+			case RC::GK::MOVERM:
+			case RC::GK::MOVERMI:
 				m_RCube->setMove( RC::GKPar::toMT( gk ) );
 				break;
 			// processing projection setup
-			case RC::GK::CHANGEPROJ:
+			case RC::GK::GAMEPROJ:
 				m_prType = ProjectionType ( ( m_prType + 1 ) % PT_COUNT );
 				setProjection( m_prType );
-				m_keyQ.processKey( RC::GK::CHANGEPROJ );
 				m_needRedraw = true;
 				break;
 			// processing colors setup
-			case RC::GK::CHANGECOLOR:
+			case RC::GK::GAMECOLOR:
 				m_RCube->incCurScheme();
 				m_needRedraw = true;
 				break;
 			// other
-			case RC::GK::CUBERESET:
+			case RC::GK::GAMERESET:
 				m_RCube->reset();
 				m_needRedraw = true;
 				break;
-			case RC::GK::CUBEMIX:
+			case RC::GK::GAMEMIX:
 			{
 				srand( time( 0 ) );
 				const int mCount = 60;
 
 				for ( int i = 0; i < mCount; i++ )
-					m_keyQ.qPushKey( RC::GK( rand() % ( int( RC::MT::COUNT ) ) ) );
+				{
+					const int nRand = rand() % int( RC::MT::COUNT );
+					if ( RC::MTPar::isMT( nRand ) )
+						m_keyQ.qPushKey( RC::GKPar::fromMT( RC::MT( nRand ) ) );
+				}
 
 				break;
 			}
-			case RC::GK::CUBEUNDO:
+			case RC::GK::GAMEUNDO:
 			{
 				const RC::GK gk = m_keyQ.prevPop();
 				if ( gk == RC::GK::NONE )

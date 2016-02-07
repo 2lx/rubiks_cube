@@ -57,6 +57,7 @@ void RCubeObject::setMove( const RC::MT mt )
 	const glm::vec3 vec = RC::MTPar::vec( mt );
 	bool cw = RC::MTPar::clockwise( mt );
 	int lay = RC::MTPar::layer( mt );
+	if ( lay < 0 ) lay = 1;
 
 	const glm::vec3 vecRot = vec * m_rotateQuat;
 
