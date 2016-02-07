@@ -45,26 +45,11 @@ GLuint GameObject::loadGLTexture2D( const char * filename ) const
 	return bId;
 }
 
-void GameObject::setRotate( const RC::RotateType lt )
+void GameObject::setRotate( const RC::RotateType rt )
 {
-	glm::vec3 vec;
-	bool cw;
+	const glm::quat tqt = RC::RTPar::quat( rt );
 
-	switch( lt )
-	{
-	case RC::RT_DOWN:	vec = { 1, 0, 0 }; cw = false;	break;
-	case RC::RT_UP:		vec = { 1, 0, 0 }; cw = true;	break;
-	case RC::RT_RIGHT:	vec = { 0, 1, 0 }; cw = false;	break;
-	case RC::RT_LEFT:	vec = { 0, 1, 0 }; cw = true;	break;
-	case RC::RT_ACW:	vec = { 0, 0, 1 }; cw = true;	break;
-	case RC::RT_CW:		vec = { 0, 0, 1 }; cw = false;	break;
-	default: return;
-	}
-
-	float angle = glm::radians( 90.0f );
-	glm::quat tempQuat = glm::angleAxis( cw ? angle : -angle, vec );
-
-	m_newRotateQuat = tempQuat * m_newRotateQuat;
+	m_newRotateQuat = tqt * m_newRotateQuat;
 	m_oldRotateQuat = m_rotateQuat;
 	m_rotateMix = 0;
 }
@@ -82,9 +67,18 @@ RC::RotateType GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm:
 	const glm::vec3 rvEnd = pEnd * m_rotateQuat;
 	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
 
-	// get closest rotation axis vector
-    glm::vec3 vAx = RC::RAPar::vec( RC::RAPar::closestRA( pRes ) );
-    bool isPos = glm::dot( vAx, pRes ) > 0;
+	// get closest rotation axis
+	const RC::RotAxis ra = RC::RAPar::closestRA( pRes );
+	if ( ra == RC::RA_NONE )
+		return RC::RT_NONE;
+
+    const glm::vec3 vAx = RC::RAPar::vec( ra );
+    const bool cw = glm::dot( vAx, pRes ) > 0;
+
+	// get rotation type
+	const RC::RotateType rt = RC::RTPar::equalRT( ra, cw );
+	if ( rt == RC::RT_NONE )
+		return RC::RT_NONE;
 
 #ifdef NDEBUG
 	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
@@ -96,12 +90,12 @@ RC::RotateType GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm:
 	std::cout << std::endl;
 #endif // NDEBUG
 
-	const float angle = glm::radians( 90.0f );
-	m_newRotateQuat = m_newRotateQuat * glm::angleAxis( ( isPos ) ? angle : -angle, vAx );
+	const glm::quat tqt = RC::RTPar::quat( rt );
+	m_newRotateQuat = m_newRotateQuat * tqt;
 	m_oldRotateQuat = m_rotateQuat;
 	m_rotateMix = 0;
 
-	return RC::RT_NONE;
+	return rt;
 }
 /*
 void GameObject::updateAxesPos()

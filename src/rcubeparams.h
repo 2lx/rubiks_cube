@@ -12,6 +12,13 @@ namespace RC
 		RotAxis closestRA( glm::vec3 vec );
 	}
 
+	namespace RTPar
+	{
+		glm::quat quat( const RotateType rt );
+
+		RotateType equalRT( const RotAxis ra, const bool cw );
+	}
+
 	namespace MTPar
 	{
 		glm::vec3 vec( const MoveType mt );

@@ -7,7 +7,7 @@
 using namespace RC;
 
 // RotAxis params
-const std::map< const RotAxis, const glm::vec3 > m_RAPar {
+const std::map< const RotAxis, const glm::vec3 > p_RAPar {
 	{ RA_X, glm::vec3( 1.0f, 0.0f, 0.0f ) },
 	{ RA_Y, glm::vec3( 0.0f, 1.0f, 0.0f ) },
 	{ RA_Z, glm::vec3( 0.0f, 0.0f, 1.0f ) }
@@ -15,9 +15,9 @@ const std::map< const RotAxis, const glm::vec3 > m_RAPar {
 
 glm::vec3 RC::RAPar::vec( const RotAxis ra )
 {
-	auto src = m_RAPar.find( ra );
+	auto src = p_RAPar.find( ra );
 
-	if ( src != m_RAPar.end() )
+	if ( src != p_RAPar.end() )
 		return src->second;
 
 	std::cout << "RAPar: error vec()" << std::endl;
@@ -39,6 +39,47 @@ RotAxis RC::RAPar::closestRA( glm::vec3 vec )
 
 	std::cout << "RAPar: error closestRA()" << std::endl;
 	return RA_NONE;
+}
+
+// RotateType params
+typedef std::pair< const RotAxis, const bool > RTPair;
+
+const std::map< const RotateType, const RTPair > p_RTPar {
+	{ RT_UP, 	std::make_pair( RA_X, true ) },
+	{ RT_DOWN, 	std::make_pair( RA_X, false ) },
+	{ RT_LEFT, 	std::make_pair( RA_Y, true ) },
+	{ RT_RIGHT, std::make_pair( RA_Y, false ) },
+	{ RT_ACW, 	std::make_pair( RA_Z, true ) },
+	{ RT_CW, 	std::make_pair( RA_Z, false ) }
+};
+
+glm::quat RC::RTPar::quat( const RotateType rt )
+{
+	auto src = p_RTPar.find( rt );
+
+	if ( src != p_RTPar.end() )
+	{
+		const glm::vec3 vec = RAPar::vec( src->second.first );
+		const bool cw = src->second.second;
+		const float angle = glm::radians( 90.0f );
+
+		return glm::angleAxis( cw ? angle : -angle, vec );
+	}
+
+	std::cout << "RTPar: error quat()" << std::endl;
+	return glm::quat();
+}
+
+RotateType RC::RTPar::equalRT( const RotAxis ra, const bool cw )
+{
+	const RTPair pars{ ra, cw };
+
+	for ( auto it : p_RTPar )
+		if ( it.second == pars )
+			return it.first;
+
+	std::cout << "RTPar: error equalRT()" << std::endl;
+	return RT_NONE;
 }
 
 // MoveType params
