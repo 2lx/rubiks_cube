@@ -51,12 +51,12 @@ RCubeObject::~RCubeObject()
 	delete m_RCModel;
 }
 
-void RCubeObject::setMove( const RC::MoveType rt )
+void RCubeObject::setMove( const RC::MT mt )
 {
 	// calculate new move type
-	const glm::vec3 vec = RC::MTPar::vec( rt );
-	bool cw = RC::MTPar::clockwise( rt );
-	int lay = RC::MTPar::layer( rt );
+	const glm::vec3 vec = RC::MTPar::vec( mt );
+	bool cw = RC::MTPar::clockwise( mt );
+	int lay = RC::MTPar::layer( mt );
 
 	const glm::vec3 vecRot = vec * m_rotateQuat;
 
@@ -66,26 +66,25 @@ void RCubeObject::setMove( const RC::MoveType rt )
 		cw = !cw;
 	}
 
-	const RC::RotAxis ax = RC::RAPar::closestRA( vecRot );
+	const RC::RA ax = RC::RAPar::closestRA( vecRot );
 	m_moveType = RC::MTPar::equalMT( ax, lay, cw );
+	if ( m_moveType == RC::MT::NONE )
+		return;
 
 	// calculate move params
-	if ( m_moveType != RC::MT_NONE )
-	{
-		m_moveLayer = lay;
-		m_moveMix = 0;
-		float angle = glm::radians( 90.0f );
-		m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, RC::MTPar::vec( m_moveType ) );
-	}
+	m_moveLayer = lay;
+	m_moveMix = 0;
+	float angle = glm::radians( 90.0f );
+	m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, RC::MTPar::vec( m_moveType ) );
 }
 
-RC::MoveType RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
+RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
 {
 	const float cOffset = RC::CUBIE_COUNT / 2.0f;
 
 	// if 1st point don't lie on the surface of the cube
 	if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
-		return RC::MT_NONE;
+		return RC::MT::NONE;
 
 	// get close rotation axis
 	const glm::vec3 rvBeg = pBeg * m_rotateQuat;
@@ -93,9 +92,9 @@ RC::MoveType RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::ve
 	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
 
 	// get closest rotation axis vector
-    const RC::RotAxis ra = RC::RAPar::closestRA( pRes );
-	if ( ra == RC::RA_NONE )
-		return RC::MT_NONE;
+    const RC::RA ra = RC::RAPar::closestRA( pRes );
+	if ( ra == RC::RA::NONE )
+		return RC::MT::NONE;
 
 	const glm::vec3 vAx = RC::RAPar::vec( ra );
 
@@ -117,21 +116,21 @@ RC::MoveType RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::ve
 	// find move layer
 	int lay = 0;
 
-	if ( ra == RC::RA_X )
+	if ( ra == RC::RA::X )
 		lay = floor( rvBeg.x + cOffset );
-	else if ( ra == RC::RA_Y )
+	else if ( ra == RC::RA::Y )
 		lay = floor( rvBeg.y + cOffset );
-	else if ( ra == RC::RA_Z )
+	else if ( ra == RC::RA::Z )
 		lay = floor( rvBeg.z + cOffset );
 	else lay = -1;
 
 	if ( lay < 0 || lay > RC::CUBIE_COUNT - 1 )
-		return RC::MT_NONE;
+		return RC::MT::NONE;
 
 	// get move type
-	RC::MoveType nMT = RC::MTPar::equalMT( ra, lay, cw );
-	if ( nMT == RC::MT_NONE )
-		return RC::MT_NONE;
+	RC::MT nMT = RC::MTPar::equalMT( ra, lay, cw );
+	if ( nMT == RC::MT::NONE )
+		return RC::MT::NONE;
 
 	m_moveType = nMT;
 	m_moveLayer = lay;
@@ -163,7 +162,7 @@ void RCubeObject::update()
 		else
 		{
 			m_RCModel->moveCubies( m_moveType, m_moveLayer );
-			m_moveType = RC::MT_NONE;
+			m_moveType = RC::MT::NONE;
 			m_moveLayer = -1;
 
 			m_moveQuat = glm::quat();
@@ -198,12 +197,12 @@ void RCubeObject::drawObject( const glm::mat4 & pmv )
 					// update texture index matrix
 					for ( int i = 0; i < 4; i++ )
 					{
-						m_aTexIndex[ 4*RC::CF_FRONT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF_FRONT );
-						m_aTexIndex[ 4*RC::CF_UP + i ] 		= m_RCModel->cubie( x, y, z ).colInd( RC::CF_UP );
-						m_aTexIndex[ 4*RC::CF_BACK + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF_BACK );
-						m_aTexIndex[ 4*RC::CF_DOWN + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF_DOWN );
-						m_aTexIndex[ 4*RC::CF_LEFT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF_LEFT );
-						m_aTexIndex[ 4*RC::CF_RIGHT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF_RIGHT );
+						m_aTexIndex[ 4*( int )RC::CF::FRONT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF::FRONT );
+						m_aTexIndex[ 4*( int )RC::CF::UP + i ]		= m_RCModel->cubie( x, y, z ).colInd( RC::CF::UP );
+						m_aTexIndex[ 4*( int )RC::CF::BACK + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF::BACK );
+						m_aTexIndex[ 4*( int )RC::CF::DOWN + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF::DOWN );
+						m_aTexIndex[ 4*( int )RC::CF::LEFT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF::LEFT );
+						m_aTexIndex[ 4*( int )RC::CF::RIGHT + i ] 	= m_RCModel->cubie( x, y, z ).colInd( RC::CF::RIGHT );
 					}
 
 					m_VBOTexIndex = loadGLArrayBuffer( m_aTexIndex, sizeof( m_aTexIndex ) );
@@ -215,13 +214,13 @@ void RCubeObject::drawObject( const glm::mat4 & pmv )
 					// calculate model view projection matrix
 					glm::mat4 mRes;
 
-					if ( m_moveType != RC::MT_NONE && m_moveLayer != -1 )
+					if ( m_moveType != RC::MT::NONE && m_moveLayer != -1 )
 					{
-						const RC::RotAxis ax = RC::MTPar::axis( m_moveType );
+						const RC::RA ax = RC::MTPar::axis( m_moveType );
 
-						if  (	( x == m_moveLayer && ax == RC::RA_X ) ||
-								( y == m_moveLayer && ax == RC::RA_Y ) ||
-								( z == m_moveLayer && ax == RC::RA_Z ) )
+						if  (	( x == m_moveLayer && ax == RC::RA::X ) ||
+								( y == m_moveLayer && ax == RC::RA::Y ) ||
+								( z == m_moveLayer && ax == RC::RA::Z ) )
 							mRes = mvpRM * offset;
 						else mRes = mvpR * offset;
 					}
@@ -237,7 +236,7 @@ void RCubeObject::drawCubie( const int x, const int y, const int z ) const
 {
 	glEnableVertexAttribArray( m_attrTexIndex );
 	glBindBuffer( GL_ARRAY_BUFFER, m_VBOTexIndex );
-	glVertexAttribPointer( m_attrTexIndex, 1, GL_SHORT, GL_FALSE, 0, 0 );
+	glVertexAttribPointer( m_attrTexIndex, 1, GL_INT, GL_FALSE, 0, 0 );
 
 	glEnableVertexAttribArray( m_attrCubeVertices );
 	glBindBuffer( GL_ARRAY_BUFFER, m_VBOCubeVertices );

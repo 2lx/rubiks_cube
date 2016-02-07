@@ -45,7 +45,7 @@ GLuint GameObject::loadGLTexture2D( const char * filename ) const
 	return bId;
 }
 
-void GameObject::setRotate( const RC::RotateType rt )
+void GameObject::setRotate( const RC::RT rt )
 {
 	const glm::quat tqt = RC::RTPar::quat( rt );
 
@@ -54,13 +54,13 @@ void GameObject::setRotate( const RC::RotateType rt )
 	m_rotateMix = 0;
 }
 
-RC::RotateType GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
+RC::RT GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
 {
 	const float cOffset = RC::CUBIE_COUNT / 2.0f;
 
 	// if the points in different planes or don't lie on the surface of the cube
 	if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
-		return RC::RT_NONE;
+		return RC::RT::NONE;
 
 	// get close rotation axis
 	const glm::vec3 rvBeg = pBeg * m_rotateQuat;
@@ -68,17 +68,17 @@ RC::RotateType GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm:
 	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
 
 	// get closest rotation axis
-	const RC::RotAxis ra = RC::RAPar::closestRA( pRes );
-	if ( ra == RC::RA_NONE )
-		return RC::RT_NONE;
+	const RC::RA ra = RC::RAPar::closestRA( pRes );
+	if ( ra == RC::RA::NONE )
+		return RC::RT::NONE;
 
     const glm::vec3 vAx = RC::RAPar::vec( ra );
     const bool cw = glm::dot( vAx, pRes ) > 0;
 
 	// get rotation type
-	const RC::RotateType rt = RC::RTPar::equalRT( ra, cw );
-	if ( rt == RC::RT_NONE )
-		return RC::RT_NONE;
+	const RC::RT rt = RC::RTPar::equalRT( ra, cw );
+	if ( rt == RC::RT::NONE )
+		return RC::RT::NONE;
 
 #ifdef NDEBUG
 	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;

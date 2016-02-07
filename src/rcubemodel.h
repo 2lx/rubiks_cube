@@ -10,12 +10,12 @@ namespace RC
 	public:
 		Cubie() { };
 
-		void rotateCubie( const MoveType rt );
-		inline CubeFace colInd( const CubeFace cf ) const { return m_colourInd[ cf ]; };
-		inline void setColourInd( const CubeFace cf, const CubeFace cind ) { m_colourInd[ cf ] = cind; };
+		void rotateCubie( const MT rt );
+		inline CF colInd( const CF cf ) const { return m_colourInd[ ( int ) cf ]; };
+		inline void setColourInd( const CF cf, const CF cind ) { m_colourInd[ ( int ) cf ] = cind; };
 
 	private:
-		CubeFace m_colourInd[ CF_COUNT ] = { CF_NONE, CF_NONE, CF_NONE, CF_NONE, CF_NONE, CF_NONE };
+		CF m_colourInd[ ( int ) CF::COUNT ] = { CF::NONE, CF::NONE, CF::NONE, CF::NONE, CF::NONE, CF::NONE };
 	};
 
 	class CubeModel
@@ -24,7 +24,7 @@ namespace RC
 			CubeModel();
 			virtual ~CubeModel();
 
-			void moveCubies( const MoveType rt, const int mLayer );
+			void moveCubies( const MT mt, const int mLayer );
 			const Cubie cubie( const int x, const int y, const int z ) const { return m_cubies[ x ][ y ][ z ]; };
 			void reset();
 		protected:

@@ -14,8 +14,8 @@ public:
 	virtual ~RCubeObject();
 
 	void drawObject( const glm::mat4 & pmv );
-	void setMove( const RC::MoveType rt );
-	RC::MoveType setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
+	void setMove( const RC::MT rt );
+	RC::MT setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
 	bool isMoving() const { return ( m_moveMix >= 0 ); }
 	void update();
 	void incCurScheme() { m_texCurScheme = ( m_texCurScheme + 1 ) % m_texCount; };
@@ -29,7 +29,7 @@ private:
 	glm::quat m_newMoveQuat;
 	float m_moveMix = { -1 };
 
-	RC::MoveType m_moveType = { RC::MT_NONE };
+	RC::MT m_moveType = { RC::MT::NONE };
 	int m_moveLayer = -1;
 
 	GLuint m_VBOTexCoords, m_VBOTexIndex, m_VBOCubeVertices;
@@ -53,13 +53,13 @@ private:
 		0.0, 0.0,	1.0, 0.0,	1.0, 1.0,	0.0, 1.0,
 	};
 
-	GLshort m_aTexIndex[ 4*6 ] = {
-		RC::CF_FRONT, 	RC::CF_FRONT, 	RC::CF_FRONT, 	RC::CF_FRONT,
-		RC::CF_UP, 		RC::CF_UP, 		RC::CF_UP, 		RC::CF_UP,
-		RC::CF_BACK, 	RC::CF_BACK, 	RC::CF_BACK, 	RC::CF_BACK,
-		RC::CF_DOWN, 	RC::CF_DOWN, 	RC::CF_DOWN, 	RC::CF_DOWN,
-		RC::CF_LEFT, 	RC::CF_LEFT, 	RC::CF_LEFT, 	RC::CF_LEFT,
-		RC::CF_RIGHT, 	RC::CF_RIGHT, 	RC::CF_RIGHT, 	RC::CF_RIGHT
+	RC::CF m_aTexIndex[ 4*6 ] = {
+		RC::CF::FRONT, 	RC::CF::FRONT, 	RC::CF::FRONT, 	RC::CF::FRONT,
+		RC::CF::UP,		RC::CF::UP, 	RC::CF::UP, 	RC::CF::UP,
+		RC::CF::BACK, 	RC::CF::BACK, 	RC::CF::BACK, 	RC::CF::BACK,
+		RC::CF::DOWN, 	RC::CF::DOWN, 	RC::CF::DOWN, 	RC::CF::DOWN,
+		RC::CF::LEFT, 	RC::CF::LEFT, 	RC::CF::LEFT, 	RC::CF::LEFT,
+		RC::CF::RIGHT, 	RC::CF::RIGHT, 	RC::CF::RIGHT, 	RC::CF::RIGHT
 	};
 
 //		    5-----4

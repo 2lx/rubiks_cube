@@ -4,14 +4,19 @@
 #include <queue>
 #include <stack>
 #include <map>
-#include "rcdefines.h"
+#include "rcubeparams.h"
+#include "enumiterator.h"
 
 class KeyQueue
 {
 public:
-    KeyQueue() { }
+    KeyQueue()
+    {
+		for ( auto it : Enum< RC::GK >() )
+			m_map[ it ] = KeyState();
+    }
 
-	inline void keyDown( const RC::GameKey gk, const bool pushQ = true )
+	inline void keyDown( const RC::GK gk, const bool pushQ = true )
 	{
 		if ( !m_map[ gk ].isHold )
 		{
@@ -23,37 +28,37 @@ public:
 		}
 	};
 
-    inline void keyUp( const RC::GameKey gk )
+    inline void keyUp( const RC::GK gk )
     {
 		if ( m_map[ gk ].isHold )
 			m_map[ gk ].isHold = false;
 	};
 
-	inline void processKey( const RC::GameKey gk )
+	inline void processKey( const RC::GK gk )
 	{
 		if ( m_map[ gk ].isNewDown )
 			m_map[ gk ].isNewDown = false;
 	};
 
-	inline bool isHold( const RC::GameKey gk ) const
+	inline bool isHold( const RC::GK gk ) const
 	{
-		return m_map[ gk ].isHold;
+		return m_map.at( gk ).isHold;
 	};
 
-	inline bool isNewDown( const RC::GameKey gk ) const
+	inline bool isNewDown( const RC::GK gk ) const
 	{
-		return m_map[ gk ].isNewDown;
+		return m_map.at( gk ).isNewDown;
 	};
 
 	// queue
-	inline RC::GameKey qCurKey() const
+	inline RC::GK qCurKey() const
 	{
 		if ( !m_queue.empty() )
 			return m_queue.front();
-		else return RC::GK_NONE;
+		else return RC::GK::NONE;
 	}
 
-	inline void qPushKey( const RC::GameKey gk ) { m_queue.push( gk ); }
+	inline void qPushKey( const RC::GK gk ) { m_queue.push( gk ); }
 
 	inline void qPopKey()
 	{
@@ -62,8 +67,8 @@ public:
 
 		processKey( m_queue.front() );
 
-		const RC::GameKey prevGk = getPrevGKey( m_queue.front() );
-		if ( prevGk != RC::GK_NONE )
+		const RC::GK prevGk = RC::GKPar::prevGK( m_queue.front() );
+		if ( prevGk != RC::GK::NONE )
 			m_stack.push( prevGk );
 
 		m_queue.pop();
@@ -85,59 +90,23 @@ public:
 		else GK_NONE;
 	}
 */
-	inline RC::GameKey prevPop()
+	inline RC::GK prevPop()
 	{
 		if ( !m_stack.empty() )
 		{
-			RC::GameKey gk = m_stack.top();
+			const RC::GK gk = m_stack.top();
 			m_stack.pop();
 
 			return gk;
 		}
-		return RC::GK_NONE;
+		return RC::GK::NONE;
 	}
 
-	inline void prevPush( const RC::GameKey gk )
+	inline void prevPush( const RC::GK gk )
 	{
-		const RC::GameKey prevGk = getPrevGKey( gk );
-		if ( prevGk != RC::GK_NONE )
+		const RC::GK prevGk = RC::GKPar::prevGK( gk );
+		if ( prevGk != RC::GK::NONE )
 			m_stack.push( prevGk );
-	}
-
-	bool isEnableWithMove( const RC::GameKey gk )
-	{
-        if ( ( gk < RC::GK_MOVEFIRST || gk > RC::GK_MOVELAST )
-				&& gk != RC::GK_CUBEMIX && gk != RC::GK_CUBERESET && gk != RC::GK_CUBEUNDO )
-			return true;
-		else return false;
-	}
-
-	RC::GameKey getPrevGKey( const RC::GameKey gk )
-	{
-		switch( gk )
-		{
-		case RC::GK_ROTATEDOWN: 	return RC::GK_ROTATEUP;
-		case RC::GK_ROTATEUP: 		return RC::GK_ROTATEDOWN;
-		case RC::GK_ROTATELEFT: 	return RC::GK_ROTATERIGHT;
-		case RC::GK_ROTATERIGHT: 	return RC::GK_ROTATELEFT;
-		case RC::GK_ROTATECW: 		return RC::GK_ROTATEACW;
-		case RC::GK_ROTATEACW: 		return RC::GK_ROTATECW;
-
-		case RC::GK_MOVEBACK: 		return RC::GK_MOVEBACKINV;
-		case RC::GK_MOVEBACKINV: 	return RC::GK_MOVEBACK;
-		case RC::GK_MOVEDOWN: 		return RC::GK_MOVEDOWNINV;
-		case RC::GK_MOVEDOWNINV: 	return RC::GK_MOVEDOWN;
-		case RC::GK_MOVEFRONT: 		return RC::GK_MOVEFRONTINV;
-		case RC::GK_MOVEFRONTINV: 	return RC::GK_MOVEFRONT;
-		case RC::GK_MOVELEFT: 		return RC::GK_MOVELEFTINV;
-		case RC::GK_MOVELEFTINV: 	return RC::GK_MOVELEFT;
-		case RC::GK_MOVERIGHT: 		return RC::GK_MOVERIGHTINV;
-		case RC::GK_MOVERIGHTINV: 	return RC::GK_MOVERIGHT;
-		case RC::GK_MOVEUP: 		return RC::GK_MOVEUPINV;
-		case RC::GK_MOVEUPINV:		return RC::GK_MOVEUP;
-
-		default: return RC::GK_NONE;
-		}
 	}
 
 private:
@@ -147,9 +116,10 @@ private:
 		bool isHold;
 	};
 
-	KeyState m_map[ RC::GK_COUNT ];
-	std::queue< RC::GameKey > m_queue;
-	std::stack< RC::GameKey > m_stack;	// previous keys
+	std::map< RC::GK, KeyState > m_map;
+//	KeyState m_map[ ( int ) RC::GK::COUNT ];
+	std::queue< RC::GK > m_queue;
+	std::stack< RC::GK > m_stack;	// previous keys
 };
 
 #endif // KEYSTATE_H
