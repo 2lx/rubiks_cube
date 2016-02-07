@@ -1,6 +1,7 @@
 #ifndef RCUBEPARAMS_H
 #define RCUBEPARAMS_H
 
+#include "rcdefines.h"
 #include <glm/gtc/type_ptr.hpp>
 
 namespace RC

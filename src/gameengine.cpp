@@ -87,7 +87,7 @@ void CGameEngine::ChangeState( CGameState * state )
 	}
 
 	// store and init the new state
-	states.push_back(state);
+	states.push_back( state );
 	states.back()->Init();
 }
 

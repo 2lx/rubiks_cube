@@ -20,7 +20,7 @@ glm::vec3 RC::RAPar::vec( const RA ra )
 	if ( src != p_RAPar.end() )
 		return src->second;
 
-	std::cout << "RAPar: error vec()" << std::endl;
+	throw std::logic_error( "RAPar::vec()" );
 	return glm::vec3( 0.0f );
 }
 
@@ -37,7 +37,7 @@ RA RC::RAPar::closestRA( glm::vec3 vec )
 	else if ( aZ > aX && aZ > aY )
 		return RA::Z;
 
-	std::cout << "RAPar: error closestRA()" << std::endl;
+	throw std::logic_error( "RAPar::closestRA()" );
 	return RA::NONE;
 }
 
@@ -66,7 +66,7 @@ glm::quat RC::RTPar::quat( const RT rt )
 		return glm::angleAxis( cw ? angle : -angle, vec );
 	}
 
-	std::cout << "RTPar: error quat()" << std::endl;
+	throw std::logic_error( "RTPar::quat()" );
 	return glm::quat();
 }
 
@@ -78,7 +78,7 @@ RT RC::RTPar::equalRT( const RA ra, const bool cw )
 		if ( it.second == pars )
 			return it.first;
 
-	std::cout << "RTPar: error equalRT()" << std::endl;
+	throw std::logic_error( "RTPar::equalRT()" );
 	return RT::NONE;
 }
 
@@ -114,7 +114,7 @@ glm::vec3 RC::MTPar::vec( const MT mt )
 	if ( src != p_MTPar.end() )
 		return RAPar::vec( std::get< 0 >( src->second ) );
 
-	std::cout << "MTPar: error vec()" << std::endl;
+	throw std::logic_error( "MTPar::vec()" );
 	return glm::vec3( 0.0f );
 }
 
@@ -125,7 +125,7 @@ RA RC::MTPar::axis( const MT mt )
 	if ( src != p_MTPar.end() )
 		return std::get< 0 >( src->second );
 
-	std::cout << "MTPar: error axis()" << std::endl;
+	throw std::logic_error( "MTPar::axis()" );
 	return RA::NONE;
 }
 
@@ -136,7 +136,7 @@ int RC::MTPar::layer( const MT mt )
 	if ( src != p_MTPar.end() )
 		return std::get< 1 >( src->second );
 
-	std::cout << "MTPar: error layer()" << std::endl;
+	throw std::logic_error( "MTPar::layer()" );
 	return -1;
 }
 
@@ -147,7 +147,7 @@ bool RC::MTPar::clockwise( const MT mt )
 	if ( src != p_MTPar.end() )
 		return std::get< 2 >( src->second );
 
-	std::cout << "MTPar: error clockwise()" << std::endl;
+	throw std::logic_error( "MTPar::clockwise()" );
 	return false;
 }
 
@@ -160,7 +160,7 @@ MT RC::MTPar::equalMT( const RA ra, const int lay, const bool cw )
 		if ( it.second == pars )
 			return it.first;
 
-	std::cout << "MTPar: error equalMT()" << std::endl;
+	throw std::logic_error( "MTPar::equalMT()" );
 	return MT::NONE;
 }
 
@@ -317,6 +317,6 @@ std::string RC::GKPar::str( const GK gk )
 	if ( src != p_GKPar.end() )
 		return src->second;
 
-	std::cout << "GKPar: error str()" << std::endl;
+	throw std::logic_error( "GKPar::str()" );
 	return "";
 }

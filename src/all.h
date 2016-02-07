@@ -16,7 +16,7 @@
 #include <GL/glu.h>
 
 #include <iostream>
-#include "rcdefines.h"
+#include <stdexcept>
 
 // Screen dimension constants
 const int INIT_SCREEN_WIDTH = 800;

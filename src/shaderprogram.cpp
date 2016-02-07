@@ -28,50 +28,29 @@ void ShaderProgram::linkProgram()
 
 	GLint linkStatus = GL_FALSE;
 	glGetProgramiv( m_id, GL_LINK_STATUS, &linkStatus );
+
 	if ( linkStatus == GL_FALSE )
-	{
-//		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "glLinkProgram:");
-		std::cout << "Shader program linking failed." << std::endl;
-//		glfwTerminate();
-	}
-	else
-	{
-		std::cout << "Shader program linking OK." << std::endl;
-	}
+		throw std::runtime_error( "ShaderProgram::linkProgram(): Error linking shader program" );
 }
 
 GLint ShaderProgram::addAttribute( const std::string & attributeName )
 {
-	GLint attr = glGetAttribLocation( m_id, attributeName.c_str() );
+	GLint ind = glGetAttribLocation( m_id, attributeName.c_str() );
 
-	if ( attr == -1 )
-	{
-		std::cout << "Could not add attribute: " << attributeName << " - location returned -1!" << endl;
-		return -1;
-	}
-	else
-	{
-		m_attributes[ attributeName ] = attr;
-		cout << "Attribute " << attributeName << " bound to location: " << m_attributes[attributeName] << endl;
-	}
+	if ( ind == -1 )
+		throw std::runtime_error( "ShaderProgram::addAttribute(): Error adding attribute: " + attributeName );
+	else m_attributes[ attributeName ] = ind;
 
-	return attr;
+	return ind;
 }
 
 GLint ShaderProgram::addUniform( const string & uniformName )
 {
-	GLint attr = glGetUniformLocation( m_id, uniformName.c_str() );
+	GLint ind = glGetUniformLocation( m_id, uniformName.c_str() );
 
-	if ( attr == -1 )
-	{
-		cout << "Could not add uniform: " << uniformName << " - location returned -1!" << endl;
-		return -1;
-	}
-	else
-	{
-		m_uniforms[ uniformName ] = attr;
-		cout << "Uniform " << uniformName << " bound to location: " << m_uniforms[uniformName] << endl;
-	}
+	if ( ind == -1 )
+		throw std::runtime_error( "ShaderProgram::addUniform(): Could not add uniform: " + uniformName );
+	else m_uniforms[ uniformName ] = ind;
 
-	return attr;
+	return ind;
 }

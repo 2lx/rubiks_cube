@@ -7,9 +7,22 @@ int main( int argc, char * args[] )
 {
 	CGameEngine game;
 
-	game.Init( "Rubik's cube. Game_v0.7" );
+	try
+	{
+		game.Init( "Rubik's cube. Game_v0.7" );
 
-	game.ChangeState( CPlayState::Instance() );
+		game.ChangeState( CPlayState::Instance() );
+	}
+	catch ( std::exception &e )
+	{
+		std::cerr << "Initialization: " << e.what() << std::endl;
+	}
+	catch ( ... )
+	{
+		std::cerr << "Unknown exception" << std::endl;
+
+		return EXIT_FAILURE;
+	}
 
 #ifdef MY_DEBUG
 	Uint32 startHE;
@@ -19,24 +32,36 @@ int main( int argc, char * args[] )
 
 	while ( game.Running() )
 	{
+		try
+		{
 #ifdef MY_DEBUG
-		startHE = SDL_GetTicks();
+			startHE = SDL_GetTicks();
 #endif // MY_DEBUG
-		game.HandleEvents();
+			game.HandleEvents();
 
-		game.Update();
-
-#ifdef MY_DEBUG
-		startDR = SDL_GetTicks();
-#endif // MY_DEBUG
-		game.Draw();
+			game.Update();
 
 #ifdef MY_DEBUG
-		endAll = SDL_GetTicks();
-
-		if ( endAll - startDR > SCREEN_TICK_PER_FRAME + 1 )
-		std::cout << "Handles: " << startDR - startHE << "    Draw: " << endAll - startDR << std::endl;
+			startDR = SDL_GetTicks();
 #endif // MY_DEBUG
+			game.Draw();
+
+#ifdef MY_DEBUG
+			endAll = SDL_GetTicks();
+
+			if ( endAll - startDR > SCREEN_TICK_PER_FRAME + 1 )
+			std::cout << "Handles: " << startDR - startHE << "    Draw: " << endAll - startDR << std::endl;
+#endif // MY_DEBUG
+
+		} // try
+		catch( std::exception & e )
+            std::cerr << "Exception: " << e.what() << std::endl;
+		catch( ... )
+		{
+            std::cerr << "Unknown error " << std::endl;
+            return EXIT_FAILURE;
+		}
+
 		std::cout.flush();
 	}
 

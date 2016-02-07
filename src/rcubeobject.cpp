@@ -21,9 +21,11 @@ RCubeObject::RCubeObject( ShaderProgram * shaderPr )
 	m_attrTexIndex = shaderPr->addAttribute( "texIndex" );
 
 	// get texture params
-	SDL_Surface * res_texture = IMG_Load( "glsl/texture.png" );
+	const char * texFileName = "glsl/texture.png";
+	SDL_Surface * res_texture = IMG_Load( texFileName );
+
 	if ( res_texture == NULL )
-		std::cout << "IMG_Load: " << SDL_GetError() << std::endl;
+		throw std::logic_error( "RCubeObject::RCubeObject(): Error loading image " + std::string( texFileName ) );
 	else
 	{
 		m_texCount = res_texture->h / ( res_texture->w / 6 );

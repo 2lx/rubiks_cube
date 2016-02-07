@@ -16,6 +16,11 @@ void Shader::loadFromFile( const string & filename ) const
 	std::ifstream file;
 
 	file.open( filename.c_str() );
+	if ( file.fail() )
+	{
+		throw std::runtime_error( "Shader::loadFromFile(): Error opening file " + filename );
+		return;
+	}
 
 	file.seekg ( 0, ios::end );
 	int length = file.tellg();
@@ -27,8 +32,7 @@ void Shader::loadFromFile( const string & filename ) const
 	file.close();
 
 	if ( source == NULL) {
-		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR,
-					   "Error opening %s: %s", filename.c_str(), SDL_GetError());
+		throw std::runtime_error( "Shader::loadFromFile(): Error loading data from file" );
 		return;
 	}
 
@@ -50,7 +54,7 @@ void Shader::loadFromFile( const string & filename ) const
 		"     precision highp ushort;        \n"
 		"#  else                             \n"
 		"     precision mediump float;       \n"
-		"     precision mediump ushort;       \n"
+		"     precision mediump ushort;      \n"
 		"#  endif                            \n"
 		"#else                               \n"
 		"#  define lowp                      \n"
@@ -65,7 +69,6 @@ void Shader::loadFromFile( const string & filename ) const
 	};
 
 	glShaderSource( m_id, 3, sources, NULL );
-//	std::cout << std::string( source ) << std::endl;
 	delete [] source;
 }
 
@@ -79,13 +82,9 @@ void Shader::compile() const
 	{
 		GLint infoLogLength;
 		glGetShaderiv( m_id, GL_INFO_LOG_LENGTH, &infoLogLength );
-		GLchar * strInfoLog = new GLchar[infoLogLength + 1];
+		GLchar * strInfoLog = new GLchar[ infoLogLength + 1 ];
 		glGetShaderInfoLog( m_id, infoLogLength, NULL, strInfoLog );
 
-		std::cout << "Shader " << ( int ) m_id << "complie failed. Error: " << strInfoLog << std::endl;
-
-
-//		glDeleteShader( m );
-		return;
+		throw std::runtime_error( "Shader::compile(): Error compiling: " + std::string( strInfoLog ) );
 	}
 }
