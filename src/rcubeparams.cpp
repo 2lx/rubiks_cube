@@ -21,7 +21,6 @@ glm::vec3 RC::RAPar::vec( const RA ra )
 		return src->second;
 
 	throw std::logic_error( "RAPar::vec()" );
-	return glm::vec3( 0.0f );
 }
 
 RA RC::RAPar::closestRA( glm::vec3 vec )
@@ -38,7 +37,6 @@ RA RC::RAPar::closestRA( glm::vec3 vec )
 		return RA::Z;
 
 	throw std::logic_error( "RAPar::closestRA()" );
-	return RA::NONE;
 }
 
 // RotateType params
@@ -67,7 +65,6 @@ glm::quat RC::RTPar::quat( const RT rt )
 	}
 
 	throw std::logic_error( "RTPar::quat()" );
-	return glm::quat();
 }
 
 RT RC::RTPar::equalRT( const RA ra, const bool cw )
@@ -79,7 +76,6 @@ RT RC::RTPar::equalRT( const RA ra, const bool cw )
 			return it.first;
 
 	throw std::logic_error( "RTPar::equalRT()" );
-	return RT::NONE;
 }
 
 // MoveType params
@@ -115,7 +111,6 @@ glm::vec3 RC::MTPar::vec( const MT mt )
 		return RAPar::vec( std::get< 0 >( src->second ) );
 
 	throw std::logic_error( "MTPar::vec()" );
-	return glm::vec3( 0.0f );
 }
 
 RA RC::MTPar::axis( const MT mt )
@@ -126,7 +121,6 @@ RA RC::MTPar::axis( const MT mt )
 		return std::get< 0 >( src->second );
 
 	throw std::logic_error( "MTPar::axis()" );
-	return RA::NONE;
 }
 
 int RC::MTPar::layer( const MT mt )
@@ -137,7 +131,6 @@ int RC::MTPar::layer( const MT mt )
 		return std::get< 1 >( src->second );
 
 	throw std::logic_error( "MTPar::layer()" );
-	return -1;
 }
 
 bool RC::MTPar::clockwise( const MT mt )
@@ -148,7 +141,6 @@ bool RC::MTPar::clockwise( const MT mt )
 		return std::get< 2 >( src->second );
 
 	throw std::logic_error( "MTPar::clockwise()" );
-	return false;
 }
 
 MT RC::MTPar::equalMT( const RA ra, const int lay, const bool cw )
@@ -161,7 +153,6 @@ MT RC::MTPar::equalMT( const RA ra, const int lay, const bool cw )
 			return it.first;
 
 	throw std::logic_error( "MTPar::equalMT()" );
-	return MT::NONE;
 }
 
 //
@@ -318,5 +309,4 @@ std::string RC::GKPar::str( const GK gk )
 		return src->second;
 
 	throw std::logic_error( "GKPar::str()" );
-	return "";
 }

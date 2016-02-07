@@ -65,7 +65,7 @@ RC::RT GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & 
 	// get close rotation axis
 	const glm::vec3 rvBeg = pBeg * m_rotateQuat;
 	const glm::vec3 rvEnd = pEnd * m_rotateQuat;
-	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
+	glm::vec3 pRes = glm::cross( rvBeg, rvEnd );
 
 	// get closest rotation axis
 	const RC::RA ra = RC::RAPar::closestRA( pRes );
@@ -75,7 +75,7 @@ RC::RT GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & 
     const glm::vec3 vAx = RC::RAPar::vec( ra );
     const bool cw = glm::dot( vAx, pRes ) > 0;
 
-	// get rotation type
+	// get rotation type (absolute)
 	const RC::RT rt = RC::RTPar::equalRT( ra, cw );
 	if ( rt == RC::RT::NONE )
 		return RC::RT::NONE;
@@ -95,7 +95,11 @@ RC::RT GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & 
 	m_oldRotateQuat = m_rotateQuat;
 	m_rotateMix = 0;
 
-	return rt;
+	// get rotation type (relative)
+	const RC::RA ra2 = RC::RAPar::closestRA( glm::cross( pBeg, pEnd ) );
+    const bool cw2 = glm::dot( RC::RAPar::vec( ra2 ), glm::cross( pBeg, pEnd ) ) > 0;
+
+	return RC::RTPar::equalRT( ra2, cw2 );
 }
 /*
 void GameObject::updateAxesPos()

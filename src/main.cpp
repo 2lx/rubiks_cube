@@ -55,7 +55,9 @@ int main( int argc, char * args[] )
 
 		} // try
 		catch( std::exception & e )
+		{
             std::cerr << "Exception: " << e.what() << std::endl;
+		}
 		catch( ... )
 		{
             std::cerr << "Unknown error " << std::endl;
