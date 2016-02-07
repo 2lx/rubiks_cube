@@ -359,9 +359,12 @@ void CPlayState::Update( CGameEngine * game )
 			}
 			case RC::GK::GAMEUNDO:
 			{
-				const RC::GK gk = m_keyQ.prevPop();
+				const RC::GK pgk = m_keyQ.prevPop();
+				const RC::GK gk = RC::GKPar::prevGK( pgk );
 				if ( gk == RC::GK::NONE )
 					break;
+
+				std::cout << RC::GKPar::str( pgk ) << " -> " << RC::GKPar::str( gk ) << std::endl;
 
 				if ( RC::GKPar::toRT( gk ) != RC::RT::NONE )
 					m_RCube->setRotate( RC::GKPar::toRT( gk ) );

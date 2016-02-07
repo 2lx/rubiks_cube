@@ -24,7 +24,7 @@ namespace RC
 			if( 0 < val && val < ( int ) RC::MT::COUNT )
 				return true;
 			else return false;
-		};
+		}
 
 		glm::vec3 vec( const MT mt );
 		RA axis( const MT mt );
@@ -50,6 +50,8 @@ namespace RC
 		}
 
 		RC::GK prevGK( const RC::GK gk );
+
+		std::string str( const GK gk );
 	}
 }
 #endif // RCUBEPARAMS_H

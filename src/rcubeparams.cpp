@@ -281,3 +281,42 @@ RC::GK RC::GKPar::prevGK( const RC::GK gk )
 	default: return RC::GK::NONE;
 	}
 }
+
+const std::map< const GK, const std::string > p_GKPar {
+	{ GK::MOVEF, 	"F" },
+	{ GK::MOVEFI, 	"F'" },
+	{ GK::MOVEB, 	"B" },
+	{ GK::MOVEBI, 	"B'" },
+	{ GK::MOVEL, 	"L" },
+	{ GK::MOVELI, 	"L'" },
+	{ GK::MOVER, 	"R" },
+	{ GK::MOVERI, 	"R'" },
+	{ GK::MOVEU, 	"U" },
+	{ GK::MOVEUI, 	"U'" },
+	{ GK::MOVED, 	"D" },
+	{ GK::MOVEDI, 	"D'" },
+	{ GK::MOVEFM, 	"f" },
+	{ GK::MOVEFMI, 	"f'" },
+	{ GK::MOVEUM, 	"u" },
+	{ GK::MOVEUMI, 	"u'" },
+	{ GK::MOVERM, 	"r" },
+	{ GK::MOVERMI, 	"r'" },
+
+	{ GK::ROTATEUP,  	"rtU" },
+	{ GK::ROTATEDOWN,  	"rtD" },
+	{ GK::ROTATELEFT,  	"rtL" },
+	{ GK::ROTATERIGHT,	"rtR" },
+	{ GK::ROTATECW,		"rtCW" },
+	{ GK::ROTATEACW, 	"rtACW" }
+};
+
+std::string RC::GKPar::str( const GK gk )
+{
+	auto src = p_GKPar.find( gk );
+
+	if ( src != p_GKPar.end() )
+		return src->second;
+
+	std::cout << "GKPar: error str()" << std::endl;
+	return "";
+}

@@ -69,7 +69,7 @@ public:
 
 		const RC::GK prevGk = RC::GKPar::prevGK( m_queue.front() );
 		if ( prevGk != RC::GK::NONE )
-			m_stack.push( prevGk );
+			m_stack.push( m_queue.front() );
 
 		m_queue.pop();
 	}
@@ -82,14 +82,7 @@ public:
 		while ( !m_stack.empty() )
 			m_stack.pop();
 	}
-/*
-	inline RC::GameKeys prevTop() const
-	{
-		if ( !m_stack.empty() )
-			return m_stack.top();
-		else GK_NONE;
-	}
-*/
+
 	inline RC::GK prevPop()
 	{
 		if ( !m_stack.empty() )
@@ -106,7 +99,7 @@ public:
 	{
 		const RC::GK prevGk = RC::GKPar::prevGK( gk );
 		if ( prevGk != RC::GK::NONE )
-			m_stack.push( prevGk );
+			m_stack.push( gk );
 	}
 
 private:
