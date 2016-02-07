@@ -59,6 +59,7 @@ void RCubeObject::setMove( const RC::MT mt )
 	const glm::vec3 vec = RC::MTPar::vec( mt );
 	bool cw = RC::MTPar::clockwise( mt );
 	int lay = RC::MTPar::layer( mt );
+	// TODO: only for 2x2x2 and 3x3x3 cubes
 	if ( lay < 0 ) lay = 1;
 
 	const glm::vec3 vecRot = vec * m_rotateQuat;
@@ -92,10 +93,10 @@ RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 	// get close rotation axis
 	const glm::vec3 rvBeg = pBeg * m_rotateQuat;
 	const glm::vec3 rvEnd = pEnd * m_rotateQuat;
-	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
+	glm::vec3 pRes = glm::cross( rvBeg, rvEnd );
 
 	// get closest rotation axis vector
-    const RC::RA ra = RC::RAPar::closestRA( pRes );
+	const RC::RA ra = RC::RAPar::closestRA( pRes );
 	if ( ra == RC::RA::NONE )
 		return RC::MT::NONE;
 
@@ -130,7 +131,7 @@ RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 	if ( lay < 0 || lay > RC::CUBIE_COUNT - 1 )
 		return RC::MT::NONE;
 
-	// get move type
+	// get move type (absolute)
 	RC::MT nMT = RC::MTPar::equalMT( ra, lay, cw );
 	if ( nMT == RC::MT::NONE )
 		return RC::MT::NONE;
@@ -141,7 +142,22 @@ RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 	float angle = glm::radians( 90.0f );
 	m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, vAx );
 
-	return m_moveType;
+	// get move type (relative)
+	const RC::RA ra2 = RC::RAPar::closestRA( glm::cross( pBeg, pEnd ) );
+	bool cw2;
+	if ( glm::dot( glm::cross( RC::RAPar::vec( ra2 ), pEnd ), pBeg ) > 0 )
+		cw2 = true;
+	else cw2 = false;
+
+	int lay2 = 0;
+	if ( ra2 == RC::RA::X )
+		lay2 = floor( pBeg.x + cOffset );
+	else if ( ra2 == RC::RA::Y )
+		lay2 = floor( pBeg.y + cOffset );
+	else if ( ra2 == RC::RA::Z )
+		lay2 = floor( pBeg.z + cOffset );
+
+	return RC::MTPar::equalMT( ra2, lay2, cw2 );
 }
 
 void RCubeObject::reset()

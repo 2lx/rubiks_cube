@@ -10,6 +10,7 @@ void Cubie::rotateCubie( const MT mt )
 {
 	CF tt, t1, t2, t3, t4;
 
+	// TODO:
 	switch ( mt )
 	{
 		case MT::F:
