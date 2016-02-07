@@ -3,12 +3,11 @@
 #include "gameengine.h"
 #include "playstate.h"
 
-
 int main( int argc, char * args[] )
 {
 	CGameEngine game;
 
-	game.Init( "Rubik's cube. Game_v0.1" );
+	game.Init( "Rubik's cube. Game_v0.7" );
 
 	game.ChangeState( CPlayState::Instance() );
 

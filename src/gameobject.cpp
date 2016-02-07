@@ -83,7 +83,7 @@ RC::RotateType GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm:
 	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
 
 	// get closest rotation axis vector
-    glm::vec3 vAx = RC::RAPar::getVecForRA( RC::RAPar::getClosestAxis( pRes ) );
+    glm::vec3 vAx = RC::RAPar::vec( RC::RAPar::closestRA( pRes ) );
     bool isPos = glm::dot( vAx, pRes ) > 0;
 
 #ifdef NDEBUG
@@ -94,7 +94,6 @@ RC::RotateType GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm:
 	std::cout << pRes.x << " " << pRes.y << " " << pRes.z << std::endl;
 	std::cout << vAx.x  << " " << vAx.y  << " " << vAx.z  << std::endl;
 	std::cout << std::endl;
-	std::cout.flush();
 #endif // NDEBUG
 
 	const float angle = glm::radians( 90.0f );
@@ -102,7 +101,7 @@ RC::RotateType GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm:
 	m_oldRotateQuat = m_rotateQuat;
 	m_rotateMix = 0;
 
-	return  RC::RT_NONE;
+	return RC::RT_NONE;
 }
 /*
 void GameObject::updateAxesPos()

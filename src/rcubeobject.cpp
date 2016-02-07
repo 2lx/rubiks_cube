@@ -54,9 +54,10 @@ RCubeObject::~RCubeObject()
 void RCubeObject::setMove( const RC::MoveType rt )
 {
 	// calculate new move type
-	const glm::vec3 vec = RC::MoveParams::vec( rt );
-	bool cw = RC::MoveParams::clockwise( rt );
-	int lay = RC::MoveParams::layer( rt );
+	const glm::vec3 vec = RC::MTPar::vec( rt );
+	bool cw = RC::MTPar::clockwise( rt );
+	int lay = RC::MTPar::layer( rt );
+
 	const glm::vec3 vecRot = vec * m_rotateQuat;
 
 	if ( glm::dot( vecRot, glm::vec3( 1.0f, 1.0f, 1.0f ) ) < 0 )
@@ -65,7 +66,8 @@ void RCubeObject::setMove( const RC::MoveType rt )
 		cw = !cw;
 	}
 
-	m_moveType = RC::MoveParams::getMTypeForPars( vecRot, cw, lay );
+	const RC::RotAxis ax = RC::RAPar::closestRA( vecRot );
+	m_moveType = RC::MTPar::equalMT( ax, lay, cw );
 
 	// calculate move params
 	if ( m_moveType != RC::MT_NONE )
@@ -73,7 +75,7 @@ void RCubeObject::setMove( const RC::MoveType rt )
 		m_moveLayer = lay;
 		m_moveMix = 0;
 		float angle = glm::radians( 90.0f );
-		m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, RC::MoveParams::vec( m_moveType ) );
+		m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, RC::MTPar::vec( m_moveType ) );
 	}
 }
 
@@ -91,11 +93,11 @@ RC::MoveType RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::ve
 	glm::vec3 pRes = glm::cross( rvBeg, rvEnd ) ;
 
 	// get closest rotation axis vector
-    const RC::RotAxis ra = RC::RAPar::getClosestAxis( pRes );
+    const RC::RotAxis ra = RC::RAPar::closestRA( pRes );
 	if ( ra == RC::RA_NONE )
 		return RC::MT_NONE;
 
-	const glm::vec3 vAx = RC::RAPar::getVecForRA( ra );
+	const glm::vec3 vAx = RC::RAPar::vec( ra );
 
 #ifdef NDEBUG
 	std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;
@@ -104,7 +106,6 @@ RC::MoveType RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::ve
 	std::cout << rvEnd.x << " " << rvEnd.y << " " << rvEnd.z << std::endl;
 	std::cout << pRes.x << " " << pRes.y << " " << pRes.z << std::endl;
 	std::cout << vAx.x  << " " << vAx.y  << " " << vAx.z  << std::endl;
-	std::cout.flush();
 #endif // NDEBUG
 
 	// calculate clockwise
@@ -128,7 +129,7 @@ RC::MoveType RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::ve
 		return RC::MT_NONE;
 
 	// get move type
-	RC::MoveType nMT = RC::MoveParams::getMTypeForPars( vAx, cw, lay );
+	RC::MoveType nMT = RC::MTPar::equalMT( ra, lay, cw );
 	if ( nMT == RC::MT_NONE )
 		return RC::MT_NONE;
 
@@ -214,13 +215,15 @@ void RCubeObject::drawObject( const glm::mat4 & pmv )
 					// calculate model view projection matrix
 					glm::mat4 mRes;
 
-					if ( ( m_moveType != RC::MT_NONE && m_moveLayer != -1 ) &&
-						( 	( z == m_moveLayer && RC::MoveParams::vec( m_moveType ).z != 0 ) ||
-							( x == m_moveLayer && RC::MoveParams::vec( m_moveType ).x != 0 ) ||
-							( y == m_moveLayer && RC::MoveParams::vec( m_moveType ).y != 0 ) )
-						)
+					if ( m_moveType != RC::MT_NONE && m_moveLayer != -1 )
 					{
-						mRes = mvpRM * offset;
+						const RC::RotAxis ax = RC::MTPar::axis( m_moveType );
+
+						if  (	( x == m_moveLayer && ax == RC::RA_X ) ||
+								( y == m_moveLayer && ax == RC::RA_Y ) ||
+								( z == m_moveLayer && ax == RC::RA_Z ) )
+							mRes = mvpRM * offset;
+						else mRes = mvpR * offset;
 					}
 					else mRes = mvpR * offset;
 

@@ -41,9 +41,6 @@ void CPlayState::Cleanup()
 {
 	delete m_RCube;
 	delete m_shaderPr;
-
-	RC::MoveParams::cleanup();
-//	AxisParams::cleanup();
 }
 
 void CPlayState::setProjection( const ProjectionType pType )

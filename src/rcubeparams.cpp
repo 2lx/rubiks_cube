@@ -1,99 +1,124 @@
 #include "all.h"
 
 #include "rcubeparams.h"
+#include <map>
+#include <tuple>
 
 using namespace RC;
 
-const glm::vec3 RC::RCDetail::m_RAPar[ RA_COUNT ] = {
-	glm::vec3( 1.0f, 0.0f, 0.0f ),
-	glm::vec3( 0.0f, 1.0f, 0.0f ),
-	glm::vec3( 0.0f, 0.0f, 1.0f ) };
+// RotAxis params
+const std::map< const RotAxis, const glm::vec3 > m_RAPar {
+	{ RA_X, glm::vec3( 1.0f, 0.0f, 0.0f ) },
+	{ RA_Y, glm::vec3( 0.0f, 1.0f, 0.0f ) },
+	{ RA_Z, glm::vec3( 0.0f, 0.0f, 1.0f ) }
+};
 
-glm::vec3 RC::RAPar::getVecForRA( const RotAxis ra )
+glm::vec3 RC::RAPar::vec( const RotAxis ra )
 {
-	return RCDetail::m_RAPar[ ra ];
+	auto src = m_RAPar.find( ra );
+
+	if ( src != m_RAPar.end() )
+		return src->second;
+
+	std::cout << "RAPar: error vec()" << std::endl;
+	return glm::vec3( 0.0f );
 }
 
-RotAxis RC::RAPar::getClosestAxis( glm::vec3 vec )
+RotAxis RC::RAPar::closestRA( glm::vec3 vec )
 {
     const float aX = std::abs( vec.x );
 	const float aY = std::abs( vec.y );
 	const float aZ = std::abs( vec.z );
 
     if ( aX > aY && aX > aZ )
-		return RC::RA_X;
+		return RA_X;
 	else if ( aY > aX && aY > aZ )
-		return RC::RA_Y;
+		return RA_Y;
 	else if ( aZ > aX && aZ > aY )
-		return RC::RA_Z;
-	else return RC::RA_NONE;
+		return RA_Z;
+
+	std::cout << "RAPar: error closestRA()" << std::endl;
+	return RA_NONE;
 }
 
-// MoveParams
-std::map< MoveType, MoveParams::OneParam * > MoveParams::m_p = InitMap();
+// MoveType params
+const int ll = CUBIE_COUNT - 1;
+typedef std::tuple< const RotAxis, const int, const bool > MTTuple;
 
-std::map< MoveType, MoveParams::OneParam * > MoveParams::InitMap()
+const std::map< const MoveType, const MTTuple > p_MTPar {
+	{ MT_FRONT, 		std::make_tuple( RA_Z, ll, true ) },
+	{ MT_FRONTINV, 		std::make_tuple( RA_Z, ll, false ) },
+	{ MT_BACK, 			std::make_tuple( RA_Z, 0, false ) },
+	{ MT_BACKINV, 		std::make_tuple( RA_Z, 0, true ) },
+	{ MT_RIGHT, 		std::make_tuple( RA_X, ll, true ) },
+	{ MT_RIGHTINV, 		std::make_tuple( RA_X, ll, false ) },
+	{ MT_LEFT, 			std::make_tuple( RA_X, 0, false ) },
+	{ MT_LEFTINV, 		std::make_tuple( RA_X, 0, true ) },
+	{ MT_UP, 			std::make_tuple( RA_Y, ll, true ) },
+	{ MT_UPINV, 		std::make_tuple( RA_Y, ll, false ) },
+	{ MT_DOWN, 			std::make_tuple( RA_Y, 0, false ) },
+	{ MT_DOWNINV, 		std::make_tuple( RA_Y, 0, true ) },
+	{ MT_FRONTMID, 		std::make_tuple( RA_Z, -1, true ) },
+	{ MT_FRONTMIDINV, 	std::make_tuple( RA_Z, -1, false ) },
+	{ MT_UPMID, 		std::make_tuple( RA_Y, -1, true ) },
+	{ MT_UPMIDINV, 		std::make_tuple( RA_Y, -1, false ) },
+	{ MT_RIGHTMID, 		std::make_tuple( RA_X, -1, true ) },
+	{ MT_RIGHTMIDINV, 	std::make_tuple( RA_X, -1, false ) }
+};
+
+glm::vec3 RC::MTPar::vec( const MoveType mt )
 {
-	const int ll = CUBIE_COUNT - 1;
-	std::map< MoveType, OneParam * > mp;
+	auto src = p_MTPar.find( mt );
 
-	mp[ MT_FRONT ] 		= new OneParam( RA_Z, ll, true );
-	mp[ MT_FRONTINV ] 	= new OneParam( RA_Z, ll, false );
-	mp[ MT_BACK ] 		= new OneParam( RA_Z, 0, false );
-	mp[ MT_BACKINV ] 	= new OneParam( RA_Z, 0, true );
-	mp[ MT_RIGHT ] 		= new OneParam( RA_X, ll, true );
-	mp[ MT_RIGHTINV ] 	= new OneParam( RA_X, ll, false );
-	mp[ MT_LEFT ] 		= new OneParam( RA_X, 0, false );
-	mp[ MT_LEFTINV ] 	= new OneParam( RA_X, 0, true );
-	mp[ MT_UP ] 		= new OneParam( RA_Y, ll, true );
-	mp[ MT_UPINV ] 		= new OneParam( RA_Y, ll, false );
-	mp[ MT_DOWN ] 		= new OneParam( RA_Y, 0, false );
-	mp[ MT_DOWNINV ] 	= new OneParam( RA_Y, 0, true );
-	mp[ MT_FRONTMID ] 	= new OneParam( RA_Z, -1, true );
-	mp[ MT_FRONTMIDINV ]= new OneParam( RA_Z, -1, false );
-	mp[ MT_UPMID ]		= new OneParam( RA_Y, -1, true );
-	mp[ MT_UPMIDINV ]	= new OneParam( RA_Y, -1, false );
-	mp[ MT_RIGHTMID ] 	= new OneParam( RA_X, -1, true );
-	mp[ MT_RIGHTMIDINV ]= new OneParam( RA_X, -1, false );
+	if ( src != p_MTPar.end() )
+		return RAPar::vec( std::get< 0 >( src->second ) );
 
-	return mp;
+	std::cout << "MTPar: error vec()" << std::endl;
+	return glm::vec3( 0.0f );
 }
 
-MoveType MoveParams::getMTypeForPars( const glm::vec3 & vec, const bool cw, const int lay )
+RotAxis RC::MTPar::axis( const MoveType mt )
 {
-	const RotAxis ra = RAPar::getClosestAxis( vec );
+	auto src = p_MTPar.find( mt );
+
+	if ( src != p_MTPar.end() )
+		return std::get< 0 >( src->second );
+
+	std::cout << "MTPar: error axis()" << std::endl;
+	return RA_NONE;
+}
+
+int RC::MTPar::layer( const MoveType mt )
+{
+	auto src = p_MTPar.find( mt );
+
+	if ( src != p_MTPar.end() )
+		return std::get< 1 >( src->second );
+
+	std::cout << "MTPar: error layer()" << std::endl;
+	return -1;
+}
+
+bool RC::MTPar::clockwise( const MoveType mt )
+{
+	auto src = p_MTPar.find( mt );
+
+	if ( src != p_MTPar.end() )
+		return std::get< 2 >( src->second );
+
+	std::cout << "MTPar: error clockwise()" << std::endl;
+	return false;
+}
+
+MoveType RC::MTPar::equalMT( const RotAxis ra, const int lay, const bool cw )
+{
 	const int lay1 = ( 0 < lay && lay < CUBIE_COUNT - 1 ) ? -1 : lay;
+	const MTTuple pars{ ra, lay1, cw };
 
-	for ( int i = MT_FIRST; i < MT_LAST + 1; ++i )
-	{
-		const RotAxis ra2 = m_p[ MoveType( i ) ]->m_RA;
-		const bool cw2 = m_p[ MoveType( i ) ]->m_clockwise;
-		const int lay2 = m_p[ MoveType( i ) ]->m_layer;
+	for ( auto it : p_MTPar )
+		if ( it.second == pars )
+			return it.first;
 
-		if ( ra2 == ra && cw2 == cw && lay2 == lay1 )
-			return MoveType( i );
-	}
-
-	std::cout << "error MT";
-
+	std::cout << "MTPar: error equalMT()" << std::endl;
 	return MT_NONE;
-}
-
-/*
-RCMoveType MoveParams::getMTypeForPars( const RCAxis ax, const bool cw )
-{
-	for ( int i = MT_FIRST; i < MT_COUNT; ++i )
-	{
-		if ( m_p[ RCMoveType( i ) ]->m_axis == ax && m_p[ RCMoveType( i ) ]->m_clockwise == cw )
-			return RCMoveType( i );
-	}
-
-	std::cout << "error MP";
-	return MT_NONE;
-}
-*/
-void MoveParams::cleanup()
-{
-	for ( auto it = m_p.begin(); it != m_p.end(); ++it )
-		delete it->second;
 }
