@@ -350,9 +350,18 @@ void CPlayState::Update( CGameEngine * game )
 
 				for ( int i = 0; i < mCount; i++ )
 				{
-					const int nRand = rand() % int( RC::MT::COUNT );
-					if ( RC::MTPar::isMT( nRand ) )
-						m_keyQ.qPushKey( RC::GKPar::fromMT( RC::MT( nRand ) ) );
+					if ( rand() % 10 > 6 )
+					{
+						const int rRand = rand() % int( RC::RT::COUNT );
+						if ( RC::RTPar::isRT( rRand ) )
+							m_keyQ.qPushKey( RC::GKPar::fromRT( RC::RT( rRand ) ) );
+					}
+					else
+					{
+						const int mRand = rand() % int( RC::MT::COUNT );
+						if ( RC::MTPar::isMT( mRand ) )
+							m_keyQ.qPushKey( RC::GKPar::fromMT( RC::MT( mRand ) ) );
+					}
 				}
 
 				break;
@@ -396,7 +405,32 @@ void CPlayState::Draw( CGameEngine * game )
 		glUseProgram( m_shaderPr->id() );
 
 		m_RCube->rotateObject();
+
 		m_RCube->drawObject( m_matrCamera );
+
+		const glm::mat4 mMirrX = {
+			-1.0f, 	 0.0f, 	 0.0f, 0.0f,
+			 0.0f,	 1.0f, 	 0.0f, 0.0f,
+			 0.0f, 	 0.0f, 	 1.0f, 0.0f,
+		     5.0f, 	 0.0f, 	 0.0f, 1.0f
+		};
+		m_RCube->drawObject( m_matrCamera * mMirrX );
+
+		const glm::mat4 mMirrY = {
+			 1.0f, 	 0.0f, 	 0.0f, 0.0f,
+			 0.0f,	-1.0f, 	 0.0f, 0.0f,
+			 0.0f, 	 0.0f, 	 1.0f, 0.0f,
+		     0.0f, 	-5.0f, 	 0.0f, 1.0f
+		};
+		m_RCube->drawObject( m_matrCamera * mMirrY );
+
+		const glm::mat4 mMirrZ = {
+			 1.0f, 	 0.0f, 	 0.0f, 0.0f,
+			 0.0f,	 1.0f, 	 0.0f, 0.0f,
+			 0.0f, 	 0.0f, 	-1.0f, 0.0f,
+		     0.0f, 	 0.0f, 	-5.0f, 1.0f
+		};
+		m_RCube->drawObject( m_matrCamera * mMirrZ );
 
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );

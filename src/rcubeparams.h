@@ -14,6 +14,12 @@ namespace RC
 
 	namespace RTPar
 	{
+		inline bool isRT( const int val ) {
+			if( 0 < val && val < ( int ) RC::RT::COUNT )
+				return true;
+			else return false;
+		}
+
 		glm::quat quat( const RT rt );
 
 		RT equalRT( const RA ra, const bool cw );
