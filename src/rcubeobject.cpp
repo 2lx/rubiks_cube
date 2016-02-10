@@ -248,9 +248,9 @@ void RCubeObject::drawObject( const glm::mat4 & pmv, const RC::RA ra )
 					mTest = mTest * offset;
 
                     glm::vec4 vTest = mTest * glm::vec4( 0.0, 0.0, 0.0, 1.0f );
-					if ( ra == RC::RA::X && vTest.x <  0.6 ) continue;
-					if ( ra == RC::RA::Y && vTest.y > -0.6 ) continue;
-					if ( ra == RC::RA::Z && vTest.z > -0.6 ) continue;
+					if ( ra == RC::RA::X && vTest.x <  0.7 ) continue;
+					if ( ra == RC::RA::Y && vTest.y > -0.7 ) continue;
+					if ( ra == RC::RA::Z && vTest.z > -0.7 ) continue;
 
 					glUniformMatrix4fv( m_UniMVP, 1, GL_FALSE, glm::value_ptr( mRes ) );
 

@@ -16,6 +16,8 @@ int main( int argc, char * args[] )
 	catch ( std::exception &e )
 	{
 		std::cerr << "Initialization: " << e.what() << std::endl;
+		char ck;
+		std::cin >> ck;
 	}
 	catch ( ... )
 	{

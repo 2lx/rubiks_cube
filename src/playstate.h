@@ -43,10 +43,22 @@ private:
 	glm::dmat4 m_mProjection, m_mModel, m_mView;
 	int m_screenWidth = 800, m_screenHeight = 600;
 
+	void drawBackground();
 	void setProjection( const ProjectionType pType );
 	glm::vec3 getGLPos( const int mX, const int mY ) const;
 
 	ShaderProgram * m_shaderPr;
+
+	GLuint m_VBOScreenVertices;
+	GLuint m_attrScreenVertices;
+	GLint m_UniIsBG;
+
+	const GLfloat m_aScreenVertices[ 2 * 4 ] = {
+        -1.0, -1.0,
+         1.0, -1.0,
+         1.0,  1.0,
+		-1.0,  1.0
+    };
 };
 
 #endif

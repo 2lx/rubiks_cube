@@ -28,7 +28,12 @@ void CPlayState::Init()
 
 	m_RCube = new RCubeObject( m_shaderPr );
 
-	std::cout.flush();
+	glGenBuffers( 1, &m_VBOScreenVertices );
+	glBindBuffer( GL_ARRAY_BUFFER, m_VBOScreenVertices );
+	glBufferData( GL_ARRAY_BUFFER, sizeof( m_aScreenVertices ), m_aScreenVertices, GL_STATIC_DRAW );
+
+	m_attrScreenVertices = m_shaderPr->addAttribute( "scrVertex" );
+	m_UniIsBG = m_shaderPr->addUniform( "isBG" );
 
 	glEnable( GL_BLEND );
 	glEnable(GL_DEPTH_TEST);
@@ -391,6 +396,21 @@ void CPlayState::Update( CGameEngine * game )
 	m_RCube->update();
 }
 
+void CPlayState::drawBackground()
+{
+	glUniform1f( m_UniIsBG, 1.0 );
+
+	glEnableVertexAttribArray( m_attrScreenVertices );
+	glBindBuffer( GL_ARRAY_BUFFER, m_VBOScreenVertices );
+	glVertexAttribPointer( m_attrScreenVertices, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+
+	glDrawArrays( GL_QUADS, 0, 4 );
+
+	glDisableVertexAttribArray( m_attrScreenVertices );
+
+	glUniform1f( m_UniIsBG, 0.0 );
+}
+
 void CPlayState::Draw( CGameEngine * game )
 {
 	static int drCount = 0;
@@ -406,6 +426,7 @@ void CPlayState::Draw( CGameEngine * game )
 
 		m_RCube->rotateObject();
 
+		drawBackground();
 		m_RCube->drawObject( m_matrCamera );
 
 		const glm::mat4 mMirrorX = {
