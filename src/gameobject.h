@@ -9,7 +9,6 @@ class GameObject
 public:
 	virtual ~GameObject();
 
-	virtual void drawObject( const glm::mat4 & ) = 0;
 	void rotateObject();
 	void setRotate( const RC::RT rt );
 	RC::RT setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
@@ -19,7 +18,6 @@ protected:
 	glm::quat m_rotateQuat;
 
 	GameObject();	// Hide public constructor
-//	bool isAxisVisible( const RC::RCAxis ax ) const;
 
 	template < class T >
 	GLuint loadGLArrayBuffer( T * pArr, const int arrSize, const GLenum changeHint = GL_STATIC_DRAW ) const
@@ -38,10 +36,6 @@ private:
     float m_rotateMix = { -1 };
 	glm::quat m_newRotateQuat;
 	glm::quat m_oldRotateQuat;
-
-//	RC::RCAxis m_axesPos[ RC::AX_COUNT ];
-
-//	void updateAxesPos();
 };
 
 #endif // GAMEOBJECT_H

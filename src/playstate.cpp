@@ -408,29 +408,29 @@ void CPlayState::Draw( CGameEngine * game )
 
 		m_RCube->drawObject( m_matrCamera );
 
-		const glm::mat4 mMirrX = {
+		const glm::mat4 mMirrorX = {
 			-1.0f, 	 0.0f, 	 0.0f, 0.0f,
 			 0.0f,	 1.0f, 	 0.0f, 0.0f,
 			 0.0f, 	 0.0f, 	 1.0f, 0.0f,
 		     5.0f, 	 0.0f, 	 0.0f, 1.0f
 		};
-		m_RCube->drawObject( m_matrCamera * mMirrX );
+		m_RCube->drawObject( m_matrCamera * mMirrorX, RC::RA::X );
 
-		const glm::mat4 mMirrY = {
+		const glm::mat4 mMirrorY = {
 			 1.0f, 	 0.0f, 	 0.0f, 0.0f,
 			 0.0f,	-1.0f, 	 0.0f, 0.0f,
 			 0.0f, 	 0.0f, 	 1.0f, 0.0f,
 		     0.0f, 	-5.0f, 	 0.0f, 1.0f
 		};
-		m_RCube->drawObject( m_matrCamera * mMirrY );
+		m_RCube->drawObject( m_matrCamera * mMirrorY, RC::RA::Y );
 
-		const glm::mat4 mMirrZ = {
+		const glm::mat4 mMirrorZ = {
 			 1.0f, 	 0.0f, 	 0.0f, 0.0f,
 			 0.0f,	 1.0f, 	 0.0f, 0.0f,
 			 0.0f, 	 0.0f, 	-1.0f, 0.0f,
 		     0.0f, 	 0.0f, 	-5.0f, 1.0f
 		};
-		m_RCube->drawObject( m_matrCamera * mMirrZ );
+		m_RCube->drawObject( m_matrCamera * mMirrorZ, RC::RA::Z );
 
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );

@@ -176,7 +176,7 @@ void RCubeObject::update()
 		if ( m_moveMix < 1.0 )
 		{
 			m_moveQuat = glm::mix( m_moveQuat, m_newMoveQuat, m_moveMix );
-			m_moveMix += 0.08;
+			m_moveMix += 0.05;
 		}
 		else
 		{
@@ -190,7 +190,7 @@ void RCubeObject::update()
 	}
 }
 
-void RCubeObject::drawObject( const glm::mat4 & pmv )
+void RCubeObject::drawObject( const glm::mat4 & pmv, const RC::RA ra )
 {
 	const float offCenter = RC::CUBIE_COUNT / 2.0f - 0.5;
 
@@ -201,11 +201,9 @@ void RCubeObject::drawObject( const glm::mat4 & pmv )
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 	// calculate transformation matrix
-	glm::mat4 rotation = glm::mat4_cast( m_rotateQuat );
-	glm::mat4 moving = glm::mat4_cast( m_moveQuat );
-
-	glm::mat4 mvpR = pmv * rotation;
-	glm::mat4 mvpRM = pmv * rotation * moving;
+	const glm::mat4 rotation = glm::mat4_cast( m_rotateQuat );
+	const glm::mat4 moving = glm::mat4_cast( m_moveQuat );
+	const glm::mat4 mvpR = pmv * rotation;
 
 	for ( int x = 0; x < RC::CUBIE_COUNT; ++x )
 		for ( int y = 0; y < RC::CUBIE_COUNT; ++y )
@@ -231,7 +229,8 @@ void RCubeObject::drawObject( const glm::mat4 & pmv )
 							glm::vec3( x - offCenter, y - offCenter, z - offCenter ) );
 
 					// calculate model view projection matrix
-					glm::mat4 mRes;
+					glm::mat4 mRes = mvpR;
+					glm::mat4 mTest = rotation;
 
 					if ( m_moveType != RC::MT::NONE && m_moveLayer != -1 )
 					{
@@ -240,10 +239,18 @@ void RCubeObject::drawObject( const glm::mat4 & pmv )
 						if  (	( x == m_moveLayer && ax == RC::RA::X ) ||
 								( y == m_moveLayer && ax == RC::RA::Y ) ||
 								( z == m_moveLayer && ax == RC::RA::Z ) )
-							mRes = mvpRM * offset;
-						else mRes = mvpR * offset;
+						{
+							mRes = mRes * moving;
+							mTest = mTest * moving;
+						}
 					}
-					else mRes = mvpR * offset;
+					mRes = mRes * offset;
+					mTest = mTest * offset;
+
+                    glm::vec4 vTest = mTest * glm::vec4( 0.0, 0.0, 0.0, 1.0f );
+					if ( ra == RC::RA::X && vTest.x <  0.6 ) continue;
+					if ( ra == RC::RA::Y && vTest.y > -0.6 ) continue;
+					if ( ra == RC::RA::Z && vTest.z > -0.6 ) continue;
 
 					glUniformMatrix4fv( m_UniMVP, 1, GL_FALSE, glm::value_ptr( mRes ) );
 

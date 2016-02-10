@@ -101,33 +101,7 @@ RC::RT GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & 
 
 	return RC::RTPar::equalRT( ra2, cw2 );
 }
-/*
-void GameObject::updateAxesPos()
-{
-    for ( int i = AX_FIRST; i < AX_COUNT; i++ )
-    {
-		MyQuaternion quatT( AxisParams::vec( RCAxis( i ) ) );
 
-		MyQuaternion quatR = m_rotateQuat.inverse() * quatT * m_rotateQuat;
-		quatR = quatR.normalize();
-
-		Vector3D vec = Vector3D( quatR.x(), quatR.y(), quatR.z() );
-		m_axesPos[ i ] = AxisParams::getAxisForVector( vec );
-#ifdef MY_DEBUG
-		writeVector3D( AxisParams::vec( RCAxis( i ) ) );
-		writeVector3D( vec );
-		std::cout << std::endl;
-#endif // MY_DEBUG
-	}
-}
-
-bool GameObject::isAxisVisible( const RCAxis ax ) const
-{
-    if ( m_axesPos[ ax ] == AX_FRONT || m_axesPos[ ax ] == AX_UP || m_axesPos[ ax ] == AX_LEFT )
-		return true;
-	else return false;
-}
-*/
 void GameObject::rotateObject( )
 {
 	if ( isRotating() )
@@ -135,7 +109,7 @@ void GameObject::rotateObject( )
 		if ( m_rotateMix < 1.0 )
 		{
 			m_rotateQuat = glm::mix( m_oldRotateQuat, m_newRotateQuat, m_rotateMix );
-			m_rotateMix += 0.10;
+			m_rotateMix += 0.05;
 		}
 		else
 		{
