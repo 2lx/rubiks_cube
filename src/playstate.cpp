@@ -118,34 +118,52 @@ void PlayState::handleEvents( GameEngine* game )
 				game->quit();
 				break;
 
-			case SDLK_UP:
-			case SDLK_w: 		m_keyQ.keyDown( RC::GK::ROTATEUP ); break;
-			case SDLK_DOWN:
-			case SDLK_s: 		m_keyQ.keyDown( RC::GK::ROTATEDOWN ); break;
-			case SDLK_LEFT:
-			case SDLK_a:		m_keyQ.keyDown( RC::GK::ROTATELEFT ); break;
-			case SDLK_RIGHT:
-			case SDLK_d:		m_keyQ.keyDown( RC::GK::ROTATERIGHT ); break;
-			case SDLK_PAGEDOWN:
-			case SDLK_e:		m_keyQ.keyDown( RC::GK::ROTATEACW ); break;
-			case SDLK_q:		m_keyQ.keyDown( RC::GK::ROTATECW ); break;
-			case SDLK_i:		m_keyQ.keyDown( RC::GK::MOVEF ); break;
-			case SDLK_u:		m_keyQ.keyDown( RC::GK::MOVEFI ); break;
-			case SDLK_p:		m_keyQ.keyDown( RC::GK::MOVEB ); break;
-			case SDLK_o:		m_keyQ.keyDown( RC::GK::MOVEBI ); break;
-			case SDLK_k:		m_keyQ.keyDown( RC::GK::MOVEL ); break;
-			case SDLK_j:		m_keyQ.keyDown( RC::GK::MOVELI );	break;
-			case SDLK_SEMICOLON:m_keyQ.keyDown( RC::GK::MOVER ); break;
-			case SDLK_l:		m_keyQ.keyDown( RC::GK::MOVERI ); break;
-			case SDLK_m:		m_keyQ.keyDown( RC::GK::MOVEU ); break;
-			case SDLK_n:		m_keyQ.keyDown( RC::GK::MOVEUI ); break;
-			case SDLK_PERIOD: 	m_keyQ.keyDown( RC::GK::MOVED ); break;
-			case SDLK_COMMA: 	m_keyQ.keyDown( RC::GK::MOVEDI ); break;
-			case SDLK_RETURN: 	m_keyQ.keyDown( RC::GK::GAMEPROJ ); break;
-			case SDLK_SPACE: 	m_keyQ.keyDown( RC::GK::GAMECOLOR ); break;
+			// rotates
+			case SDLK_UP:		m_keyQ.keyDown( RC::GK::ROTATEUP ); break;
+			case SDLK_DOWN:		m_keyQ.keyDown( RC::GK::ROTATEDOWN ); break;
+			case SDLK_LEFT:		m_keyQ.keyDown( RC::GK::ROTATELEFT ); break;
+			case SDLK_RIGHT:	m_keyQ.keyDown( RC::GK::ROTATERIGHT ); break;
+			case SDLK_PAGEDOWN:	m_keyQ.keyDown( RC::GK::ROTATEACW ); break;
+			case SDLK_DELETE:	m_keyQ.keyDown( RC::GK::ROTATECW ); break;
+
+			// turns
+			case SDLK_e:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyDown( RC::GK::MOVEFI );
+				else m_keyQ.keyDown( RC::GK::MOVEF );
+				break;
+			case SDLK_q:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyDown( RC::GK::MOVEBI );
+				else m_keyQ.keyDown( RC::GK::MOVEB );
+				break;
+			case SDLK_w:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyDown( RC::GK::MOVEUI );
+				else m_keyQ.keyDown( RC::GK::MOVEU );
+				break;
+			case SDLK_s:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyDown( RC::GK::MOVEDI );
+				else m_keyQ.keyDown( RC::GK::MOVED );
+				break;
+			case SDLK_a:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyDown( RC::GK::MOVELI );
+				else m_keyQ.keyDown( RC::GK::MOVEL );
+				break;
+			case SDLK_d:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyDown( RC::GK::MOVERI );
+				else m_keyQ.keyDown( RC::GK::MOVER );
+				break;
+
+			// other
 			case SDLK_F1: 		m_keyQ.keyDown( RC::GK::GAMERESET ); break;
 			case SDLK_F4: 		m_keyQ.keyDown( RC::GK::GAMEMIX ); break;
 			case SDLK_F5: 		m_keyQ.keyDown( RC::GK::GAMEBG ); break;
+			case SDLK_F6:	 	m_keyQ.keyDown( RC::GK::GAMEPROJ ); break;
+			case SDLK_F7:		m_keyQ.keyDown( RC::GK::GAMECOLOR ); break;
 			case SDLK_z: 		m_keyQ.keyDown( RC::GK::GAMEUNDO ); break;
 			}
 			break;
@@ -153,34 +171,52 @@ void PlayState::handleEvents( GameEngine* game )
 			lastEvent = true;
 			switch( event.key.keysym.sym )
 			{
-			case SDLK_UP:
-			case SDLK_w: 		m_keyQ.keyUp( RC::GK::ROTATEUP ); break;
-			case SDLK_DOWN:
-			case SDLK_s: 		m_keyQ.keyUp( RC::GK::ROTATEDOWN ); break;
-			case SDLK_LEFT:
-			case SDLK_a:		m_keyQ.keyUp( RC::GK::ROTATELEFT ); break;
-			case SDLK_RIGHT:
-			case SDLK_d:		m_keyQ.keyUp( RC::GK::ROTATERIGHT ); break;
-			case SDLK_PAGEDOWN:
-			case SDLK_e:		m_keyQ.keyUp( RC::GK::ROTATEACW ); break;
-			case SDLK_q:		m_keyQ.keyUp( RC::GK::ROTATECW ); break;
-			case SDLK_i:		m_keyQ.keyUp( RC::GK::MOVEF ); break;
-			case SDLK_u:		m_keyQ.keyUp( RC::GK::MOVEFI ); break;
-			case SDLK_p:		m_keyQ.keyUp( RC::GK::MOVEB ); break;
-			case SDLK_o:		m_keyQ.keyUp( RC::GK::MOVEBI ); break;
-			case SDLK_k:		m_keyQ.keyUp( RC::GK::MOVEL ); break;
-			case SDLK_j:		m_keyQ.keyUp( RC::GK::MOVELI );	break;
-			case SDLK_SEMICOLON:m_keyQ.keyUp( RC::GK::MOVER ); break;
-			case SDLK_l:		m_keyQ.keyUp( RC::GK::MOVERI ); break;
-			case SDLK_m:		m_keyQ.keyUp( RC::GK::MOVEU ); break;
-			case SDLK_n:		m_keyQ.keyUp( RC::GK::MOVEUI ); break;
-			case SDLK_PERIOD: 	m_keyQ.keyUp( RC::GK::MOVED ); break;
-			case SDLK_COMMA: 	m_keyQ.keyUp( RC::GK::MOVEDI ); break;
-			case SDLK_RETURN: 	m_keyQ.keyUp( RC::GK::GAMEPROJ ); break;
-			case SDLK_SPACE: 	m_keyQ.keyUp( RC::GK::GAMECOLOR ); break;
+			// rotates
+			case SDLK_UP:		m_keyQ.keyUp( RC::GK::ROTATEUP ); break;
+			case SDLK_DOWN:		m_keyQ.keyUp( RC::GK::ROTATEDOWN ); break;
+			case SDLK_LEFT:		m_keyQ.keyUp( RC::GK::ROTATELEFT ); break;
+			case SDLK_RIGHT:	m_keyQ.keyUp( RC::GK::ROTATERIGHT ); break;
+			case SDLK_PAGEDOWN:	m_keyQ.keyUp( RC::GK::ROTATEACW ); break;
+			case SDLK_DELETE:	m_keyQ.keyUp( RC::GK::ROTATECW ); break;
+
+			// turns
+			case SDLK_e:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyUp( RC::GK::MOVEFI );
+				else m_keyQ.keyUp( RC::GK::MOVEF );
+				break;
+			case SDLK_q:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyUp( RC::GK::MOVEBI );
+				else m_keyQ.keyUp( RC::GK::MOVEB );
+				break;
+			case SDLK_w:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyUp( RC::GK::MOVEUI );
+				else m_keyQ.keyUp( RC::GK::MOVEU );
+				break;
+			case SDLK_s:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyUp( RC::GK::MOVEDI );
+				else m_keyQ.keyUp( RC::GK::MOVED );
+				break;
+			case SDLK_a:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyUp( RC::GK::MOVELI );
+				else m_keyQ.keyUp( RC::GK::MOVEL );
+				break;
+			case SDLK_d:
+				if ( event.key.keysym.mod & KMOD_CTRL )
+					m_keyQ.keyUp( RC::GK::MOVERI );
+				else m_keyQ.keyUp( RC::GK::MOVER );
+				break;
+
+			// other
 			case SDLK_F1: 		m_keyQ.keyUp( RC::GK::GAMERESET ); break;
 			case SDLK_F4: 		m_keyQ.keyUp( RC::GK::GAMEMIX ); break;
 			case SDLK_F5: 		m_keyQ.keyUp( RC::GK::GAMEBG ); break;
+			case SDLK_F6:		m_keyQ.keyUp( RC::GK::GAMEPROJ ); break;
+			case SDLK_F7:		m_keyQ.keyUp( RC::GK::GAMECOLOR ); break;
 			case SDLK_z: 		m_keyQ.keyUp( RC::GK::GAMEUNDO ); break;
 			}
 			break;
