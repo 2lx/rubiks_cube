@@ -52,6 +52,7 @@ private:
 	GLuint m_VBOScreenVertices;
 	GLuint m_attrScreenVertices;
 	GLint m_UniIsBG;
+	GLint m_UniPlasmaSpeed;
 
 	const GLfloat m_aScreenVertices[ 2 * 4 ] = {
         -1.0, -1.0,

@@ -34,6 +34,7 @@ void CPlayState::Init()
 
 	m_attrScreenVertices = m_shaderPr->addAttribute( "scrVertex" );
 	m_UniIsBG = m_shaderPr->addUniform( "isBG" );
+	m_UniPlasmaSpeed = m_shaderPr->addUniform( "plasmaSpeed" );
 
 	glEnable( GL_BLEND );
 	glEnable(GL_DEPTH_TEST);
@@ -419,7 +420,7 @@ void CPlayState::Draw( CGameEngine * game )
 	{
 		Uint32 start = SDL_GetTicks();
 
-		glClearColor( 47.0 / 255.0, 47.0 / 255.0, 47.0 / 255.0, 0.0f );
+	//	glClearColor( 47.0 / 255.0, 47.0 / 255.0, 47.0 / 255.0, 0.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		glUseProgram( m_shaderPr->id() );
@@ -429,34 +430,11 @@ void CPlayState::Draw( CGameEngine * game )
 		drawBackground();
 		m_RCube->drawObject( m_matrCamera );
 
-		const glm::mat4 mMirrorX = {
-			-1.0f, 	 0.0f, 	 0.0f, 0.0f,
-			 0.0f,	 1.0f, 	 0.0f, 0.0f,
-			 0.0f, 	 0.0f, 	 1.0f, 0.0f,
-		     5.0f, 	 0.0f, 	 0.0f, 1.0f
-		};
-		m_RCube->drawObject( m_matrCamera * mMirrorX, RC::RA::X );
-
-		const glm::mat4 mMirrorY = {
-			 1.0f, 	 0.0f, 	 0.0f, 0.0f,
-			 0.0f,	-1.0f, 	 0.0f, 0.0f,
-			 0.0f, 	 0.0f, 	 1.0f, 0.0f,
-		     0.0f, 	-5.0f, 	 0.0f, 1.0f
-		};
-		m_RCube->drawObject( m_matrCamera * mMirrorY, RC::RA::Y );
-
-		const glm::mat4 mMirrorZ = {
-			 1.0f, 	 0.0f, 	 0.0f, 0.0f,
-			 0.0f,	 1.0f, 	 0.0f, 0.0f,
-			 0.0f, 	 0.0f, 	-1.0f, 0.0f,
-		     0.0f, 	 0.0f, 	-5.0f, 1.0f
-		};
-		m_RCube->drawObject( m_matrCamera * mMirrorZ, RC::RA::Z );
-
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
 
 		drCount++;
+		glUniform1f( m_UniPlasmaSpeed, float( drCount ) );
 		if ( drCount > 1 ) m_needRedraw = false;
 #ifdef MY_DEBUG
 //		if ( drCount % 5 == 0 )

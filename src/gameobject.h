@@ -13,6 +13,7 @@ public:
 	void setRotate( const RC::RT rt );
 	RC::RT setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
 	bool isRotating() const	{ return ( m_rotateMix >= 0 ); };
+	virtual void drawObject( const glm::mat4 & ) = 0;
 
 protected:
 	glm::quat m_rotateQuat;

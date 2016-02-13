@@ -13,7 +13,7 @@ public:
 	RCubeObject( ShaderProgram * shaderPr );
 	virtual ~RCubeObject();
 
-	void drawObject( const glm::mat4 & pmv, const RC::RA ra = RC::RA::NONE );
+	void drawObject( const glm::mat4 & pmv ) override;
 	void setMove( const RC::MT rt );
 	RC::MT setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
 	bool isMoving() const { return ( m_moveMix >= 0 ); }
@@ -42,6 +42,7 @@ private:
 	int m_texCount;
 	int m_texCurScheme;
 
+	void drawCube( const glm::mat4 & pmv, const RC::RA ra = RC::RA::NONE );
 	void drawCubie( const int x, const int y, const int z ) const;
 
 	const GLfloat m_aTexCoords[ 2*4*6 ] = {

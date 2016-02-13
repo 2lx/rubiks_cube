@@ -190,7 +190,36 @@ void RCubeObject::update()
 	}
 }
 
-void RCubeObject::drawObject( const glm::mat4 & pmv, const RC::RA ra )
+void RCubeObject::drawObject( const glm::mat4 & pmv )
+{
+	drawCube( pmv );
+
+	const glm::mat4 mMirrorX = {
+		-1.0f, 	 0.0f, 	 0.0f, 0.0f,
+		 0.0f,	 1.0f, 	 0.0f, 0.0f,
+		 0.0f, 	 0.0f, 	 1.0f, 0.0f,
+	     5.0f, 	 0.0f, 	 0.0f, 1.0f
+	};
+	drawCube( pmv * mMirrorX, RC::RA::X );
+
+	const glm::mat4 mMirrorY = {
+		 1.0f, 	 0.0f, 	 0.0f, 0.0f,
+		 0.0f,	-1.0f, 	 0.0f, 0.0f,
+		 0.0f, 	 0.0f, 	 1.0f, 0.0f,
+	     0.0f, 	-5.0f, 	 0.0f, 1.0f
+	};
+	drawCube( pmv * mMirrorY, RC::RA::Y );
+
+	const glm::mat4 mMirrorZ = {
+		 1.0f, 	 0.0f, 	 0.0f, 0.0f,
+		 0.0f,	 1.0f, 	 0.0f, 0.0f,
+		 0.0f, 	 0.0f, 	-1.0f, 0.0f,
+	     0.0f, 	 0.0f, 	-5.0f, 1.0f
+	};
+	drawCube( pmv * mMirrorZ, RC::RA::Z );
+}
+
+void RCubeObject::drawCube( const glm::mat4 & pmv, const RC::RA ra )
 {
 	const float offCenter = RC::CUBIE_COUNT / 2.0f - 0.5;
 
