@@ -7,23 +7,23 @@
 
 class RCubeObject;
 
-class CPlayState : public CGameState
+class PlayState : public GameState
 {
 public:
-	void Init();
-	void Cleanup();
+	void init() override;
+	void cleanup() override;
 
-	void Pause();
-	void Resume();
+	void pause() override;
+	void resume() override;
 
-	void HandleEvents( CGameEngine * game );
-	void Update( CGameEngine * game );
-	void Draw( CGameEngine * game );
+	void handleEvents( CGameEngine * game ) override;
+	void update( CGameEngine * game ) override;
+	void draw( CGameEngine * game ) override;
 
-	static CPlayState * Instance() { return &m_PlayState; }
+	static PlayState * instance() { return &m_PlayState; }
 
 protected:
-	CPlayState() { }
+	PlayState() { }
 
 private:
 	enum ProjectionType
@@ -32,7 +32,7 @@ private:
 		PT_COUNT
 	};
 
-	static CPlayState m_PlayState;
+	static PlayState m_PlayState;
 	RCubeObject * m_RCube;
 	bool m_needRedraw = { true };
 	KeyQueue m_keyQ;

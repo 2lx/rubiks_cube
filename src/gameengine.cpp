@@ -3,7 +3,7 @@
 #include "gameengine.h"
 #include "gamestate.h"
 
-void CGameEngine::Init( const std::string & title )
+void CGameEngine::init( const std::string & title )
 {
 	// init SDL
 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
@@ -32,10 +32,10 @@ void CGameEngine::Init( const std::string & title )
 	m_running = true;
 }
 
-void CGameEngine::Cleanup()
+void CGameEngine::cleanup()
 {
 	while ( !states.empty() ) {
-		states.back()->Cleanup();
+		states.back()->cleanup();
 		states.pop_back();
 	}
 #ifdef MY_DEBUG
@@ -48,61 +48,62 @@ void CGameEngine::Cleanup()
 	SDL_Quit();
 }
 
-void CGameEngine::ChangeState( CGameState * state )
+void CGameEngine::changeState( GameState * state )
 {
 	// cleanup the current state
-	if ( !states.empty() ) {
-		states.back()->Cleanup();
+	if ( !states.empty() )
+	{
+		states.back()->cleanup();
 		states.pop_back();
 	}
 
 	// store and init the new state
 	states.push_back( state );
-	states.back()->Init();
+	states.back()->init();
 }
 
-void CGameEngine::PushState( CGameState * state )
+void CGameEngine::pushState( GameState * state )
 {
 	// pause current state
 	if ( !states.empty() )
 	{
-		states.back()->Pause();
+		states.back()->pause();
 	}
 
 	// store and init the new state
 	states.push_back( state );
-	states.back()->Init();
+	states.back()->init();
 }
 
-void CGameEngine::PopState()
+void CGameEngine::popState()
 {
 	// cleanup the current state
 	if ( !states.empty() )
 	{
-		states.back()->Cleanup();
+		states.back()->cleanup();
 		states.pop_back();
 	}
 
 	// resume previous state
 	if ( !states.empty() )
 	{
-		states.back()->Resume();
+		states.back()->resume();
 	}
 }
 
-void CGameEngine::HandleEvents()
+void CGameEngine::handleEvents()
 {
-	states.back()->HandleEvents( this );
+	states.back()->handleEvents( this );
 }
 
-void CGameEngine::Update()
+void CGameEngine::update()
 {
-	states.back()->Update( this );
+	states.back()->update( this );
 }
 
-void CGameEngine::Draw()
+void CGameEngine::draw()
 {
-	states.back()->Draw( this );
+	states.back()->draw( this );
 
 	SDL_GL_SwapWindow( m_window );
 }

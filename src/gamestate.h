@@ -3,26 +3,26 @@
 
 #include "gameengine.h"
 
-class CGameState
+class GameState
 {
 public:
-	virtual void Init() = 0;
-	virtual void Cleanup() = 0;
+	virtual void init() = 0;
+	virtual void cleanup() = 0;
 
-	virtual void Pause() = 0;
-	virtual void Resume() = 0;
+	virtual void pause() = 0;
+	virtual void resume() = 0;
 
-	virtual void HandleEvents( CGameEngine * game ) = 0;
-	virtual void Update( CGameEngine * game ) = 0;
-	virtual void Draw( CGameEngine * game ) = 0;
+	virtual void handleEvents( CGameEngine * game ) = 0;
+	virtual void update( CGameEngine * game ) = 0;
+	virtual void draw( CGameEngine * game ) = 0;
 
-	void ChangeState( CGameEngine * game, CGameState * state )
+	void ChangeState( CGameEngine * game, GameState * state )
 	{
-		game->ChangeState( state );
+		game->changeState( state );
 	}
 
 protected:
-	CGameState() { }
+	GameState() { }
 };
 
 #endif

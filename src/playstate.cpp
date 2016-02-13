@@ -8,9 +8,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-CPlayState CPlayState::m_PlayState;
+PlayState PlayState::m_PlayState;
 
-void CPlayState::Init()
+void PlayState::init()
 {
 	// Setup shader program
 	Shader vertexShader( GL_VERTEX_SHADER );
@@ -43,13 +43,13 @@ void CPlayState::Init()
 	setProjection( m_prType );
 }
 
-void CPlayState::Cleanup()
+void PlayState::cleanup()
 {
 	delete m_RCube;
 	delete m_shaderPr;
 }
 
-void CPlayState::setProjection( const ProjectionType pType )
+void PlayState::setProjection( const ProjectionType pType )
 {
 	const float vMargin = ( 1 + RC::CUBIE_COUNT );
 	const float hMargin = vMargin * ( float ) m_screenWidth / ( float ) m_screenHeight;
@@ -72,17 +72,17 @@ void CPlayState::setProjection( const ProjectionType pType )
 	m_matrCamera = m_mProjection *  m_mModel * m_mView;
 }
 
-void CPlayState::Pause()
+void PlayState::pause()
 {
 
 }
 
-void CPlayState::Resume()
+void PlayState::resume()
 {
 
 }
 
-void CPlayState::HandleEvents( CGameEngine* game )
+void PlayState::handleEvents( CGameEngine* game )
 {
 	static bool lastEvent = false;
 	SDL_Event event;
@@ -95,7 +95,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 		switch( event.type )
 		{
 		case SDL_QUIT:
-			game->Quit();
+			game->quit();
 			break;
 
 		case SDL_WINDOWEVENT:
@@ -115,7 +115,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 			switch( event.key.keysym.sym )
 			{
 			case SDLK_ESCAPE:
-				game->Quit();
+				game->quit();
 				break;
 
 			case SDLK_UP:
@@ -237,7 +237,7 @@ void CPlayState::HandleEvents( CGameEngine* game )
 	}
 }
 
-glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
+glm::vec3 PlayState::getGLPos( const int mX, const int mY ) const
 {
 	GLint viewport[ 4 ];
 	glGetIntegerv( GL_VIEWPORT, viewport ); // 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT
@@ -257,7 +257,7 @@ glm::vec3 CPlayState::getGLPos( const int mX, const int mY ) const
 	return glm::vec3( posX, posY, posZ );
 }
 
-void CPlayState::Update( CGameEngine * game )
+void PlayState::update( CGameEngine * game )
 {
 	// primarily processing mouse events
 	if ( m_keyQ.isHold( RC::GK::MOUSEMOVE ) )
@@ -397,7 +397,7 @@ void CPlayState::Update( CGameEngine * game )
 	m_RCube->update();
 }
 
-void CPlayState::drawBackground()
+void PlayState::drawBackground()
 {
 	glUniform1f( m_UniIsBG, 1.0 );
 
@@ -412,11 +412,11 @@ void CPlayState::drawBackground()
 	glUniform1f( m_UniIsBG, 0.0 );
 }
 
-void CPlayState::Draw( CGameEngine * game )
+void PlayState::draw( CGameEngine * game )
 {
 	static int drCount = 0;
 
-	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() )
+//	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() )
 	{
 		Uint32 start = SDL_GetTicks();
 

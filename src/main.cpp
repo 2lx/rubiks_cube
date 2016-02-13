@@ -9,9 +9,9 @@ int main( int argc, char * args[] )
 
 	try
 	{
-		game.Init( "Rubik's cube. Game_v0.7" );
+		game.init( "Rubik's cube. Game_v0.7" );
 
-		game.ChangeState( CPlayState::Instance() );
+		game.changeState( PlayState::instance() );
 	}
 	catch ( std::exception &e )
 	{
@@ -32,21 +32,21 @@ int main( int argc, char * args[] )
 	Uint32 endAll;
 #endif // MY_DEBUG
 
-	while ( game.Running() )
+	while ( game.running() )
 	{
 		try
 		{
 #ifdef MY_DEBUG
 			startHE = SDL_GetTicks();
 #endif // MY_DEBUG
-			game.HandleEvents();
+			game.handleEvents();
 
-			game.Update();
+			game.update();
 
 #ifdef MY_DEBUG
 			startDR = SDL_GetTicks();
 #endif // MY_DEBUG
-			game.Draw();
+			game.draw();
 
 #ifdef MY_DEBUG
 			endAll = SDL_GetTicks();
@@ -69,7 +69,7 @@ int main( int argc, char * args[] )
 		std::cout.flush();
 	}
 
-	game.Cleanup();
+	game.cleanup();
 
 	return EXIT_SUCCESS;
 }

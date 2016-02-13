@@ -6,29 +6,29 @@
 struct SDL_Surface;
 struct SDL_Window;
 
-class CGameState;
+class GameState;
 class ShaderProgram;
 
 class CGameEngine
 {
 public:
 
-	void Init( const std::string & title );
-	void Cleanup();
+	void init( const std::string & title );
+	void cleanup();
 
-	void ChangeState( CGameState * state );
-	void PushState( CGameState * state );
-	void PopState();
+	void changeState( GameState * state );
+	void pushState( GameState * state );
+	void popState();
 
-	void HandleEvents();
-	void Update();
-	void Draw();
+	void handleEvents();
+	void update();
+	void draw();
 
-	bool Running() { return m_running; }
-	void Quit() { m_running = false; }
+	bool running() { return m_running; }
+	void quit() { m_running = false; }
 
 private:
-	std::vector< CGameState * > states;
+	std::vector< GameState * > states;
 	bool m_running;
 
 	SDL_Window * m_window;
