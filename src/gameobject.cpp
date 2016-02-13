@@ -109,7 +109,7 @@ void GameObject::rotateObject( )
 		if ( m_rotateMix < 1.0 )
 		{
 			m_rotateQuat = glm::mix( m_oldRotateQuat, m_newRotateQuat, m_rotateMix );
-			m_rotateMix += 0.05;
+			m_rotateMix += 0.08;
 		}
 		else
 		{

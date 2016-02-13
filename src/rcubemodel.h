@@ -10,7 +10,7 @@ namespace RC
 	public:
 		Cubie() { };
 
-		void rotateCubie( const MT rt );
+		void rotateCubie( const TT rt );
 		inline CF colInd( const CF cf ) const { return m_colourInd[ ( int ) cf ]; };
 		inline void setColourInd( const CF cf, const CF cind ) { m_colourInd[ ( int ) cf ] = cind; };
 
@@ -24,7 +24,7 @@ namespace RC
 			CubeModel();
 			virtual ~CubeModel();
 
-			void moveCubies( const MT mt, const int mLayer );
+			void turnCubies( const TT mt, const int mLayer );
 			const Cubie cubie( const int x, const int y, const int z ) const { return m_cubies[ x ][ y ][ z ]; };
 			void reset();
 		protected:

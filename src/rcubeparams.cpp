@@ -78,77 +78,77 @@ RT RC::RTPar::equalRT( const RA ra, const bool cw )
 	throw std::logic_error( "RTPar::equalRT()" );
 }
 
-// MoveType params
+// TurnType params
 const int ll = CUBIE_COUNT - 1;
-typedef std::tuple< const RA, const int, const bool > MTTuple;
+typedef std::tuple< const RA, const int, const bool > TTTuple;
 
-const std::map< const MT, const MTTuple > p_MTPar {
-	{ MT::F, 	std::make_tuple( RA::Z, ll, true ) },
-	{ MT::FI,	std::make_tuple( RA::Z, ll, false ) },
-	{ MT::B, 	std::make_tuple( RA::Z, 0, false ) },
-	{ MT::BI,	std::make_tuple( RA::Z, 0, true ) },
-	{ MT::R, 	std::make_tuple( RA::X, ll, true ) },
-	{ MT::RI,	std::make_tuple( RA::X, ll, false ) },
-	{ MT::L, 	std::make_tuple( RA::X, 0, false ) },
-	{ MT::LI,	std::make_tuple( RA::X, 0, true ) },
-	{ MT::U, 	std::make_tuple( RA::Y, ll, true ) },
-	{ MT::UI,	std::make_tuple( RA::Y, ll, false ) },
-	{ MT::D, 	std::make_tuple( RA::Y, 0, false ) },
-	{ MT::DI, 	std::make_tuple( RA::Y, 0, true ) },
-	{ MT::FM, 	std::make_tuple( RA::Z, -1, true ) },
-	{ MT::FMI, 	std::make_tuple( RA::Z, -1, false ) },
-	{ MT::UM, 	std::make_tuple( RA::Y, -1, true ) },
-	{ MT::UMI,	std::make_tuple( RA::Y, -1, false ) },
-	{ MT::RM, 	std::make_tuple( RA::X, -1, true ) },
-	{ MT::RMI, 	std::make_tuple( RA::X, -1, false ) }
+const std::map< const TT, const TTTuple > p_TTPar {
+	{ TT::F, 	std::make_tuple( RA::Z, ll, true ) },
+	{ TT::FI,	std::make_tuple( RA::Z, ll, false ) },
+	{ TT::B, 	std::make_tuple( RA::Z, 0, false ) },
+	{ TT::BI,	std::make_tuple( RA::Z, 0, true ) },
+	{ TT::R, 	std::make_tuple( RA::X, ll, true ) },
+	{ TT::RI,	std::make_tuple( RA::X, ll, false ) },
+	{ TT::L, 	std::make_tuple( RA::X, 0, false ) },
+	{ TT::LI,	std::make_tuple( RA::X, 0, true ) },
+	{ TT::U, 	std::make_tuple( RA::Y, ll, true ) },
+	{ TT::UI,	std::make_tuple( RA::Y, ll, false ) },
+	{ TT::D, 	std::make_tuple( RA::Y, 0, false ) },
+	{ TT::DI, 	std::make_tuple( RA::Y, 0, true ) },
+	{ TT::FM, 	std::make_tuple( RA::Z, -1, true ) },
+	{ TT::FMI, 	std::make_tuple( RA::Z, -1, false ) },
+	{ TT::UM, 	std::make_tuple( RA::Y, -1, true ) },
+	{ TT::UMI,	std::make_tuple( RA::Y, -1, false ) },
+	{ TT::RM, 	std::make_tuple( RA::X, -1, true ) },
+	{ TT::RMI, 	std::make_tuple( RA::X, -1, false ) }
 };
 
-glm::vec3 RC::MTPar::vec( const MT mt )
+glm::vec3 RC::TTPar::vec( const TT mt )
 {
-	auto src = p_MTPar.find( mt );
+	auto src = p_TTPar.find( mt );
 
-	if ( src != p_MTPar.end() )
+	if ( src != p_TTPar.end() )
 		return RAPar::vec( std::get< 0 >( src->second ) );
 
 	throw std::logic_error( "MTPar::vec()" );
 }
 
-RA RC::MTPar::axis( const MT mt )
+RA RC::TTPar::axis( const TT mt )
 {
-	auto src = p_MTPar.find( mt );
+	auto src = p_TTPar.find( mt );
 
-	if ( src != p_MTPar.end() )
+	if ( src != p_TTPar.end() )
 		return std::get< 0 >( src->second );
 
 	throw std::logic_error( "MTPar::axis()" );
 }
 
-int RC::MTPar::layer( const MT mt )
+int RC::TTPar::layer( const TT mt )
 {
-	auto src = p_MTPar.find( mt );
+	auto src = p_TTPar.find( mt );
 
-	if ( src != p_MTPar.end() )
+	if ( src != p_TTPar.end() )
 		return std::get< 1 >( src->second );
 
 	throw std::logic_error( "MTPar::layer()" );
 }
 
-bool RC::MTPar::clockwise( const MT mt )
+bool RC::TTPar::clockwise( const TT mt )
 {
-	auto src = p_MTPar.find( mt );
+	auto src = p_TTPar.find( mt );
 
-	if ( src != p_MTPar.end() )
+	if ( src != p_TTPar.end() )
 		return std::get< 2 >( src->second );
 
 	throw std::logic_error( "MTPar::clockwise()" );
 }
 
-MT RC::MTPar::equalMT( const RA ra, const int lay, const bool cw )
+TT RC::TTPar::equalTT( const RA ra, const int lay, const bool cw )
 {
 	const int lay1 = ( 0 < lay && lay < CUBIE_COUNT - 1 ) ? -1 : lay;
-	const MTTuple pars{ ra, lay1, cw };
+	const TTTuple pars{ ra, lay1, cw };
 
-	for ( auto it : p_MTPar )
+	for ( auto it : p_TTPar )
 		if ( it.second == pars )
 			return it.first;
 
@@ -156,54 +156,54 @@ MT RC::MTPar::equalMT( const RA ra, const int lay, const bool cw )
 }
 
 //
-MT RC::GKPar::toMT( const GK gk )
+TT RC::GKPar::toTT( const GK gk )
 {
 	switch ( gk )
 	{
-	case GK::MOVEF:		return MT::F;
-	case GK::MOVEFI:	return MT::FI;
-	case GK::MOVEB:		return MT::B;
-	case GK::MOVEBI:	return MT::BI;
-	case GK::MOVEL:		return MT::L;
-	case GK::MOVELI:	return MT::LI;
-	case GK::MOVER:		return MT::R;
-	case GK::MOVERI:	return MT::RI;
-	case GK::MOVEU:		return MT::U;
-	case GK::MOVEUI:	return MT::UI;
-	case GK::MOVED:		return MT::D;
-	case GK::MOVEDI:	return MT::DI;
-	case GK::MOVEFM:	return MT::FM;
-	case GK::MOVEFMI:	return MT::FMI;
-	case GK::MOVEUM:	return MT::UM;
-	case GK::MOVEUMI:	return MT::UMI;
-	case GK::MOVERM:	return MT::RM;
-	case GK::MOVERMI:	return MT::RMI;
-	default: return MT::NONE;
+	case GK::TurnF:		return TT::F;
+	case GK::TurnFI:	return TT::FI;
+	case GK::TurnB:		return TT::B;
+	case GK::TurnBI:	return TT::BI;
+	case GK::TurnL:		return TT::L;
+	case GK::TurnLI:	return TT::LI;
+	case GK::TurnR:		return TT::R;
+	case GK::TurnRI:	return TT::RI;
+	case GK::TurnU:		return TT::U;
+	case GK::TurnUI:	return TT::UI;
+	case GK::TurnD:		return TT::D;
+	case GK::TurnDI:	return TT::DI;
+	case GK::TurnFM:	return TT::FM;
+	case GK::TurnFMI:	return TT::FMI;
+	case GK::TurnUM:	return TT::UM;
+	case GK::TurnUMI:	return TT::UMI;
+	case GK::TurnRM:	return TT::RM;
+	case GK::TurnRMI:	return TT::RMI;
+	default: return TT::NONE;
 	}
 }
 
-GK RC::GKPar::fromMT( const MT mt )
+GK RC::GKPar::fromTT( const TT mt )
 {
 	switch ( mt )
 	{
-	case MT::F:		return GK::MOVEF;
-	case MT::FI:	return GK::MOVEFI;
-	case MT::B:		return GK::MOVEB;
-	case MT::BI:	return GK::MOVEBI;
-	case MT::L:		return GK::MOVEL;
-	case MT::LI:	return GK::MOVELI;
-	case MT::R:		return GK::MOVER;
-	case MT::RI:	return GK::MOVERI;
-	case MT::U:		return GK::MOVEU;
-	case MT::UI:	return GK::MOVEUI;
-	case MT::D:		return GK::MOVED;
-	case MT::DI:	return GK::MOVEDI;
-	case MT::FM:	return GK::MOVEFM;
-	case MT::FMI:	return GK::MOVEFMI;
-	case MT::UM:	return GK::MOVEUM;
-	case MT::UMI:	return GK::MOVEUMI;
-	case MT::RM:	return GK::MOVERM;
-	case MT::RMI:	return GK::MOVERMI;
+	case TT::F:		return GK::TurnF;
+	case TT::FI:	return GK::TurnFI;
+	case TT::B:		return GK::TurnB;
+	case TT::BI:	return GK::TurnBI;
+	case TT::L:		return GK::TurnL;
+	case TT::LI:	return GK::TurnLI;
+	case TT::R:		return GK::TurnR;
+	case TT::RI:	return GK::TurnRI;
+	case TT::U:		return GK::TurnU;
+	case TT::UI:	return GK::TurnUI;
+	case TT::D:		return GK::TurnD;
+	case TT::DI:	return GK::TurnDI;
+	case TT::FM:	return GK::TurnFM;
+	case TT::FMI:	return GK::TurnFMI;
+	case TT::UM:	return GK::TurnUM;
+	case TT::UMI:	return GK::TurnUMI;
+	case TT::RM:	return GK::TurnRM;
+	case TT::RMI:	return GK::TurnRMI;
 
 	default: return GK::NONE;
 	}
@@ -213,12 +213,12 @@ RT RC::GKPar::toRT( const GK gk )
 {
 	switch ( gk )
 	{
-	case GK::ROTATEUP: 	return RT::UP;
-	case GK::ROTATEDOWN: return RT::DOWN;
-	case GK::ROTATELEFT: return RT::LEFT;
-	case GK::ROTATERIGHT:return RT::RIGHT;
-	case GK::ROTATECW: 	return RT::CW;
-	case GK::ROTATEACW: 	return RT::ACW;
+	case GK::RotateUP: 	return RT::UP;
+	case GK::RotateDOWN: return RT::DOWN;
+	case GK::RotateLEFT: return RT::LEFT;
+	case GK::RotateRIGHT:return RT::RIGHT;
+	case GK::RotateCW: 	return RT::CW;
+	case GK::RotateACW: 	return RT::ACW;
 
 	default: return RT::NONE;
 	}
@@ -228,12 +228,12 @@ GK RC::GKPar::fromRT( const RT rt )
 {
 	switch ( rt )
 	{
-	case RT::UP:		return GK::ROTATEUP;
-	case RT::DOWN:		return GK::ROTATEDOWN;
-	case RT::LEFT:		return GK::ROTATELEFT;
-	case RT::RIGHT:		return GK::ROTATERIGHT;
-	case RT::CW:		return GK::ROTATECW;
-	case RT::ACW:		return GK::ROTATEACW;
+	case RT::UP:		return GK::RotateUP;
+	case RT::DOWN:		return GK::RotateDOWN;
+	case RT::LEFT:		return GK::RotateLEFT;
+	case RT::RIGHT:		return GK::RotateRIGHT;
+	case RT::CW:		return GK::RotateCW;
+	case RT::ACW:		return GK::RotateACW;
 
 	default: return GK::NONE;
 	}
@@ -243,62 +243,62 @@ RC::GK RC::GKPar::prevGK( const RC::GK gk )
 {
 	switch( gk )
 	{
-	case RC::GK::ROTATEDOWN: 	return RC::GK::ROTATEUP;
-	case RC::GK::ROTATEUP: 		return RC::GK::ROTATEDOWN;
-	case RC::GK::ROTATELEFT: 	return RC::GK::ROTATERIGHT;
-	case RC::GK::ROTATERIGHT: 	return RC::GK::ROTATELEFT;
-	case RC::GK::ROTATECW: 		return RC::GK::ROTATEACW;
-	case RC::GK::ROTATEACW: 	return RC::GK::ROTATECW;
+	case RC::GK::RotateDOWN: 	return RC::GK::RotateUP;
+	case RC::GK::RotateUP: 		return RC::GK::RotateDOWN;
+	case RC::GK::RotateLEFT: 	return RC::GK::RotateRIGHT;
+	case RC::GK::RotateRIGHT: 	return RC::GK::RotateLEFT;
+	case RC::GK::RotateCW: 		return RC::GK::RotateACW;
+	case RC::GK::RotateACW: 	return RC::GK::RotateCW;
 
-	case RC::GK::MOVEB: 	return RC::GK::MOVEBI;
-	case RC::GK::MOVEBI: 	return RC::GK::MOVEB;
-	case RC::GK::MOVED: 	return RC::GK::MOVEDI;
-	case RC::GK::MOVEDI: 	return RC::GK::MOVED;
-	case RC::GK::MOVEF: 	return RC::GK::MOVEFI;
-	case RC::GK::MOVEFI: 	return RC::GK::MOVEF;
-	case RC::GK::MOVEL: 	return RC::GK::MOVELI;
-	case RC::GK::MOVELI: 	return RC::GK::MOVEL;
-	case RC::GK::MOVER: 	return RC::GK::MOVERI;
-	case RC::GK::MOVERI: 	return RC::GK::MOVER;
-	case RC::GK::MOVEU:		return RC::GK::MOVEUI;
-	case RC::GK::MOVEUI:	return RC::GK::MOVEU;
-	case RC::GK::MOVEFM:	return RC::GK::MOVEFMI;
-	case RC::GK::MOVEFMI:	return RC::GK::MOVEFM;
-	case RC::GK::MOVEUM:	return RC::GK::MOVEUMI;
-	case RC::GK::MOVEUMI:	return RC::GK::MOVEUM;
-	case RC::GK::MOVERM:	return RC::GK::MOVERMI;
-	case RC::GK::MOVERMI:	return RC::GK::MOVERM;
+	case RC::GK::TurnB: 	return RC::GK::TurnBI;
+	case RC::GK::TurnBI: 	return RC::GK::TurnB;
+	case RC::GK::TurnD: 	return RC::GK::TurnDI;
+	case RC::GK::TurnDI: 	return RC::GK::TurnD;
+	case RC::GK::TurnF: 	return RC::GK::TurnFI;
+	case RC::GK::TurnFI: 	return RC::GK::TurnF;
+	case RC::GK::TurnL: 	return RC::GK::TurnLI;
+	case RC::GK::TurnLI: 	return RC::GK::TurnL;
+	case RC::GK::TurnR: 	return RC::GK::TurnRI;
+	case RC::GK::TurnRI: 	return RC::GK::TurnR;
+	case RC::GK::TurnU:		return RC::GK::TurnUI;
+	case RC::GK::TurnUI:	return RC::GK::TurnU;
+	case RC::GK::TurnFM:	return RC::GK::TurnFMI;
+	case RC::GK::TurnFMI:	return RC::GK::TurnFM;
+	case RC::GK::TurnUM:	return RC::GK::TurnUMI;
+	case RC::GK::TurnUMI:	return RC::GK::TurnUM;
+	case RC::GK::TurnRM:	return RC::GK::TurnRMI;
+	case RC::GK::TurnRMI:	return RC::GK::TurnRM;
 
 	default: return RC::GK::NONE;
 	}
 }
 
 const std::map< const GK, const std::string > p_GKPar {
-	{ GK::MOVEF, 	"F" },
-	{ GK::MOVEFI, 	"F'" },
-	{ GK::MOVEB, 	"B" },
-	{ GK::MOVEBI, 	"B'" },
-	{ GK::MOVEL, 	"L" },
-	{ GK::MOVELI, 	"L'" },
-	{ GK::MOVER, 	"R" },
-	{ GK::MOVERI, 	"R'" },
-	{ GK::MOVEU, 	"U" },
-	{ GK::MOVEUI, 	"U'" },
-	{ GK::MOVED, 	"D" },
-	{ GK::MOVEDI, 	"D'" },
-	{ GK::MOVEFM, 	"f" },
-	{ GK::MOVEFMI, 	"f'" },
-	{ GK::MOVEUM, 	"u" },
-	{ GK::MOVEUMI, 	"u'" },
-	{ GK::MOVERM, 	"r" },
-	{ GK::MOVERMI, 	"r'" },
+	{ GK::TurnF, 	"F" },
+	{ GK::TurnFI, 	"F'" },
+	{ GK::TurnB, 	"B" },
+	{ GK::TurnBI, 	"B'" },
+	{ GK::TurnL, 	"L" },
+	{ GK::TurnLI, 	"L'" },
+	{ GK::TurnR, 	"R" },
+	{ GK::TurnRI, 	"R'" },
+	{ GK::TurnU, 	"U" },
+	{ GK::TurnUI, 	"U'" },
+	{ GK::TurnD, 	"D" },
+	{ GK::TurnDI, 	"D'" },
+	{ GK::TurnFM, 	"f" },
+	{ GK::TurnFMI, 	"f'" },
+	{ GK::TurnUM, 	"u" },
+	{ GK::TurnUMI, 	"u'" },
+	{ GK::TurnRM, 	"r" },
+	{ GK::TurnRMI, 	"r'" },
 
-	{ GK::ROTATEUP,  	"rtU" },
-	{ GK::ROTATEDOWN,  	"rtD" },
-	{ GK::ROTATELEFT,  	"rtL" },
-	{ GK::ROTATERIGHT,	"rtR" },
-	{ GK::ROTATECW,		"rtCW" },
-	{ GK::ROTATEACW, 	"rtACW" }
+	{ GK::RotateUP,  	"rtU" },
+	{ GK::RotateDOWN,  	"rtD" },
+	{ GK::RotateLEFT,  	"rtL" },
+	{ GK::RotateRIGHT,	"rtR" },
+	{ GK::RotateCW,		"rtCW" },
+	{ GK::RotateACW, 	"rtACW" }
 };
 
 std::string RC::GKPar::str( const GK gk )

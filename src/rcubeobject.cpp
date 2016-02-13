@@ -53,12 +53,12 @@ RCubeObject::~RCubeObject()
 	delete m_RCModel;
 }
 
-void RCubeObject::setMove( const RC::MT mt )
+void RCubeObject::setTurn( const RC::TT mt )
 {
-	// calculate new move type
-	const glm::vec3 vec = RC::MTPar::vec( mt );
-	bool cw = RC::MTPar::clockwise( mt );
-	int lay = RC::MTPar::layer( mt );
+	// calculate new turn type
+	const glm::vec3 vec = RC::TTPar::vec( mt );
+	bool cw = RC::TTPar::clockwise( mt );
+	int lay = RC::TTPar::layer( mt );
 	// TODO: only for 2x2x2 and 3x3x3 cubes
 	if ( lay < 0 ) lay = 1;
 
@@ -71,24 +71,24 @@ void RCubeObject::setMove( const RC::MT mt )
 	}
 
 	const RC::RA ax = RC::RAPar::closestRA( vecRot );
-	m_moveType = RC::MTPar::equalMT( ax, lay, cw );
-	if ( m_moveType == RC::MT::NONE )
+	m_turnType = RC::TTPar::equalTT( ax, lay, cw );
+	if ( m_turnType == RC::TT::NONE )
 		return;
 
-	// calculate move params
-	m_moveLayer = lay;
-	m_moveMix = 0;
+	// calculate turn params
+	m_turnLayer = lay;
+	m_turnMix = 0;
 	float angle = glm::radians( 90.0f );
-	m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, RC::MTPar::vec( m_moveType ) );
+	m_newTurnQuat = glm::angleAxis( ( cw ) ? -angle : angle, RC::TTPar::vec( m_turnType ) );
 }
 
-RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
+RC::TT RCubeObject::setTurnByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd )
 {
 	const float cOffset = RC::CUBIE_COUNT / 2.0f;
 
 	// if 1st point don't lie on the surface of the cube
 	if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
-		return RC::MT::NONE;
+		return RC::TT::NONE;
 
 	// get close rotation axis
 	const glm::vec3 rvBeg = pBeg * m_rotateQuat;
@@ -98,7 +98,7 @@ RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 	// get closest rotation axis vector
 	const RC::RA ra = RC::RAPar::closestRA( pRes );
 	if ( ra == RC::RA::NONE )
-		return RC::MT::NONE;
+		return RC::TT::NONE;
 
 	const glm::vec3 vAx = RC::RAPar::vec( ra );
 
@@ -117,7 +117,7 @@ RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 		cw = true;
 	else cw = false;
 
-	// find move layer
+	// find turn layer
 	int lay = 0;
 
 	if ( ra == RC::RA::X )
@@ -129,20 +129,20 @@ RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 	else lay = -1;
 
 	if ( lay < 0 || lay > RC::CUBIE_COUNT - 1 )
-		return RC::MT::NONE;
+		return RC::TT::NONE;
 
-	// get move type (absolute)
-	RC::MT nMT = RC::MTPar::equalMT( ra, lay, cw );
-	if ( nMT == RC::MT::NONE )
-		return RC::MT::NONE;
+	// get turn type (absolute)
+	RC::TT nMT = RC::TTPar::equalTT( ra, lay, cw );
+	if ( nMT == RC::TT::NONE )
+		return RC::TT::NONE;
 
-	m_moveType = nMT;
-	m_moveLayer = lay;
-	m_moveMix = 0;
+	m_turnType = nMT;
+	m_turnLayer = lay;
+	m_turnMix = 0;
 	float angle = glm::radians( 90.0f );
-	m_newMoveQuat = glm::angleAxis( ( cw ) ? -angle : angle, vAx );
+	m_newTurnQuat = glm::angleAxis( ( cw ) ? -angle : angle, vAx );
 
-	// get move type (relative)
+	// get turn type (relative)
 	const RC::RA ra2 = RC::RAPar::closestRA( glm::cross( pBeg, pEnd ) );
 	bool cw2;
 	if ( glm::dot( glm::cross( RC::RAPar::vec( ra2 ), pEnd ), pBeg ) > 0 )
@@ -157,7 +157,7 @@ RC::MT RCubeObject::setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 	else if ( ra2 == RC::RA::Z )
 		lay2 = floor( pBeg.z + cOffset );
 
-	return RC::MTPar::equalMT( ra2, lay2, cw2 );
+	return RC::TTPar::equalTT( ra2, lay2, cw2 );
 }
 
 void RCubeObject::reset()
@@ -171,21 +171,21 @@ void RCubeObject::update()
 	glUniform1f( m_UniTexCurScheme, m_texCurScheme );
 
 	// turn the face of cube
-	if ( isMoving() )
+	if ( isTurning() )
 	{
-		if ( m_moveMix < 1.0 )
+		if ( m_turnMix < 1.0 )
 		{
-			m_moveQuat = glm::mix( m_moveQuat, m_newMoveQuat, m_moveMix );
-			m_moveMix += 0.05;
+			m_turnQuat = glm::mix( m_turnQuat, m_newTurnQuat, m_turnMix );
+			m_turnMix += 0.08;
 		}
 		else
 		{
-			m_RCModel->moveCubies( m_moveType, m_moveLayer );
-			m_moveType = RC::MT::NONE;
-			m_moveLayer = -1;
+			m_RCModel->turnCubies( m_turnType, m_turnLayer );
+			m_turnType = RC::TT::NONE;
+			m_turnLayer = -1;
 
-			m_moveQuat = glm::quat();
-			m_moveMix = -1;
+			m_turnQuat = glm::quat();
+			m_turnMix = -1;
 		}
 	}
 }
@@ -231,7 +231,7 @@ void RCubeObject::drawCube( const glm::mat4 & pmv, const RC::RA ra )
 
 	// calculate transformation matrix
 	const glm::mat4 rotation = glm::mat4_cast( m_rotateQuat );
-	const glm::mat4 moving = glm::mat4_cast( m_moveQuat );
+	const glm::mat4 moving = glm::mat4_cast( m_turnQuat );
 	const glm::mat4 mvpR = pmv * rotation;
 
 	for ( int x = 0; x < RC::CUBIE_COUNT; ++x )
@@ -261,13 +261,13 @@ void RCubeObject::drawCube( const glm::mat4 & pmv, const RC::RA ra )
 					glm::mat4 mRes = mvpR;
 					glm::mat4 mTest = rotation;
 
-					if ( m_moveType != RC::MT::NONE && m_moveLayer != -1 )
+					if ( m_turnType != RC::TT::NONE && m_turnLayer != -1 )
 					{
-						const RC::RA ax = RC::MTPar::axis( m_moveType );
+						const RC::RA ax = RC::TTPar::axis( m_turnType );
 
-						if  (	( x == m_moveLayer && ax == RC::RA::X ) ||
-								( y == m_moveLayer && ax == RC::RA::Y ) ||
-								( z == m_moveLayer && ax == RC::RA::Z ) )
+						if  (	( x == m_turnLayer && ax == RC::RA::X ) ||
+								( y == m_turnLayer && ax == RC::RA::Y ) ||
+								( z == m_turnLayer && ax == RC::RA::Z ) )
 						{
 							mRes = mRes * moving;
 							mTest = mTest * moving;

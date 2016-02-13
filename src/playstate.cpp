@@ -119,43 +119,43 @@ void PlayState::handleEvents( GameEngine* game )
 				break;
 
 			// rotates
-			case SDLK_UP:		m_keyQ.keyDown( RC::GK::ROTATEUP ); break;
-			case SDLK_DOWN:		m_keyQ.keyDown( RC::GK::ROTATEDOWN ); break;
-			case SDLK_LEFT:		m_keyQ.keyDown( RC::GK::ROTATELEFT ); break;
-			case SDLK_RIGHT:	m_keyQ.keyDown( RC::GK::ROTATERIGHT ); break;
-			case SDLK_PAGEDOWN:	m_keyQ.keyDown( RC::GK::ROTATEACW ); break;
-			case SDLK_DELETE:	m_keyQ.keyDown( RC::GK::ROTATECW ); break;
+			case SDLK_UP:		m_keyQ.keyDown( RC::GK::RotateUP ); break;
+			case SDLK_DOWN:		m_keyQ.keyDown( RC::GK::RotateDOWN ); break;
+			case SDLK_LEFT:		m_keyQ.keyDown( RC::GK::RotateLEFT ); break;
+			case SDLK_RIGHT:	m_keyQ.keyDown( RC::GK::RotateRIGHT ); break;
+			case SDLK_PAGEDOWN:	m_keyQ.keyDown( RC::GK::RotateACW ); break;
+			case SDLK_DELETE:	m_keyQ.keyDown( RC::GK::RotateCW ); break;
 
 			// turns
 			case SDLK_e:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyDown( RC::GK::MOVEFI );
-				else m_keyQ.keyDown( RC::GK::MOVEF );
+					m_keyQ.keyDown( RC::GK::TurnFI );
+				else m_keyQ.keyDown( RC::GK::TurnF );
 				break;
 			case SDLK_q:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyDown( RC::GK::MOVEBI );
-				else m_keyQ.keyDown( RC::GK::MOVEB );
+					m_keyQ.keyDown( RC::GK::TurnBI );
+				else m_keyQ.keyDown( RC::GK::TurnB );
 				break;
 			case SDLK_w:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyDown( RC::GK::MOVEUI );
-				else m_keyQ.keyDown( RC::GK::MOVEU );
+					m_keyQ.keyDown( RC::GK::TurnUI );
+				else m_keyQ.keyDown( RC::GK::TurnU );
 				break;
 			case SDLK_s:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyDown( RC::GK::MOVEDI );
-				else m_keyQ.keyDown( RC::GK::MOVED );
+					m_keyQ.keyDown( RC::GK::TurnDI );
+				else m_keyQ.keyDown( RC::GK::TurnD );
 				break;
 			case SDLK_a:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyDown( RC::GK::MOVELI );
-				else m_keyQ.keyDown( RC::GK::MOVEL );
+					m_keyQ.keyDown( RC::GK::TurnLI );
+				else m_keyQ.keyDown( RC::GK::TurnL );
 				break;
 			case SDLK_d:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyDown( RC::GK::MOVERI );
-				else m_keyQ.keyDown( RC::GK::MOVER );
+					m_keyQ.keyDown( RC::GK::TurnRI );
+				else m_keyQ.keyDown( RC::GK::TurnR );
 				break;
 
 			// other
@@ -172,43 +172,43 @@ void PlayState::handleEvents( GameEngine* game )
 			switch( event.key.keysym.sym )
 			{
 			// rotates
-			case SDLK_UP:		m_keyQ.keyUp( RC::GK::ROTATEUP ); break;
-			case SDLK_DOWN:		m_keyQ.keyUp( RC::GK::ROTATEDOWN ); break;
-			case SDLK_LEFT:		m_keyQ.keyUp( RC::GK::ROTATELEFT ); break;
-			case SDLK_RIGHT:	m_keyQ.keyUp( RC::GK::ROTATERIGHT ); break;
-			case SDLK_PAGEDOWN:	m_keyQ.keyUp( RC::GK::ROTATEACW ); break;
-			case SDLK_DELETE:	m_keyQ.keyUp( RC::GK::ROTATECW ); break;
+			case SDLK_UP:		m_keyQ.keyUp( RC::GK::RotateUP ); break;
+			case SDLK_DOWN:		m_keyQ.keyUp( RC::GK::RotateDOWN ); break;
+			case SDLK_LEFT:		m_keyQ.keyUp( RC::GK::RotateLEFT ); break;
+			case SDLK_RIGHT:	m_keyQ.keyUp( RC::GK::RotateRIGHT ); break;
+			case SDLK_PAGEDOWN:	m_keyQ.keyUp( RC::GK::RotateACW ); break;
+			case SDLK_DELETE:	m_keyQ.keyUp( RC::GK::RotateCW ); break;
 
 			// turns
 			case SDLK_e:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyUp( RC::GK::MOVEFI );
-				else m_keyQ.keyUp( RC::GK::MOVEF );
+					m_keyQ.keyUp( RC::GK::TurnFI );
+				else m_keyQ.keyUp( RC::GK::TurnF );
 				break;
 			case SDLK_q:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyUp( RC::GK::MOVEBI );
-				else m_keyQ.keyUp( RC::GK::MOVEB );
+					m_keyQ.keyUp( RC::GK::TurnBI );
+				else m_keyQ.keyUp( RC::GK::TurnB );
 				break;
 			case SDLK_w:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyUp( RC::GK::MOVEUI );
-				else m_keyQ.keyUp( RC::GK::MOVEU );
+					m_keyQ.keyUp( RC::GK::TurnUI );
+				else m_keyQ.keyUp( RC::GK::TurnU );
 				break;
 			case SDLK_s:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyUp( RC::GK::MOVEDI );
-				else m_keyQ.keyUp( RC::GK::MOVED );
+					m_keyQ.keyUp( RC::GK::TurnDI );
+				else m_keyQ.keyUp( RC::GK::TurnD );
 				break;
 			case SDLK_a:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyUp( RC::GK::MOVELI );
-				else m_keyQ.keyUp( RC::GK::MOVEL );
+					m_keyQ.keyUp( RC::GK::TurnLI );
+				else m_keyQ.keyUp( RC::GK::TurnL );
 				break;
 			case SDLK_d:
 				if ( event.key.keysym.mod & KMOD_CTRL )
-					m_keyQ.keyUp( RC::GK::MOVERI );
-				else m_keyQ.keyUp( RC::GK::MOVER );
+					m_keyQ.keyUp( RC::GK::TurnRI );
+				else m_keyQ.keyUp( RC::GK::TurnR );
 				break;
 
 			// other
@@ -300,13 +300,13 @@ void PlayState::update( GameEngine * game )
 	// primarily processing mouse events
 	if ( m_keyQ.isHold( RC::GK::MOUSEMOVE ) )
 	{
-		// processing cube moves with mouse
-		if ( !m_RCube->isMoving() && !m_RCube->isRotating() )
+		// processing cube turns with mouse
+		if ( !m_RCube->isTurning() && !m_RCube->isRotating() )
 		{
 			if ( glm::distance( m_pMBegin, m_pMEnd ) > 0.5 && glm::length( m_pMBegin ) > 0 && glm::length( m_pMEnd ) > 0 )
 			{
-				RC::MT mt = m_RCube->setMoveByCoords( m_pMBegin, m_pMEnd );
-				m_keyQ.prevPush( RC::GKPar::fromMT( mt ) );
+				RC::TT mt = m_RCube->setTurnByCoords( m_pMBegin, m_pMEnd );
+				m_keyQ.prevPush( RC::GKPar::fromTT( mt ) );
 				m_keyQ.processKey( RC::GK::MOUSEMOVE );
 
 				m_pMBegin = { 0.0f, 0.0f, 0.0f };
@@ -333,43 +333,43 @@ void PlayState::update( GameEngine * game )
 	else if ( m_keyQ.qSize() > 0 )
 	{
 		const RC::GK gk = m_keyQ.qCurKey();
-		const bool enableAll = !m_RCube->isMoving() && !m_RCube->isRotating();
+		const bool enableAll = !m_RCube->isTurning() && !m_RCube->isRotating();
 
-		if ( RC::GKPar::enableWithMove( gk ) || enableAll )
+		if ( RC::GKPar::enableWithTurn( gk ) || enableAll )
 		{
 			m_keyQ.qPopKey();
 
 			switch ( gk )
 			{
 			// processing cube rotates
-			case RC::GK::ROTATEDOWN:
-			case RC::GK::ROTATEUP:
-			case RC::GK::ROTATERIGHT:
-			case RC::GK::ROTATELEFT:
-			case RC::GK::ROTATEACW:
-			case RC::GK::ROTATECW:
+			case RC::GK::RotateDOWN:
+			case RC::GK::RotateUP:
+			case RC::GK::RotateRIGHT:
+			case RC::GK::RotateLEFT:
+			case RC::GK::RotateACW:
+			case RC::GK::RotateCW:
 				m_RCube->setRotate( RC::GKPar::toRT( gk ) );
 				break;
-			// processing cube moves
-			case RC::GK::MOVEB:
-			case RC::GK::MOVEBI:
-			case RC::GK::MOVED:
-			case RC::GK::MOVEDI:
-			case RC::GK::MOVEF:
-			case RC::GK::MOVEFI:
-			case RC::GK::MOVEL:
-			case RC::GK::MOVELI:
-			case RC::GK::MOVER:
-			case RC::GK::MOVERI:
-			case RC::GK::MOVEU:
-			case RC::GK::MOVEUI:
-			case RC::GK::MOVEFM:
-			case RC::GK::MOVEFMI:
-			case RC::GK::MOVEUM:
-			case RC::GK::MOVEUMI:
-			case RC::GK::MOVERM:
-			case RC::GK::MOVERMI:
-				m_RCube->setMove( RC::GKPar::toMT( gk ) );
+			// processing cube turns
+			case RC::GK::TurnB:
+			case RC::GK::TurnBI:
+			case RC::GK::TurnD:
+			case RC::GK::TurnDI:
+			case RC::GK::TurnF:
+			case RC::GK::TurnFI:
+			case RC::GK::TurnL:
+			case RC::GK::TurnLI:
+			case RC::GK::TurnR:
+			case RC::GK::TurnRI:
+			case RC::GK::TurnU:
+			case RC::GK::TurnUI:
+			case RC::GK::TurnFM:
+			case RC::GK::TurnFMI:
+			case RC::GK::TurnUM:
+			case RC::GK::TurnUMI:
+			case RC::GK::TurnRM:
+			case RC::GK::TurnRMI:
+				m_RCube->setTurn( RC::GKPar::toTT( gk ) );
 				break;
 			// processing projection setup
 			case RC::GK::GAMEPROJ:
@@ -402,9 +402,9 @@ void PlayState::update( GameEngine * game )
 					}
 					else
 					{
-						const int mRand = rand() % int( RC::MT::COUNT );
-						if ( RC::MTPar::isMT( mRand ) )
-							m_keyQ.qPushKey( RC::GKPar::fromMT( RC::MT( mRand ) ) );
+						const int mRand = rand() % int( RC::TT::COUNT );
+						if ( RC::TTPar::isTT( mRand ) )
+							m_keyQ.qPushKey( RC::GKPar::fromTT( RC::TT( mRand ) ) );
 					}
 				}
 
@@ -421,8 +421,8 @@ void PlayState::update( GameEngine * game )
 
 				if ( RC::GKPar::toRT( gk ) != RC::RT::NONE )
 					m_RCube->setRotate( RC::GKPar::toRT( gk ) );
-				else if ( RC::GKPar::toMT( gk ) != RC::MT::NONE )
-					m_RCube->setMove( RC::GKPar::toMT( gk ) );
+				else if ( RC::GKPar::toTT( gk ) != RC::TT::NONE )
+					m_RCube->setTurn( RC::GKPar::toTT( gk ) );
 
 				break;
 			}
@@ -458,7 +458,7 @@ void PlayState::draw( GameEngine * game )
 {
 	static int drCount = 0;
 
-	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() || m_trBG )
+	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isTurning() || m_trBG )
 	{
 		Uint32 start = SDL_GetTicks();
 		drCount++;

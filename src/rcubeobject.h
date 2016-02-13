@@ -14,9 +14,9 @@ public:
 	virtual ~RCubeObject();
 
 	void drawObject( const glm::mat4 & pmv ) override;
-	void setMove( const RC::MT rt );
-	RC::MT setMoveByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
-	bool isMoving() const { return ( m_moveMix >= 0 ); }
+	void setTurn( const RC::TT rt );
+	RC::TT setTurnByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
+	bool isTurning() const { return ( m_turnMix >= 0 ); }
 	void update();
 	void incCurScheme() { m_texCurScheme = ( m_texCurScheme + 1 ) % m_texCount; };
 	void reset();
@@ -25,12 +25,12 @@ protected:
 private:
 	RC::CubeModel * m_RCModel;
 
-	glm::quat m_moveQuat;
-	glm::quat m_newMoveQuat;
-	float m_moveMix = { -1 };
+	glm::quat m_turnQuat;
+	glm::quat m_newTurnQuat;
+	float m_turnMix = { -1 };
 
-	RC::MT m_moveType = { RC::MT::NONE };
-	int m_moveLayer = -1;
+	RC::TT m_turnType = { RC::TT::NONE };
+	int m_turnLayer = -1;
 
 	GLuint m_VBOTexCoords, m_VBOTexIndex, m_VBOCubeVertices;
 	GLint m_attrTexCoords, m_attrTexIndex, m_attrCubeVertices;

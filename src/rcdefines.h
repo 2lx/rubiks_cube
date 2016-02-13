@@ -26,18 +26,18 @@ namespace RC
 	// game key
 	enum class GK : int
 	{
-		MOVEF = 0, MOVEFI, MOVEB, MOVEBI, MOVEL, MOVELI,
-		MOVER, MOVERI, MOVEU, MOVEUI, MOVED, MOVEDI,
-		MOVEFM, MOVEFMI, MOVEUM, MOVEUMI, MOVERM, MOVERMI,
+		TurnF = 0, TurnFI, TurnB, TurnBI, TurnL, TurnLI,
+		TurnR, TurnRI, TurnU, TurnUI, TurnD, TurnDI,
+		TurnFM, TurnFMI, TurnUM, TurnUMI, TurnRM, TurnRMI,
 
-		ROTATEUP, ROTATEDOWN, ROTATELEFT, ROTATERIGHT, ROTATECW, ROTATEACW,
+		RotateUP, RotateDOWN, RotateLEFT, RotateRIGHT, RotateCW, RotateACW,
 
 		MOUSEMOVE, MOUSEROTATE,
 
 		GAMECOLOR, GAMEPROJ, GAMERESET, GAMEMIX, GAMEUNDO, GAMEBG,
 
 		COUNT,
-		FIRST = MOVEF,
+		FIRST = 0,
 		LAST = GAMEUNDO,
 		NONE = -1
 	};
@@ -50,8 +50,8 @@ namespace RC
         NONE = -1
 	};
 
-	// move type F=Front, B=Back, L=Left, R=Right, U=Up, D=Dowb, I=Inverse (anticlockwise), M=Middle
-	enum class MT : int
+	// turn type F=Front, B=Back, L=Left, R=Right, U=Up, D=Dowb, I=Inverse (anticlockwise), M=Middle
+	enum class TT : int
 	{
 		F = 0, FI, B, BI, L, LI, R, RI, U, UI, D, DI, FM, FMI, UM, UMI, RM, RMI,
 

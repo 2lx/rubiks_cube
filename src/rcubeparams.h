@@ -25,32 +25,32 @@ namespace RC
 		RT equalRT( const RA ra, const bool cw );
 	}
 
-	namespace MTPar
+	namespace TTPar
 	{
-		inline bool isMT( const int val ) {
-			if( 0 < val && val < ( int ) RC::MT::COUNT )
+		inline bool isTT( const int val ) {
+			if( 0 < val && val < ( int ) RC::TT::COUNT )
 				return true;
 			else return false;
 		}
 
-		glm::vec3 vec( const MT mt );
-		RA axis( const MT mt );
-		bool clockwise( const MT mt );
-		int layer( const MT mt );
+		glm::vec3 vec( const TT mt );
+		RA axis( const TT mt );
+		bool clockwise( const TT mt );
+		int layer( const TT mt );
 
-		MT equalMT( const RA ra, const int lay, const bool cw );
+		TT equalTT( const RA ra, const int lay, const bool cw );
 	}
 
 	namespace GKPar
 	{
-		MT toMT( const GK gk );
+		TT toTT( const GK gk );
 		RT toRT( const GK gk );
-		GK fromMT( const MT mt );
+		GK fromTT( const TT mt );
 		GK fromRT( const RT rt );
 
-		inline bool enableWithMove( const RC::GK gk )
+		inline bool enableWithTurn( const RC::GK gk )
 		{
-			if ( ( RC::GKPar::toMT( gk ) == RC::MT::NONE )
+			if ( ( RC::GKPar::toTT( gk ) == RC::TT::NONE )
 					&& gk != RC::GK::GAMEMIX && gk != RC::GK::GAMERESET && gk != RC::GK::GAMEUNDO )
 				return true;
 			else return false;

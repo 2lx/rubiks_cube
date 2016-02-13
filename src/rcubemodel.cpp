@@ -6,41 +6,41 @@
 
 using namespace RC;
 
-void Cubie::rotateCubie( const MT mt )
+void Cubie::rotateCubie( const TT mt )
 {
 	CF tt, t1, t2, t3, t4;
 
 	// TODO:
 	switch ( mt )
 	{
-		case MT::F:
-		case MT::BI:
-		case MT::FM:
+		case TT::F:
+		case TT::BI:
+		case TT::FM:
 			t1 = CF::LEFT; t2 = CF::DOWN; t3 = CF::RIGHT; t4 = CF::UP;
 			break;
-		case MT::FI:
-		case MT::B:
-		case MT::FMI:
+		case TT::FI:
+		case TT::B:
+		case TT::FMI:
 			t1 = CF::LEFT; t2 = CF::UP; t3 = CF::RIGHT; t4 = CF::DOWN;
 			break;
-		case MT::L:
-		case MT::RI:
-		case MT::RMI:
+		case TT::L:
+		case TT::RI:
+		case TT::RMI:
 			t1 = CF::BACK; t2 = CF::DOWN; t3 = CF::FRONT; t4 = CF::UP;
 			break;
-		case MT::LI:
-		case MT::R:
-		case MT::RM:
+		case TT::LI:
+		case TT::R:
+		case TT::RM:
 			t1 = CF::BACK; t2 = CF::UP; t3 = CF::FRONT; t4 = CF::DOWN;
 			break;
-		case MT::U:
-		case MT::DI:
-		case MT::UM:
+		case TT::U:
+		case TT::DI:
+		case TT::UM:
 			t1 = CF::LEFT; t2 = CF::FRONT; t3 = CF::RIGHT; t4 = CF::BACK;
 			break;
-		case MT::UI:
-		case MT::D:
-		case MT::UMI:
+		case TT::UI:
+		case TT::D:
+		case TT::UMI:
 			t1 = CF::LEFT; t2 = CF::BACK; t3 = CF::RIGHT; t4 = CF::FRONT;
 			break;
 		default: return;
@@ -79,7 +79,7 @@ void CubeModel::reset()
 		}
 }
 
-void CubeModel::moveCubies( const MT mt, const int mLayer )
+void CubeModel::turnCubies( const TT mt, const int mLayer )
 {
 	//TODO: size > 3
 	const int sc = ( CUBIE_COUNT - 1 );
@@ -114,34 +114,34 @@ void CubeModel::moveCubies( const MT mt, const int mLayer )
 	//TODO get pars
     switch ( mt )
     {
-	case MT::F:
-	case MT::BI:
-	case MT::FM:
+	case TT::F:
+	case TT::BI:
+	case TT::FM:
 		mv1 = mvX; mv2 = mvY; mv3 = mvZ;
 		break;
-	case MT::B:
-	case MT::FI:
-	case MT::FMI:
+	case TT::B:
+	case TT::FI:
+	case TT::FMI:
 		mv1 = mvY; mv2 = mvX; mv3 = mvZ;
 		break;
-	case MT::L:
-	case MT::RI:
-	case MT::RMI:
+	case TT::L:
+	case TT::RI:
+	case TT::RMI:
 		mv1 = mvZ; mv2 = mvY; mv3 = mvX;
 		break;
-	case MT::LI:
-	case MT::R:
-	case MT::RM:
+	case TT::LI:
+	case TT::R:
+	case TT::RM:
 		mv1 = mvZ; mv2 = mvX; mv3 = mvY;
 		break;
-	case MT::U:
-	case MT::DI:
-	case MT::UM:
+	case TT::U:
+	case TT::DI:
+	case TT::UM:
 		mv1 = mvY; mv2 = mvZ; mv3 = mvX;
 		break;
-	case MT::UI:
-	case MT::D:
-	case MT::UMI:
+	case TT::UI:
+	case TT::D:
+	case TT::UMI:
 		mv1 = mvX; mv2 = mvZ; mv3 = mvY;
 		break;
 	default:
