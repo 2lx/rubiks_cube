@@ -49,7 +49,8 @@ void main(void)
 {
 	if ( isBG != 0.0 )
 	{
-		gl_FragColor = plasma2();
+		if ( plasmaSpeed > 0 )
+			gl_FragColor = plasma2();
 	}
 	else
 	{

@@ -9,7 +9,7 @@ struct SDL_Window;
 class GameState;
 class ShaderProgram;
 
-class CGameEngine
+class GameEngine
 {
 public:
 

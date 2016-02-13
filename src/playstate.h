@@ -16,9 +16,9 @@ public:
 	void pause() override;
 	void resume() override;
 
-	void handleEvents( CGameEngine * game ) override;
-	void update( CGameEngine * game ) override;
-	void draw( CGameEngine * game ) override;
+	void handleEvents( GameEngine * game ) override;
+	void update( GameEngine * game ) override;
+	void draw( GameEngine * game ) override;
 
 	static PlayState * instance() { return &m_PlayState; }
 
@@ -35,6 +35,7 @@ private:
 	static PlayState m_PlayState;
 	RCubeObject * m_RCube;
 	bool m_needRedraw = { true };
+	bool m_trBG = { true };
 	KeyQueue m_keyQ;
 	ProjectionType m_prType = { PT_ISOMETRIC };
 	glm::vec3 m_pMBegin, m_pMEnd;

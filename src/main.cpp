@@ -5,7 +5,7 @@
 
 int main( int argc, char * args[] )
 {
-	CGameEngine game;
+	GameEngine game;
 
 	try
 	{

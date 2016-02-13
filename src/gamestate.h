@@ -12,11 +12,11 @@ public:
 	virtual void pause() = 0;
 	virtual void resume() = 0;
 
-	virtual void handleEvents( CGameEngine * game ) = 0;
-	virtual void update( CGameEngine * game ) = 0;
-	virtual void draw( CGameEngine * game ) = 0;
+	virtual void handleEvents( GameEngine * game ) = 0;
+	virtual void update( GameEngine * game ) = 0;
+	virtual void draw( GameEngine * game ) = 0;
 
-	void ChangeState( CGameEngine * game, GameState * state )
+	void ChangeState( GameEngine * game, GameState * state )
 	{
 		game->changeState( state );
 	}

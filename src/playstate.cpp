@@ -82,7 +82,7 @@ void PlayState::resume()
 
 }
 
-void PlayState::handleEvents( CGameEngine* game )
+void PlayState::handleEvents( GameEngine* game )
 {
 	static bool lastEvent = false;
 	SDL_Event event;
@@ -145,6 +145,7 @@ void PlayState::handleEvents( CGameEngine* game )
 			case SDLK_SPACE: 	m_keyQ.keyDown( RC::GK::GAMECOLOR ); break;
 			case SDLK_F1: 		m_keyQ.keyDown( RC::GK::GAMERESET ); break;
 			case SDLK_F4: 		m_keyQ.keyDown( RC::GK::GAMEMIX ); break;
+			case SDLK_F5: 		m_keyQ.keyDown( RC::GK::GAMEBG ); break;
 			case SDLK_z: 		m_keyQ.keyDown( RC::GK::GAMEUNDO ); break;
 			}
 			break;
@@ -179,6 +180,7 @@ void PlayState::handleEvents( CGameEngine* game )
 			case SDLK_SPACE: 	m_keyQ.keyUp( RC::GK::GAMECOLOR ); break;
 			case SDLK_F1: 		m_keyQ.keyUp( RC::GK::GAMERESET ); break;
 			case SDLK_F4: 		m_keyQ.keyUp( RC::GK::GAMEMIX ); break;
+			case SDLK_F5: 		m_keyQ.keyUp( RC::GK::GAMEBG ); break;
 			case SDLK_z: 		m_keyQ.keyUp( RC::GK::GAMEUNDO ); break;
 			}
 			break;
@@ -257,7 +259,7 @@ glm::vec3 PlayState::getGLPos( const int mX, const int mY ) const
 	return glm::vec3( posX, posY, posZ );
 }
 
-void PlayState::update( CGameEngine * game )
+void PlayState::update( GameEngine * game )
 {
 	// primarily processing mouse events
 	if ( m_keyQ.isHold( RC::GK::MOUSEMOVE ) )
@@ -388,6 +390,10 @@ void PlayState::update( CGameEngine * game )
 
 				break;
 			}
+			case RC::GK::GAMEBG:
+                m_trBG = !m_trBG;
+                m_needRedraw = true;
+				break;
 			default:
 				break;
 			}
@@ -412,15 +418,23 @@ void PlayState::drawBackground()
 	glUniform1f( m_UniIsBG, 0.0 );
 }
 
-void PlayState::draw( CGameEngine * game )
+void PlayState::draw( GameEngine * game )
 {
 	static int drCount = 0;
 
-//	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() )
+	if ( m_needRedraw || m_RCube->isRotating() || m_RCube->isMoving() || m_trBG )
 	{
 		Uint32 start = SDL_GetTicks();
+		drCount++;
 
-	//	glClearColor( 47.0 / 255.0, 47.0 / 255.0, 47.0 / 255.0, 0.0f );
+		if ( m_trBG )
+			glUniform1f( m_UniPlasmaSpeed, float( drCount ) );
+		else
+		{
+			glClearColor( 47.0 / 255.0, 47.0 / 255.0, 47.0 / 255.0, 0.0f );
+			glUniform1f( m_UniPlasmaSpeed, 0.0 );
+		}
+
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		glUseProgram( m_shaderPr->id() );
@@ -433,8 +447,6 @@ void PlayState::draw( CGameEngine * game )
 		if ( SDL_GetTicks() - start < SCREEN_TICK_PER_FRAME )
 			SDL_Delay( SCREEN_TICK_PER_FRAME - ( SDL_GetTicks() - start ) );
 
-		drCount++;
-		glUniform1f( m_UniPlasmaSpeed, float( drCount ) );
 		if ( drCount > 1 ) m_needRedraw = false;
 #ifdef MY_DEBUG
 //		if ( drCount % 5 == 0 )

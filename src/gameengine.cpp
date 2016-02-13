@@ -3,7 +3,7 @@
 #include "gameengine.h"
 #include "gamestate.h"
 
-void CGameEngine::init( const std::string & title )
+void GameEngine::init( const std::string & title )
 {
 	// init SDL
 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
@@ -32,7 +32,7 @@ void CGameEngine::init( const std::string & title )
 	m_running = true;
 }
 
-void CGameEngine::cleanup()
+void GameEngine::cleanup()
 {
 	while ( !states.empty() ) {
 		states.back()->cleanup();
@@ -48,7 +48,7 @@ void CGameEngine::cleanup()
 	SDL_Quit();
 }
 
-void CGameEngine::changeState( GameState * state )
+void GameEngine::changeState( GameState * state )
 {
 	// cleanup the current state
 	if ( !states.empty() )
@@ -62,7 +62,7 @@ void CGameEngine::changeState( GameState * state )
 	states.back()->init();
 }
 
-void CGameEngine::pushState( GameState * state )
+void GameEngine::pushState( GameState * state )
 {
 	// pause current state
 	if ( !states.empty() )
@@ -75,7 +75,7 @@ void CGameEngine::pushState( GameState * state )
 	states.back()->init();
 }
 
-void CGameEngine::popState()
+void GameEngine::popState()
 {
 	// cleanup the current state
 	if ( !states.empty() )
@@ -91,17 +91,17 @@ void CGameEngine::popState()
 	}
 }
 
-void CGameEngine::handleEvents()
+void GameEngine::handleEvents()
 {
 	states.back()->handleEvents( this );
 }
 
-void CGameEngine::update()
+void GameEngine::update()
 {
 	states.back()->update( this );
 }
 
-void CGameEngine::draw()
+void GameEngine::draw()
 {
 	states.back()->draw( this );
 
