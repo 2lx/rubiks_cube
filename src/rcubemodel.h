@@ -34,11 +34,11 @@ namespace RC
 
         const Cubie cubie( const int x, const int y, const int z ) const
         {
-            return * m_cubies[ x ][ y ][ z ];
+            return * m_cubie[ x ][ y ][ z ];
         };
 
     private:
-        Cubie * m_cubies[ CUBIE_COUNT ][ CUBIE_COUNT ][ CUBIE_COUNT ];
+        Cubie * m_cubie[ CUBIE_COUNT ][ CUBIE_COUNT ][ CUBIE_COUNT ];
         std::map< RC::RA, std::vector< Cubie * > > m_ring[ CUBIE_COUNT ];
     };
 }

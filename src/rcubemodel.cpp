@@ -39,37 +39,37 @@ CubeModel::CubeModel()
     for( int i = 0; i < CUBIE_COUNT; ++i )
         for( int j = 0; j < CUBIE_COUNT; ++j )
             for( int k = 0; k < CUBIE_COUNT; ++k )
-                m_cubies[ i ][ j ][ k ] = new Cubie();
+                m_cubie[ i ][ j ][ k ] = new Cubie();
 
     // initialize rings
     for ( int i = 0; i < CUBIE_COUNT; ++i )
     {
         for ( int j = 0; j < c; ++j )
         {
-            m_ring[ i ][ RC::RA::X ].push_back( m_cubies[ i ][ 0 ][ j ] );
-            m_ring[ i ][ RC::RA::Y ].push_back( m_cubies[ j ][ i ][ 0 ] );
-            m_ring[ i ][ RC::RA::Z ].push_back( m_cubies[ 0 ][ j ][ i ] );
+            m_ring[ i ][ RC::RA::X ].push_back( m_cubie[ i ][ 0 ][ j ] );
+            m_ring[ i ][ RC::RA::Y ].push_back( m_cubie[ j ][ i ][ 0 ] );
+            m_ring[ i ][ RC::RA::Z ].push_back( m_cubie[ 0 ][ j ][ i ] );
         }
 
         for ( int k = 0; k < c; ++k )
         {
-            m_ring[ i ][ RC::RA::X ].push_back( m_cubies[ i ][ k ][ c ] );
-            m_ring[ i ][ RC::RA::Y ].push_back( m_cubies[ c ][ i ][ k ] );
-            m_ring[ i ][ RC::RA::Z ].push_back( m_cubies[ k ][ c ][ i ] );
+            m_ring[ i ][ RC::RA::X ].push_back( m_cubie[ i ][ k ][ c ] );
+            m_ring[ i ][ RC::RA::Y ].push_back( m_cubie[ c ][ i ][ k ] );
+            m_ring[ i ][ RC::RA::Z ].push_back( m_cubie[ k ][ c ][ i ] );
         }
 
         for ( int j = c; j > 0; --j )
         {
-            m_ring[ i ][ RC::RA::X ].push_back( m_cubies[ i ][ c ][ j ] );
-            m_ring[ i ][ RC::RA::Y ].push_back( m_cubies[ j ][ i ][ c ] );
-            m_ring[ i ][ RC::RA::Z ].push_back( m_cubies[ c ][ j ][ i ] );
+            m_ring[ i ][ RC::RA::X ].push_back( m_cubie[ i ][ c ][ j ] );
+            m_ring[ i ][ RC::RA::Y ].push_back( m_cubie[ j ][ i ][ c ] );
+            m_ring[ i ][ RC::RA::Z ].push_back( m_cubie[ c ][ j ][ i ] );
         }
 
         for ( int k = c; k > 0; --k )
         {
-            m_ring[ i ][ RC::RA::X ].push_back( m_cubies[ i ][ k ][ 0 ] );
-            m_ring[ i ][ RC::RA::Y ].push_back( m_cubies[ 0 ][ i ][ k ] );
-            m_ring[ i ][ RC::RA::Z ].push_back( m_cubies[ k ][ 0 ][ i ] );
+            m_ring[ i ][ RC::RA::X ].push_back( m_cubie[ i ][ k ][ 0 ] );
+            m_ring[ i ][ RC::RA::Y ].push_back( m_cubie[ 0 ][ i ][ k ] );
+            m_ring[ i ][ RC::RA::Z ].push_back( m_cubie[ k ][ 0 ][ i ] );
         }
     }
 
@@ -81,7 +81,7 @@ CubeModel::~CubeModel()
     for( int i = 0; i < CUBIE_COUNT; ++i )
         for( int j = 0; j < CUBIE_COUNT; ++j )
             for( int k = 0; k < CUBIE_COUNT; ++k )
-                delete m_cubies[ i ][ j ][ k ];
+                delete m_cubie[ i ][ j ][ k ];
 }
 
 void CubeModel::reset()
@@ -91,26 +91,30 @@ void CubeModel::reset()
     for( int i = 0; i < CUBIE_COUNT; ++i )
         for( int j = 0; j < CUBIE_COUNT; ++j )
         {
-            m_cubies[ i ][ j ][ k ]->setColourInd( CF::FRONT, CF::FRONT );
-            m_cubies[ i ][ k ][ j ]->setColourInd( CF::UP, CF::UP );
-            m_cubies[ i ][ j ][ 0 ]->setColourInd( CF::BACK, CF::BACK );
-            m_cubies[ i ][ 0 ][ j ]->setColourInd( CF::DOWN, CF::DOWN );
-            m_cubies[ 0 ][ i ][ j ]->setColourInd( CF::LEFT, CF::LEFT );
-            m_cubies[ k ][ i ][ j ]->setColourInd( CF::RIGHT, CF::RIGHT );
+            m_cubie[ i ][ j ][ k ]->setColourInd( CF::FRONT, CF::FRONT );
+            m_cubie[ i ][ k ][ j ]->setColourInd( CF::UP, CF::UP );
+            m_cubie[ i ][ j ][ 0 ]->setColourInd( CF::BACK, CF::BACK );
+            m_cubie[ i ][ 0 ][ j ]->setColourInd( CF::DOWN, CF::DOWN );
+            m_cubie[ 0 ][ i ][ j ]->setColourInd( CF::LEFT, CF::LEFT );
+            m_cubie[ k ][ i ][ j ]->setColourInd( CF::RIGHT, CF::RIGHT );
         }
 }
 
 void CubeModel::turnSide( const TT tt, const int mLayer )
 {
     //TODO: implement for size > 3
+    const int c = CUBIE_COUNT - 1;
+
     const bool cw = TTPar::clockwise( tt );
     const RA ra = TTPar::axis( tt );
     int lay = TTPar::layer( tt );
+
     if ( lay < 0 ) lay = 1;
+    if ( ra == RC::RA::NONE ) return;
 
     // turn the side of the cube, moving around the ring
     auto vBeg = m_ring[ lay ][ ra ].begin();
-    auto vMid = vBeg + ( !cw ? CUBIE_COUNT - 1 : 3 * CUBIE_COUNT - 3 );
+    auto vMid = vBeg + ( !cw ? c : 3 * c );
     auto vEnd = m_ring[ lay ][ ra ].end();
     auto vNext = vMid;
 
