@@ -1,16 +1,46 @@
 # Pre-compiled header
-CORE_PCH_FILENAME = src/all.h
+MKDIR = mkdir -p
 
-OBJS = src/*.cpp
+SRCDIR = src
+
+SRCS = $(subst $(SRCDIR)/, , $(wildcard $(SRCDIR)/*.cpp))
+
+OBJDIR = obj
+
+OBJS = $(patsubst %.cpp, obj/%.o, $(SRCS))
+
+CORE_PCH_FILENAME = $(SRCDIR)/all.h
+
+CORE_PCH = $(subst $(SRCDIR)/, $(OBJDIR)/, $(CORE_PCH_FILENAME).gch)
 
 CC = g++
 
-COMPILER_FLAGS = -x c++-header $(CORE_PCH_FILENAME) -Wpedantic -std=c++11
+INCLUDES =
 
-LINKER_FLAGS = -lSDL2 -lGL -lGLU -lGLEW -lSDL2_image
+CFLAGS = -Wpedantic -std=c++11
 
-OBJ_NAME = 3DCube
+LFLAGS =
+
+LIBS = -lSDL2 -lGL -lGLU -lGLEW -lSDL2_image
+
+TARGET = RCube
+
+RM = rm -f
 
 # Targets
-all : $(OBJS) 
-	$(CC) $(OBJS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+all: directories $(TARGET)
+
+directories:
+	$(MKDIR) $(OBJDIR)
+
+$(CORE_PCH):
+	$(CC) $(CCFLAGS) -x c++-header $(CORE_PCH_FILENAME) -o $(CORE_PCH)
+
+$(TARGET): $(CORE_PCH) $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIBS)
+
+$(OBJDIR)/%.o: src/%.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+clean:
+	$(RM) $(TARGET) $(OBJS) $(CORE_PCH)
