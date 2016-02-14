@@ -59,7 +59,7 @@ RC::RT GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & 
 
     // if the points in different planes or don't lie on the surface of the cube
     if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
-        return RC::RT::NONE;
+        return RC::RT::None;
 
     // get rotated points
     const glm::vec3 rvBeg = pBeg * m_rotateQuat;
@@ -68,16 +68,16 @@ RC::RT GameObject::setRotateByCoords( const glm::vec3 & pBeg, const glm::vec3 & 
 
     // get closest rotation axis
     const RC::RA ra = RC::RAPar::closestRA( pRes );
-    if ( ra == RC::RA::NONE )
-        return RC::RT::NONE;
+    if ( ra == RC::RA::None )
+        return RC::RT::None;
 
     const glm::vec3 vAx = RC::RAPar::vec( ra );
     const bool cw = glm::dot( vAx, pRes ) > 0;
 
     // get rotation type (absolute)
     const RC::RT rt = RC::RTPar::equalRT( ra, cw );
-    if ( rt == RC::RT::NONE )
-        return RC::RT::NONE;
+    if ( rt == RC::RT::None )
+        return RC::RT::None;
 
 #ifdef NDEBUG
     std::cout << pBeg.x << " " << pBeg.y << " " << pBeg.z << std::endl;

@@ -39,13 +39,13 @@ public:
 template< typename T >
 typename Enum< T >::Iterator begin( Enum< T > )
 {
-    return typename Enum< T >::Iterator( ( int )T::FIRST );
+    return typename Enum< T >::Iterator( ( int )T::First );
 }
 
 template < typename T >
 typename Enum< T >::Iterator end( Enum< T > )
 {
-    return typename Enum< T >::Iterator( ( ( int )T::LAST ) + 1 );
+    return typename Enum< T >::Iterator( ( ( int )T::Last ) + 1 );
 }
 
 

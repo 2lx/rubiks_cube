@@ -16,7 +16,7 @@ namespace RC
     {
     inline bool isRT( const int val )
     {
-        if( 0 < val && val < ( int ) RC::RT::COUNT )
+        if( 0 < val && val < ( int ) RC::RT::Count )
             return true;
         else return false;
     }
@@ -29,7 +29,7 @@ namespace RC
     namespace TTPar
     {
     inline bool isTT( const int val ) {
-        if( 0 < val && val < ( int ) RC::TT::COUNT )
+        if( 0 < val && val < ( int ) RC::TT::Count )
             return true;
         else return false;
     }
@@ -51,8 +51,8 @@ namespace RC
 
     inline bool enableWithTurn( const RC::GK gk )
     {
-        if ( ( RC::GKPar::toTT( gk ) == RC::TT::NONE )
-                && gk != RC::GK::GAMEMIX && gk != RC::GK::GAMERESET && gk != RC::GK::GAMEUNDO )
+        if ( ( RC::GKPar::toTT( gk ) == RC::TT::None )
+                && gk != RC::GK::GameMix && gk != RC::GK::GameReset && gk != RC::GK::GameUndo )
             return true;
         else return false;
     }

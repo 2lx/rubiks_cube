@@ -26,10 +26,11 @@ protected:
     PlayState() { }
 
 private:
-    enum ProjectionType
+    // projection type
+    enum class PT : int
     {
-        PT_DIMETRIC, PT_ISOMETRIC,
-        PT_COUNT
+        Dimetric, Isometric,
+        Count
     };
 
     static PlayState m_PlayState;
@@ -37,7 +38,7 @@ private:
     bool m_needRedraw = { true };
     bool m_trBG = { true };
     KeyQueue m_keyQ;
-    ProjectionType m_prType = { PT_ISOMETRIC };
+    PT m_prType = { PT::Isometric };
     glm::vec3 m_pMBegin, m_pMEnd;
     glm::vec3 m_pRBegin, m_pREnd;
     glm::mat4 m_matrCamera;
@@ -45,7 +46,7 @@ private:
     int m_screenWidth = 800, m_screenHeight = 600;
 
     void drawBackground();
-    void setProjection( const ProjectionType pType );
+    void setProjection( const PT pt );
     glm::vec3 getGLPos( const int mX, const int mY ) const;
 
     ShaderProgram * m_shaderPr;

@@ -72,7 +72,7 @@ void RCubeObject::setTurn( const RC::TT mt )
 
     const RC::RA ax = RC::RAPar::closestRA( vecRot );
     m_turnType = RC::TTPar::equalTT( ax, lay, cw );
-    if ( m_turnType == RC::TT::NONE )
+    if ( m_turnType == RC::TT::None )
         return;
 
     // calculate turn params
@@ -88,7 +88,7 @@ RC::TT RCubeObject::setTurnByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 
     // if 1st point don't lie on the surface of the cube
     if ( std::abs( pBeg.x ) > cOffset + 0.1 || std::abs( pBeg.y ) > cOffset + 0.1 || std::abs( pBeg.z ) > cOffset + 0.1 )
-        return RC::TT::NONE;
+        return RC::TT::None;
 
     // get close rotation axis
     const glm::vec3 rvBeg = pBeg * m_rotateQuat;
@@ -97,8 +97,8 @@ RC::TT RCubeObject::setTurnByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
 
     // get closest rotation axis vector
     const RC::RA ra = RC::RAPar::closestRA( pRes );
-    if ( ra == RC::RA::NONE )
-        return RC::TT::NONE;
+    if ( ra == RC::RA::None )
+        return RC::TT::None;
 
     const glm::vec3 vAx = RC::RAPar::vec( ra );
 
@@ -128,12 +128,12 @@ RC::TT RCubeObject::setTurnByCoords( const glm::vec3 & pBeg, const glm::vec3 & p
     else lay = -1;
 
     if ( lay < 0 || lay > RC::CUBIE_COUNT - 1 )
-        return RC::TT::NONE;
+        return RC::TT::None;
 
     // get turn type (absolute)
     RC::TT nMT = RC::TTPar::equalTT( ra, lay, cw );
-    if ( nMT == RC::TT::NONE )
-        return RC::TT::NONE;
+    if ( nMT == RC::TT::None )
+        return RC::TT::None;
 
     m_turnType = nMT;
     m_turnLayer = lay;
@@ -180,7 +180,7 @@ void RCubeObject::update()
         else
         {
             m_RCModel->turnSide( m_turnType, m_turnLayer );
-            m_turnType = RC::TT::NONE;
+            m_turnType = RC::TT::None;
             m_turnLayer = -1;
 
             m_turnQuat = glm::quat();
@@ -243,12 +243,12 @@ void RCubeObject::drawCube( const glm::mat4 & pmv, const RC::RA ra )
                     // update texture index matrix
                     for ( int i = 0; i < 4; i++ )
                     {
-                        m_aTexIndex[ 4 * ( int )RC::CF::FRONT + i ] = m_RCModel->cubie( x, y, z ).colInd( RC::CF::FRONT );
-                        m_aTexIndex[ 4 * ( int )RC::CF::UP + i ]    = m_RCModel->cubie( x, y, z ).colInd( RC::CF::UP );
-                        m_aTexIndex[ 4 * ( int )RC::CF::BACK + i ]  = m_RCModel->cubie( x, y, z ).colInd( RC::CF::BACK );
-                        m_aTexIndex[ 4 * ( int )RC::CF::DOWN + i ]  = m_RCModel->cubie( x, y, z ).colInd( RC::CF::DOWN );
-                        m_aTexIndex[ 4 * ( int )RC::CF::LEFT + i ]  = m_RCModel->cubie( x, y, z ).colInd( RC::CF::LEFT );
-                        m_aTexIndex[ 4 * ( int )RC::CF::RIGHT + i ] = m_RCModel->cubie( x, y, z ).colInd( RC::CF::RIGHT );
+                        m_aTexIndex[ 4 * ( int )RC::CF::Front + i ] = m_RCModel->cubie( x, y, z ).colInd( RC::CF::Front );
+                        m_aTexIndex[ 4 * ( int )RC::CF::Up + i ]    = m_RCModel->cubie( x, y, z ).colInd( RC::CF::Up );
+                        m_aTexIndex[ 4 * ( int )RC::CF::Back + i ]  = m_RCModel->cubie( x, y, z ).colInd( RC::CF::Back );
+                        m_aTexIndex[ 4 * ( int )RC::CF::Down + i ]  = m_RCModel->cubie( x, y, z ).colInd( RC::CF::Down );
+                        m_aTexIndex[ 4 * ( int )RC::CF::Left + i ]  = m_RCModel->cubie( x, y, z ).colInd( RC::CF::Left );
+                        m_aTexIndex[ 4 * ( int )RC::CF::Right + i ] = m_RCModel->cubie( x, y, z ).colInd( RC::CF::Right );
                     }
 
                     m_VBOTexIndex = loadGLArrayBuffer( m_aTexIndex, sizeof( m_aTexIndex ) );
@@ -261,7 +261,7 @@ void RCubeObject::drawCube( const glm::mat4 & pmv, const RC::RA ra )
                     glm::mat4 mRes = mvpR;
                     glm::mat4 mTest = rotation;
 
-                    if ( m_turnType != RC::TT::NONE && m_turnLayer != -1 )
+                    if ( m_turnType != RC::TT::None && m_turnLayer != -1 )
                     {
                         const RC::RA ax = RC::TTPar::axis( m_turnType );
 

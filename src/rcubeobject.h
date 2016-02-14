@@ -29,7 +29,7 @@ private:
     glm::quat m_newTurnQuat;
     float m_turnMix = { -1 };
 
-    RC::TT m_turnType = { RC::TT::NONE };
+    RC::TT m_turnType = { RC::TT::None };
     int m_turnLayer = -1;
 
     GLuint m_VBOTexCoords, m_VBOTexIndex, m_VBOCubeVertices;
@@ -42,7 +42,7 @@ private:
     int m_texCount;
     int m_texCurScheme;
 
-    void drawCube( const glm::mat4 & pmv, const RC::RA ra = RC::RA::NONE );
+    void drawCube( const glm::mat4 & pmv, const RC::RA ra = RC::RA::None );
     void drawCubie( const int x, const int y, const int z ) const;
 
     const GLfloat m_aTexCoords[ 2*4*6 ] = {
@@ -55,12 +55,12 @@ private:
     };
 
     RC::CF m_aTexIndex[ 4*6 ] = {
-        RC::CF::FRONT,  RC::CF::FRONT,  RC::CF::FRONT,  RC::CF::FRONT,
-        RC::CF::UP,     RC::CF::UP,     RC::CF::UP,     RC::CF::UP,
-        RC::CF::BACK,   RC::CF::BACK,   RC::CF::BACK,   RC::CF::BACK,
-        RC::CF::DOWN,   RC::CF::DOWN,   RC::CF::DOWN,   RC::CF::DOWN,
-        RC::CF::LEFT,   RC::CF::LEFT,   RC::CF::LEFT,   RC::CF::LEFT,
-        RC::CF::RIGHT,  RC::CF::RIGHT,  RC::CF::RIGHT,  RC::CF::RIGHT
+        RC::CF::Front,  RC::CF::Front,  RC::CF::Front,  RC::CF::Front,
+        RC::CF::Up,     RC::CF::Up,     RC::CF::Up,     RC::CF::Up,
+        RC::CF::Back,   RC::CF::Back,   RC::CF::Back,   RC::CF::Back,
+        RC::CF::Down,   RC::CF::Down,   RC::CF::Down,   RC::CF::Down,
+        RC::CF::Left,   RC::CF::Left,   RC::CF::Left,   RC::CF::Left,
+        RC::CF::Right,  RC::CF::Right,  RC::CF::Right,  RC::CF::Right
     };
 
 //          5-----4

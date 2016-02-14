@@ -43,10 +43,10 @@ RA RC::RAPar::closestRA( glm::vec3 vec )
 typedef std::pair< const RA, const bool > RTPair;
 
 const std::map< const RT, const RTPair > p_RTPar {
-    { RT::UP,    std::make_pair( RA::X, true ) },
-    { RT::DOWN,  std::make_pair( RA::X, false ) },
-    { RT::LEFT,  std::make_pair( RA::Y, true ) },
-    { RT::RIGHT, std::make_pair( RA::Y, false ) },
+    { RT::Up,    std::make_pair( RA::X, true ) },
+    { RT::Down,  std::make_pair( RA::X, false ) },
+    { RT::Left,  std::make_pair( RA::Y, true ) },
+    { RT::Right, std::make_pair( RA::Y, false ) },
     { RT::ACW,   std::make_pair( RA::Z, true ) },
     { RT::CW,    std::make_pair( RA::Z, false ) }
 };
@@ -178,7 +178,7 @@ TT RC::GKPar::toTT( const GK gk )
     case GK::TurnUMI:   return TT::UMI;
     case GK::TurnRM:    return TT::RM;
     case GK::TurnRMI:   return TT::RMI;
-    default: return TT::NONE;
+    default: return TT::None;
     }
 }
 
@@ -205,7 +205,7 @@ GK RC::GKPar::fromTT( const TT mt )
     case TT::RM:    return GK::TurnRM;
     case TT::RMI:   return GK::TurnRMI;
 
-    default: return GK::NONE;
+    default: return GK::None;
     }
 }
 
@@ -213,14 +213,14 @@ RT RC::GKPar::toRT( const GK gk )
 {
     switch ( gk )
     {
-    case GK::RotateUP:      return RT::UP;
-    case GK::RotateDOWN:    return RT::DOWN;
-    case GK::RotateLEFT:    return RT::LEFT;
-    case GK::RotateRIGHT:   return RT::RIGHT;
+    case GK::RotateUp:      return RT::Up;
+    case GK::RotateDown:    return RT::Down;
+    case GK::RotateLeft:    return RT::Left;
+    case GK::RotateRight:   return RT::Right;
     case GK::RotateCW:      return RT::CW;
     case GK::RotateACW:     return RT::ACW;
 
-    default: return RT::NONE;
+    default: return RT::None;
     }
 }
 
@@ -228,14 +228,14 @@ GK RC::GKPar::fromRT( const RT rt )
 {
     switch ( rt )
     {
-    case RT::UP:    return GK::RotateUP;
-    case RT::DOWN:  return GK::RotateDOWN;
-    case RT::LEFT:  return GK::RotateLEFT;
-    case RT::RIGHT: return GK::RotateRIGHT;
+    case RT::Up:    return GK::RotateUp;
+    case RT::Down:  return GK::RotateDown;
+    case RT::Left:  return GK::RotateLeft;
+    case RT::Right: return GK::RotateRight;
     case RT::CW:    return GK::RotateCW;
     case RT::ACW:   return GK::RotateACW;
 
-    default: return GK::NONE;
+    default: return GK::None;
     }
 }
 
@@ -243,10 +243,10 @@ RC::GK RC::GKPar::prevGK( const RC::GK gk )
 {
     switch( gk )
     {
-    case RC::GK::RotateDOWN:    return RC::GK::RotateUP;
-    case RC::GK::RotateUP:      return RC::GK::RotateDOWN;
-    case RC::GK::RotateLEFT:    return RC::GK::RotateRIGHT;
-    case RC::GK::RotateRIGHT:   return RC::GK::RotateLEFT;
+    case RC::GK::RotateDown:    return RC::GK::RotateUp;
+    case RC::GK::RotateUp:      return RC::GK::RotateDown;
+    case RC::GK::RotateLeft:    return RC::GK::RotateRight;
+    case RC::GK::RotateRight:   return RC::GK::RotateLeft;
     case RC::GK::RotateCW:      return RC::GK::RotateACW;
     case RC::GK::RotateACW:     return RC::GK::RotateCW;
 
@@ -269,7 +269,7 @@ RC::GK RC::GKPar::prevGK( const RC::GK gk )
     case RC::GK::TurnRM:        return RC::GK::TurnRMI;
     case RC::GK::TurnRMI:       return RC::GK::TurnRM;
 
-    default: return RC::GK::NONE;
+    default: return RC::GK::None;
     }
 }
 
@@ -293,10 +293,10 @@ const std::map< const GK, const std::string > p_GKPar {
     { GK::TurnRM,   "r" },
     { GK::TurnRMI,  "r'" },
 
-    { GK::RotateUP,     "rtU" },
-    { GK::RotateDOWN,   "rtD" },
-    { GK::RotateLEFT,   "rtL" },
-    { GK::RotateRIGHT,  "rtR" },
+    { GK::RotateUp,     "rtU" },
+    { GK::RotateDown,   "rtD" },
+    { GK::RotateLeft,   "rtL" },
+    { GK::RotateRight,  "rtR" },
     { GK::RotateCW,     "rtCW" },
     { GK::RotateACW,    "rtACW" }
 };

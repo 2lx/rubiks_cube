@@ -20,7 +20,7 @@ namespace RC
         };
 
     private:
-        CF m_colourInd[ ( int ) CF::COUNT ] = { CF::NONE, CF::NONE, CF::NONE, CF::NONE, CF::NONE, CF::NONE };
+        CF m_colourInd[ ( int ) CF::Count ] = { CF::None, CF::None, CF::None, CF::None, CF::None, CF::None };
     };
 
     class CubeModel

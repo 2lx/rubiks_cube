@@ -14,14 +14,14 @@ void Cubie::turnCubie( const TT tt )
     const RA ra = TTPar::axis( tt );
 
     if ( ra == RA::Z )
-        if ( cw ) { f1 = CF::LEFT; f2 = CF::DOWN;  f3 = CF::RIGHT; f4 = CF::UP; }
-        else      { f1 = CF::LEFT; f2 = CF::UP;    f3 = CF::RIGHT; f4 = CF::DOWN; }
+        if ( cw ) { f1 = CF::Left; f2 = CF::Down;  f3 = CF::Right; f4 = CF::Up; }
+        else      { f1 = CF::Left; f2 = CF::Up;    f3 = CF::Right; f4 = CF::Down; }
     else if ( ra == RA::Y )
-        if ( cw ) { f1 = CF::LEFT; f2 = CF::FRONT; f3 = CF::RIGHT; f4 = CF::BACK; }
-        else      { f1 = CF::LEFT; f2 = CF::BACK;  f3 = CF::RIGHT; f4 = CF::FRONT; }
+        if ( cw ) { f1 = CF::Left; f2 = CF::Front; f3 = CF::Right; f4 = CF::Back; }
+        else      { f1 = CF::Left; f2 = CF::Back;  f3 = CF::Right; f4 = CF::Front; }
     else if ( ra == RA::X )
-        if ( cw ) { f1 = CF::BACK; f2 = CF::UP;    f3 = CF::FRONT; f4 = CF::DOWN; }
-        else      { f1 = CF::BACK; f2 = CF::DOWN;  f3 = CF::FRONT; f4 = CF::UP; }
+        if ( cw ) { f1 = CF::Back; f2 = CF::Up;    f3 = CF::Front; f4 = CF::Down; }
+        else      { f1 = CF::Back; f2 = CF::Down;  f3 = CF::Front; f4 = CF::Up; }
     else return;
 
     ft = m_colourInd[ ( int ) f1 ];
@@ -46,30 +46,30 @@ CubeModel::CubeModel()
     {
         for ( int j = 0; j < c; ++j )
         {
-            m_ring[ i ][ RC::RA::X ].push_back( m_cubie[ i ][ 0 ][ j ] );
-            m_ring[ i ][ RC::RA::Y ].push_back( m_cubie[ j ][ i ][ 0 ] );
-            m_ring[ i ][ RC::RA::Z ].push_back( m_cubie[ 0 ][ j ][ i ] );
+            m_ring[ i ][ RA::X ].push_back( m_cubie[ i ][ 0 ][ j ] );
+            m_ring[ i ][ RA::Y ].push_back( m_cubie[ j ][ i ][ 0 ] );
+            m_ring[ i ][ RA::Z ].push_back( m_cubie[ 0 ][ j ][ i ] );
         }
 
         for ( int k = 0; k < c; ++k )
         {
-            m_ring[ i ][ RC::RA::X ].push_back( m_cubie[ i ][ k ][ c ] );
-            m_ring[ i ][ RC::RA::Y ].push_back( m_cubie[ c ][ i ][ k ] );
-            m_ring[ i ][ RC::RA::Z ].push_back( m_cubie[ k ][ c ][ i ] );
+            m_ring[ i ][ RA::X ].push_back( m_cubie[ i ][ k ][ c ] );
+            m_ring[ i ][ RA::Y ].push_back( m_cubie[ c ][ i ][ k ] );
+            m_ring[ i ][ RA::Z ].push_back( m_cubie[ k ][ c ][ i ] );
         }
 
         for ( int j = c; j > 0; --j )
         {
-            m_ring[ i ][ RC::RA::X ].push_back( m_cubie[ i ][ c ][ j ] );
-            m_ring[ i ][ RC::RA::Y ].push_back( m_cubie[ j ][ i ][ c ] );
-            m_ring[ i ][ RC::RA::Z ].push_back( m_cubie[ c ][ j ][ i ] );
+            m_ring[ i ][ RA::X ].push_back( m_cubie[ i ][ c ][ j ] );
+            m_ring[ i ][ RA::Y ].push_back( m_cubie[ j ][ i ][ c ] );
+            m_ring[ i ][ RA::Z ].push_back( m_cubie[ c ][ j ][ i ] );
         }
 
         for ( int k = c; k > 0; --k )
         {
-            m_ring[ i ][ RC::RA::X ].push_back( m_cubie[ i ][ k ][ 0 ] );
-            m_ring[ i ][ RC::RA::Y ].push_back( m_cubie[ 0 ][ i ][ k ] );
-            m_ring[ i ][ RC::RA::Z ].push_back( m_cubie[ k ][ 0 ][ i ] );
+            m_ring[ i ][ RA::X ].push_back( m_cubie[ i ][ k ][ 0 ] );
+            m_ring[ i ][ RA::Y ].push_back( m_cubie[ 0 ][ i ][ k ] );
+            m_ring[ i ][ RA::Z ].push_back( m_cubie[ k ][ 0 ][ i ] );
         }
     }
 
@@ -91,12 +91,12 @@ void CubeModel::reset()
     for( int i = 0; i < CUBIE_COUNT; ++i )
         for( int j = 0; j < CUBIE_COUNT; ++j )
         {
-            m_cubie[ i ][ j ][ k ]->setColourInd( CF::FRONT, CF::FRONT );
-            m_cubie[ i ][ k ][ j ]->setColourInd( CF::UP, CF::UP );
-            m_cubie[ i ][ j ][ 0 ]->setColourInd( CF::BACK, CF::BACK );
-            m_cubie[ i ][ 0 ][ j ]->setColourInd( CF::DOWN, CF::DOWN );
-            m_cubie[ 0 ][ i ][ j ]->setColourInd( CF::LEFT, CF::LEFT );
-            m_cubie[ k ][ i ][ j ]->setColourInd( CF::RIGHT, CF::RIGHT );
+            m_cubie[ i ][ j ][ k ]->setColourInd( CF::Front, CF::Front );
+            m_cubie[ i ][ k ][ j ]->setColourInd( CF::Up, CF::Up );
+            m_cubie[ i ][ j ][ 0 ]->setColourInd( CF::Back, CF::Back );
+            m_cubie[ i ][ 0 ][ j ]->setColourInd( CF::Down, CF::Down );
+            m_cubie[ 0 ][ i ][ j ]->setColourInd( CF::Left, CF::Left );
+            m_cubie[ k ][ i ][ j ]->setColourInd( CF::Right, CF::Right );
         }
 }
 
@@ -110,7 +110,7 @@ void CubeModel::turnSide( const TT tt, const int mLayer )
     int lay = TTPar::layer( tt );
 
     if ( lay < 0 ) lay = 1;
-    if ( ra == RC::RA::NONE ) return;
+    if ( ra == RA::None ) return;
 
     // turn the side of the cube, moving around the ring
     auto vBeg = m_ring[ lay ][ ra ].begin();

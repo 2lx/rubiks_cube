@@ -55,7 +55,7 @@ public:
     {
         if ( !m_queue.empty() )
             return m_queue.front();
-        else return RC::GK::NONE;
+        else return RC::GK::None;
     }
 
     inline void qPushKey( const RC::GK gk ) { m_queue.push( gk ); }
@@ -68,7 +68,7 @@ public:
         processKey( m_queue.front() );
 
         const RC::GK prevGk = RC::GKPar::prevGK( m_queue.front() );
-        if ( prevGk != RC::GK::NONE )
+        if ( prevGk != RC::GK::None )
             m_stack.push( m_queue.front() );
 
         m_queue.pop();
@@ -92,13 +92,13 @@ public:
 
             return gk;
         }
-        return RC::GK::NONE;
+        return RC::GK::None;
     }
 
     inline void prevPush( const RC::GK gk )
     {
         const RC::GK prevGk = RC::GKPar::prevGK( gk );
-        if ( prevGk != RC::GK::NONE )
+        if ( prevGk != RC::GK::None )
             m_stack.push( gk );
     }
 

@@ -10,17 +10,17 @@ namespace RC
     enum class RA : int
     {
         X = 0, Y, Z,
-        COUNT,
-        FIRST = X,
-        NONE = -1
+        Count,
+        First = X,
+        None = -1
     };
 
     // cube face
     enum class CF : int
     {
-        FRONT = 0, UP, BACK, DOWN, LEFT, RIGHT,
-        COUNT,
-        NONE = -1
+        Front = 0, Up, Back, Down, Left, Right,
+        Count,
+        None = -1
     };
 
     // game key
@@ -30,24 +30,24 @@ namespace RC
         TurnR, TurnRI, TurnU, TurnUI, TurnD, TurnDI,
         TurnFM, TurnFMI, TurnUM, TurnUMI, TurnRM, TurnRMI,
 
-        RotateUP, RotateDOWN, RotateLEFT, RotateRIGHT, RotateCW, RotateACW,
+        RotateUp, RotateDown, RotateLeft, RotateRight, RotateCW, RotateACW,
 
-        MOUSEMOVE, MOUSEROTATE,
+        MouseMove, MouseRotate,
 
-        GAMECOLOR, GAMEPROJ, GAMERESET, GAMEMIX, GAMEUNDO, GAMEBG,
+        GameColor, GameProj, GameReset, GameMix, GameUndo, GameBG,
 
-        COUNT,
-        FIRST = 0,
-        LAST = GAMEUNDO,
-        NONE = -1
+        Count,
+        First = 0,
+        Last = GameUndo,
+        None = -1
     };
 
     // rotate type
     enum class RT : int
     {
-        UP = 0, DOWN, LEFT, RIGHT, CW, ACW,
-        COUNT,
-        NONE = -1
+        Up = 0, Down, Left, Right, CW, ACW,
+        Count,
+        None = -1
     };
 
     // turn type
@@ -56,10 +56,10 @@ namespace RC
     {
         F = 0, FI, B, BI, L, LI, R, RI, U, UI, D, DI, FM, FMI, UM, UMI, RM, RMI,
 
-        COUNT,
-        FIRST = F,
-        LAST = RMI,
-        NONE = -1
+        Count,
+        First = F,
+        Last = RMI,
+        None = -1
     };
 }
 
