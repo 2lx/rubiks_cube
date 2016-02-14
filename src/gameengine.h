@@ -12,26 +12,25 @@ class ShaderProgram;
 class GameEngine
 {
 public:
+    void init( const std::string & title );
+    void cleanup();
 
-	void init( const std::string & title );
-	void cleanup();
+    void changeState( GameState * state );
+    void pushState( GameState * state );
+    void popState();
 
-	void changeState( GameState * state );
-	void pushState( GameState * state );
-	void popState();
+    void handleEvents();
+    void update();
+    void draw();
 
-	void handleEvents();
-	void update();
-	void draw();
-
-	bool running() { return m_running; }
-	void quit() { m_running = false; }
+    bool running() { return m_running; }
+    void quit() { m_running = false; }
 
 private:
-	std::vector< GameState * > states;
-	bool m_running;
+    std::vector< GameState * > m_states;
+    bool m_running;
 
-	SDL_Window * m_window;
+    SDL_Window * m_window;
 };
 
 #endif
