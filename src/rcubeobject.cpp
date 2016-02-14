@@ -179,7 +179,7 @@ void RCubeObject::update()
         }
         else
         {
-            m_RCModel->turnCubies( m_turnType, m_turnLayer );
+            m_RCModel->turnSide( m_turnType, m_turnLayer );
             m_turnType = RC::TT::NONE;
             m_turnLayer = -1;
 
@@ -237,7 +237,8 @@ void RCubeObject::drawCube( const glm::mat4 & pmv, const RC::RA ra )
         for ( int y = 0; y < RC::CUBIE_COUNT; ++y )
             for ( int z = 0; z < RC::CUBIE_COUNT; ++z )
                 // only draw cubies in the outer layer
-                if ( x == 0 || x == RC::CUBIE_COUNT - 1 || y == 0 || y == RC::CUBIE_COUNT - 1 || z == 0 || z == RC::CUBIE_COUNT - 1 )
+                if ( x == 0 || x == RC::CUBIE_COUNT - 1 || y == 0 || y == RC::CUBIE_COUNT - 1
+                            || z == 0 || z == RC::CUBIE_COUNT - 1 )
                 {
                     // update texture index matrix
                     for ( int i = 0; i < 4; i++ )

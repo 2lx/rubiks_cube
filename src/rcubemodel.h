@@ -1,6 +1,8 @@
 #ifndef RCUBEMODEL_H
 #define RCUBEMODEL_H
 
+#include <vector>
+#include <map>
 #include "rcdefines.h"
 
 namespace RC
@@ -27,16 +29,17 @@ namespace RC
         CubeModel();
         virtual ~CubeModel();
 
-        void turnCubies( const TT mt, const int mLayer );
+        void turnSide( const TT mt, const int mLayer );
         void reset();
 
         const Cubie cubie( const int x, const int y, const int z ) const
         {
-            return m_cubies[ x ][ y ][ z ];
+            return * m_cubies[ x ][ y ][ z ];
         };
 
     private:
-        Cubie m_cubies[ CUBIE_COUNT ][ CUBIE_COUNT ][ CUBIE_COUNT ];
+        Cubie * m_cubies[ CUBIE_COUNT ][ CUBIE_COUNT ][ CUBIE_COUNT ];
+        std::map< RC::RA, std::vector< Cubie * > > m_ring[ CUBIE_COUNT ];
     };
 }
 
