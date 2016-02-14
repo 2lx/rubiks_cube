@@ -6,3 +6,4 @@ bin/*
 TODO.txt
 *.save
 src/*.save
+RCube*
