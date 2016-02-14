@@ -6,51 +6,29 @@
 
 using namespace RC;
 
-void Cubie::rotateCubie( const TT mt )
+void Cubie::turnCubie( const TT tt )
 {
-    CF tt, t1, t2, t3, t4;
+    CF ft, f1, f2, f3, f4;
 
-    // TODO:
-    switch ( mt )
-    {
-        case TT::F:
-        case TT::BI:
-        case TT::FM:
-            t1 = CF::LEFT; t2 = CF::DOWN; t3 = CF::RIGHT; t4 = CF::UP;
-            break;
-        case TT::FI:
-        case TT::B:
-        case TT::FMI:
-            t1 = CF::LEFT; t2 = CF::UP; t3 = CF::RIGHT; t4 = CF::DOWN;
-            break;
-        case TT::L:
-        case TT::RI:
-        case TT::RMI:
-            t1 = CF::BACK; t2 = CF::DOWN; t3 = CF::FRONT; t4 = CF::UP;
-            break;
-        case TT::LI:
-        case TT::R:
-        case TT::RM:
-            t1 = CF::BACK; t2 = CF::UP; t3 = CF::FRONT; t4 = CF::DOWN;
-            break;
-        case TT::U:
-        case TT::DI:
-        case TT::UM:
-            t1 = CF::LEFT; t2 = CF::FRONT; t3 = CF::RIGHT; t4 = CF::BACK;
-            break;
-        case TT::UI:
-        case TT::D:
-        case TT::UMI:
-            t1 = CF::LEFT; t2 = CF::BACK; t3 = CF::RIGHT; t4 = CF::FRONT;
-            break;
-        default: return;
-    };
+    const bool cw = TTPar::clockwise( tt );
+    const RA ra = TTPar::axis( tt );
 
-    tt = m_colourInd[ ( int ) t1 ];
-    m_colourInd[ ( int ) t1 ] = m_colourInd[ ( int ) t2 ];
-    m_colourInd[ ( int ) t2 ] = m_colourInd[ ( int ) t3 ];
-    m_colourInd[ ( int ) t3 ] = m_colourInd[ ( int ) t4 ];
-    m_colourInd[ ( int ) t4 ] = tt;
+    if ( ra == RA::Z )
+        if ( cw ) { f1 = CF::LEFT; f2 = CF::DOWN;  f3 = CF::RIGHT; f4 = CF::UP; }
+        else      { f1 = CF::LEFT; f2 = CF::UP;    f3 = CF::RIGHT; f4 = CF::DOWN; }
+    else if ( ra == RA::Y )
+        if ( cw ) { f1 = CF::LEFT; f2 = CF::FRONT; f3 = CF::RIGHT; f4 = CF::BACK; }
+        else      { f1 = CF::LEFT; f2 = CF::BACK;  f3 = CF::RIGHT; f4 = CF::FRONT; }
+    else if ( ra == RA::X )
+        if ( cw ) { f1 = CF::BACK; f2 = CF::UP;    f3 = CF::FRONT; f4 = CF::DOWN; }
+        else      { f1 = CF::BACK; f2 = CF::DOWN;  f3 = CF::FRONT; f4 = CF::UP; }
+    else return;
+
+    ft = m_colourInd[ ( int ) f1 ];
+    m_colourInd[ ( int ) f1 ] = m_colourInd[ ( int ) f2 ];
+    m_colourInd[ ( int ) f2 ] = m_colourInd[ ( int ) f3 ];
+    m_colourInd[ ( int ) f3 ] = m_colourInd[ ( int ) f4 ];
+    m_colourInd[ ( int ) f4 ] = ft;
 }
 
 CubeModel::CubeModel()
@@ -79,7 +57,7 @@ void CubeModel::reset()
         }
 }
 
-void CubeModel::turnCubies( const TT mt, const int mLayer )
+void CubeModel::turnCubies( const TT tt, const int mLayer )
 {
     //TODO: size > 3
     const int sc = ( CUBIE_COUNT - 1 );
@@ -111,42 +89,19 @@ void CubeModel::turnCubies( const TT mt, const int mLayer )
     const int * mv2;
     const int * mv3;
 
-    //TODO get pars
-    switch ( mt )
-    {
-    case TT::F:
-    case TT::BI:
-    case TT::FM:
-        mv1 = mvX; mv2 = mvY; mv3 = mvZ;
-        break;
-    case TT::B:
-    case TT::FI:
-    case TT::FMI:
-        mv1 = mvY; mv2 = mvX; mv3 = mvZ;
-        break;
-    case TT::L:
-    case TT::RI:
-    case TT::RMI:
-        mv1 = mvZ; mv2 = mvY; mv3 = mvX;
-        break;
-    case TT::LI:
-    case TT::R:
-    case TT::RM:
-        mv1 = mvZ; mv2 = mvX; mv3 = mvY;
-        break;
-    case TT::U:
-    case TT::DI:
-    case TT::UM:
-        mv1 = mvY; mv2 = mvZ; mv3 = mvX;
-        break;
-    case TT::UI:
-    case TT::D:
-    case TT::UMI:
-        mv1 = mvX; mv2 = mvZ; mv3 = mvY;
-        break;
-    default:
-        return;
-    }
+    const bool cw = TTPar::clockwise( tt );
+    const RA ra = TTPar::axis( tt );
+
+    if ( ra == RA::Z )
+        if ( cw ) { mv1 = mvX; mv2 = mvY; mv3 = mvZ; }
+        else      { mv1 = mvY; mv2 = mvX; mv3 = mvZ; }
+    else if ( ra == RA::Y )
+        if ( cw ) { mv1 = mvY; mv2 = mvZ; mv3 = mvX; }
+        else      { mv1 = mvX; mv2 = mvZ; mv3 = mvY; }
+    else if ( ra == RA::X )
+        if ( cw ) { mv1 = mvZ; mv2 = mvX; mv3 = mvY; }
+        else      { mv1 = mvZ; mv2 = mvY; mv3 = mvX; }
+    else return;
 
     for ( int i = 0; i < CUBIE_COUNT - 1; i++ )
     {
@@ -158,5 +113,5 @@ void CubeModel::turnCubies( const TT mt, const int mLayer )
     }
 
     for ( int i = 0; i < sc * 4; ++i )
-        m_cubies[ mv1[ i ] ][ mv2[ i ] ][ mv3[ i ] ].rotateCubie( mt );
+        m_cubies[ mv1[ i ] ][ mv2[ i ] ][ mv3[ i ] ].turnCubie( tt );
 }

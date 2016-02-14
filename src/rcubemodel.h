@@ -10,7 +10,7 @@ namespace RC
     public:
         Cubie() { };
 
-        void rotateCubie( const TT rt );
+        void turnCubie( const TT tt );
         inline CF colInd( const CF cf ) const { return m_colourInd[ ( int ) cf ]; };
         inline void setColourInd( const CF cf, const CF cind )
         {
