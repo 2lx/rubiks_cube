@@ -83,24 +83,24 @@ const int ll = CUBIE_COUNT - 1;
 typedef std::tuple< const RA, const int, const bool > TTTuple;
 
 const std::map< const TT, const TTTuple > p_TTPar {
-    { TT::F,    std::make_tuple( RA::Z, ll, true  ) },
-    { TT::FI,   std::make_tuple( RA::Z, ll, false ) },
-    { TT::B,    std::make_tuple( RA::Z,  0, false ) },
-    { TT::BI,   std::make_tuple( RA::Z,  0, true  ) },
-    { TT::R,    std::make_tuple( RA::X, ll, true  ) },
-    { TT::RI,   std::make_tuple( RA::X, ll, false ) },
-    { TT::L,    std::make_tuple( RA::X,  0, false ) },
-    { TT::LI,   std::make_tuple( RA::X,  0, true  ) },
-    { TT::U,    std::make_tuple( RA::Y, ll, true  ) },
-    { TT::UI,   std::make_tuple( RA::Y, ll, false ) },
-    { TT::D,    std::make_tuple( RA::Y,  0, false ) },
-    { TT::DI,   std::make_tuple( RA::Y,  0, true  ) },
-    { TT::FM,   std::make_tuple( RA::Z, -1, true  ) },
-    { TT::FMI,  std::make_tuple( RA::Z, -1, false ) },
-    { TT::UM,   std::make_tuple( RA::Y, -1, true  ) },
-    { TT::UMI,  std::make_tuple( RA::Y, -1, false ) },
-    { TT::RM,   std::make_tuple( RA::X, -1, true  ) },
-    { TT::RMI,  std::make_tuple( RA::X, -1, false ) }
+    { TT::F,    TTTuple( RA::Z, ll, true  ) },
+    { TT::FI,   TTTuple( RA::Z, ll, false ) },
+    { TT::B,    TTTuple( RA::Z,  0, false ) },
+    { TT::BI,   TTTuple( RA::Z,  0, true  ) },
+    { TT::R,    TTTuple( RA::X, ll, true  ) },
+    { TT::RI,   TTTuple( RA::X, ll, false ) },
+    { TT::L,    TTTuple( RA::X,  0, false ) },
+    { TT::LI,   TTTuple( RA::X,  0, true  ) },
+    { TT::U,    TTTuple( RA::Y, ll, true  ) },
+    { TT::UI,   TTTuple( RA::Y, ll, false ) },
+    { TT::D,    TTTuple( RA::Y,  0, false ) },
+    { TT::DI,   TTTuple( RA::Y,  0, true  ) },
+    { TT::FM,   TTTuple( RA::Z, -1, true  ) },
+    { TT::FMI,  TTTuple( RA::Z, -1, false ) },
+    { TT::UM,   TTTuple( RA::Y, -1, true  ) },
+    { TT::UMI,  TTTuple( RA::Y, -1, false ) },
+    { TT::RM,   TTTuple( RA::X, -1, true  ) },
+    { TT::RMI,  TTTuple( RA::X, -1, false ) }
 };
 
 glm::vec3 RC::TTPar::vec( const TT mt )
