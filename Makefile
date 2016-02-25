@@ -1,30 +1,17 @@
 # Pre-compiled header
 MKDIR = mkdir -p
-
 SRCDIR = src
-
 SRCS = $(subst $(SRCDIR)/, , $(wildcard $(SRCDIR)/*.cpp))
-
 OBJDIR = obj
-
 OBJS = $(patsubst %.cpp, obj/%.o, $(SRCS))
-
 CORE_PCH_FILENAME = $(SRCDIR)/all.h
-
 CORE_PCH = $(subst $(SRCDIR)/, $(OBJDIR)/, $(CORE_PCH_FILENAME).gch)
-
 CC = g++
-
-INCLUDES =
-
+INCLUDES = -I$(OBJDIR)
 CFLAGS = -Wpedantic -std=c++11
-
 LFLAGS =
-
 LIBS = -lSDL2 -lGL -lGLU -lGLEW -lSDL2_image
-
 TARGET = RCube
-
 RM = rm -f
 
 # Targets
@@ -42,5 +29,6 @@ $(TARGET): $(CORE_PCH) $(OBJS)
 $(OBJDIR)/%.o: src/%.cpp
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
+.PHONY : clean
 clean:
 	$(RM) $(TARGET) $(OBJS) $(CORE_PCH)
