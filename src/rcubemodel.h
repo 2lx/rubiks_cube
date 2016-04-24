@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <memory>
 #include "rcdefines.h"
 
 namespace RC
@@ -43,7 +44,7 @@ namespace RC
 
     private:
         Cubie * m_cubie[ CUBIE_COUNT ][ CUBIE_COUNT ][ CUBIE_COUNT ];
-        std::map< RC::RA, std::vector< Cubie * > > m_ring[ CUBIE_COUNT ];
+        std::map< RC::RA, std::vector< std::reference_wrapper< Cubie >>> m_ring[ CUBIE_COUNT ];
     };
 }
 

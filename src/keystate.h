@@ -27,29 +27,29 @@ public:
             if ( pushQ )
                 m_queue.push( gk );
         }
-    };
+    }
 
     inline void keyUp( const RC::GK gk )
     {
         if ( m_map[ gk ].isHold )
             m_map[ gk ].isHold = false;
-    };
+    }
 
     inline void processKey( const RC::GK gk )
     {
         if ( m_map[ gk ].isNewDown )
             m_map[ gk ].isNewDown = false;
-    };
+    }
 
     inline bool isHold( const RC::GK gk ) const
     {
         return m_map.at( gk ).isHold;
-    };
+    }
 
     inline bool isNewDown( const RC::GK gk ) const
     {
         return m_map.at( gk ).isNewDown;
-    };
+    }
 
     // queue
     inline RC::GK qCurKey() const

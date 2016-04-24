@@ -305,7 +305,7 @@ void PlayState::update( GameEngine * game )
         // processing cube turns with mouse
         if ( !m_RCube->isTurning() && !m_RCube->isRotating() )
         {
-            if ( glm::distance( m_pMBegin, m_pMEnd ) > 0.5 && glm::length( m_pMBegin ) > 0 && glm::length( m_pMEnd ) > 0 )
+            if ( glm::distance( m_pMBegin, m_pMEnd ) > 0.3 && glm::length( m_pMBegin ) > 0 && glm::length( m_pMEnd ) > 0 )
             {
                 RC::TT mt = m_RCube->setTurnByCoords( m_pMBegin, m_pMEnd );
                 m_keyQ.prevPush( RC::GKPar::fromTT( mt ) );
@@ -321,7 +321,7 @@ void PlayState::update( GameEngine * game )
         // processing cube rotates with mouse
         if ( !m_RCube->isRotating() )
         {
-            if ( glm::distance( m_pRBegin, m_pREnd ) > 0.5 && glm::length( m_pRBegin ) > 0 && glm::length( m_pREnd ) > 0 )
+            if ( glm::distance( m_pRBegin, m_pREnd ) > 0.3 && glm::length( m_pRBegin ) > 0 && glm::length( m_pREnd ) > 0 )
             {
                 RC::RT rt = m_RCube->setRotateByCoords( m_pRBegin, m_pREnd );
                 m_keyQ.prevPush( RC::GKPar::fromRT( rt ) );

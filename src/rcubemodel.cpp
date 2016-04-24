@@ -24,6 +24,10 @@ void Cubie::turnCubie( const TT tt )
         else      { f1 = CF::Back; f2 = CF::Down;  f3 = CF::Front; f4 = CF::Up; }
     else return;
 
+/*    std::swap( m_colourInd[ ( int ) f1 ], m_colourInd[ ( int ) f2 ] );
+    std::swap( m_colourInd[ ( int ) f2 ], m_colourInd[ ( int ) f3 ] );
+    std::swap( m_colourInd[ ( int ) f3 ], m_colourInd[ ( int ) f4 ] ); */
+
     ft = m_colourInd[ ( int ) f1 ];
     m_colourInd[ ( int ) f1 ] = m_colourInd[ ( int ) f2 ];
     m_colourInd[ ( int ) f2 ] = m_colourInd[ ( int ) f3 ];
@@ -35,12 +39,14 @@ CubeModel::CubeModel()
 {
     const int c = CUBIE_COUNT - 1;
 
-    // TODO: for side >3 skip center cubies
-    // create cubies
+    // TODO: for side >2 skip center cubies
     for( int i = 0; i < CUBIE_COUNT; ++i )
         for( int j = 0; j < CUBIE_COUNT; ++j )
-            for( int k = 0; k < CUBIE_COUNT; ++k )
-                m_cubie[ i ][ j ][ k ] = new Cubie();
+            for( int k = 0; k < CUBIE_COUNT; ++k ) {
+ //               if ( i != 0 && i != c && j != 0 && j != c && k != 0 && k != c )
+                    m_cubie[ i ][ j ][ k ] = new Cubie();
+ //               else m_cubie[ i ][ j ][ k ] = nullptr;
+            }
 
     // initialize rings in order
     //  2 3 4
@@ -51,30 +57,30 @@ CubeModel::CubeModel()
     {
         for ( int j = 0; j < c; ++j )
         {
-            m_ring[ i ][ RA::X ].push_back( m_cubie[ i ][ 0 ][ j ] );
-            m_ring[ i ][ RA::Y ].push_back( m_cubie[ j ][ i ][ 0 ] );
-            m_ring[ i ][ RA::Z ].push_back( m_cubie[ 0 ][ j ][ i ] );
+            m_ring[ i ][ RA::X ].push_back( *m_cubie[ i ][ 0 ][ j ] );
+            m_ring[ i ][ RA::Y ].push_back( *m_cubie[ j ][ i ][ 0 ] );
+            m_ring[ i ][ RA::Z ].push_back( *m_cubie[ 0 ][ j ][ i ] );
         }
 
         for ( int k = 0; k < c; ++k )
         {
-            m_ring[ i ][ RA::X ].push_back( m_cubie[ i ][ k ][ c ] );
-            m_ring[ i ][ RA::Y ].push_back( m_cubie[ c ][ i ][ k ] );
-            m_ring[ i ][ RA::Z ].push_back( m_cubie[ k ][ c ][ i ] );
+            m_ring[ i ][ RA::X ].push_back( *m_cubie[ i ][ k ][ c ] );
+            m_ring[ i ][ RA::Y ].push_back( *m_cubie[ c ][ i ][ k ] );
+            m_ring[ i ][ RA::Z ].push_back( *m_cubie[ k ][ c ][ i ] );
         }
 
         for ( int j = c; j > 0; --j )
         {
-            m_ring[ i ][ RA::X ].push_back( m_cubie[ i ][ c ][ j ] );
-            m_ring[ i ][ RA::Y ].push_back( m_cubie[ j ][ i ][ c ] );
-            m_ring[ i ][ RA::Z ].push_back( m_cubie[ c ][ j ][ i ] );
+            m_ring[ i ][ RA::X ].push_back( *m_cubie[ i ][ c ][ j ] );
+            m_ring[ i ][ RA::Y ].push_back( *m_cubie[ j ][ i ][ c ] );
+            m_ring[ i ][ RA::Z ].push_back( *m_cubie[ c ][ j ][ i ] );
         }
 
         for ( int k = c; k > 0; --k )
         {
-            m_ring[ i ][ RA::X ].push_back( m_cubie[ i ][ k ][ 0 ] );
-            m_ring[ i ][ RA::Y ].push_back( m_cubie[ 0 ][ i ][ k ] );
-            m_ring[ i ][ RA::Z ].push_back( m_cubie[ k ][ 0 ][ i ] );
+            m_ring[ i ][ RA::X ].push_back( *m_cubie[ i ][ k ][ 0 ] );
+            m_ring[ i ][ RA::Y ].push_back( *m_cubie[ 0 ][ i ][ k ] );
+            m_ring[ i ][ RA::Z ].push_back( *m_cubie[ k ][ 0 ][ i ] );
         }
     }
 
@@ -126,7 +132,7 @@ void CubeModel::turnSide( const TT tt, const int mLayer )
     // std::rotate analogue
     while ( vBeg != vNext )
     {
-        std::swap( **vBeg, **vNext );
+        std::swap( (*vBeg).get(), (*vNext).get() );
         vBeg++;
         vNext++;
 
@@ -141,5 +147,5 @@ void CubeModel::turnSide( const TT tt, const int mLayer )
     vEnd = m_ring[ lay ][ ra ].end();
 
     while ( vBeg != vEnd )
-        ( * vBeg++ )->turnCubie( tt );
+        ( * vBeg++ ).get().turnCubie( tt );
 }
