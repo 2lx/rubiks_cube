@@ -3,7 +3,8 @@
 
 #include <queue>
 #include <stack>
-#include <map>
+#include "enumhash.h"
+#include <unordered_map>
 #include "rcubeparams.h"
 #include "enumiterator.h"
 
@@ -109,8 +110,7 @@ private:
         bool isHold;
     };
 
-    std::map< RC::GK, KeyState > m_map;
-//  KeyState m_map[ ( int ) RC::GK::COUNT ];
+    std::unordered_map< RC::GK, KeyState, EnumHash > m_map;
     std::queue< RC::GK > m_queue;
     std::stack< RC::GK > m_stack;   // previous keys
 };

@@ -1,26 +1,11 @@
 #include "all.h"
 
 #include "rcubeparams.h"
+#include "enumhash.h"
 #include <unordered_map>
 #include <tuple>
 
 using namespace RC;
-
-class EnumHash
-{
-public:
-    template <typename T>
-    size_t operator () (const T& x) const {
-        return getResult<T>( x, std::is_enum<T>() );
-    }
-
-private:
-    template <typename T>
-    size_t getResult( const T& x, std::true_type ) const {
-        using utype = typename std::underlying_type<T>::type;
-        return std::hash<utype>()( static_cast<utype>( x ) );
-    }
-};
 
 // RotAxis params
 const std::unordered_map< RA, const glm::vec3, EnumHash > p_RAPar {
