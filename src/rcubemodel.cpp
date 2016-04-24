@@ -35,13 +35,18 @@ CubeModel::CubeModel()
 {
     const int c = CUBIE_COUNT - 1;
 
+    // TODO: for side >3 skip center cubies
     // create cubies
     for( int i = 0; i < CUBIE_COUNT; ++i )
         for( int j = 0; j < CUBIE_COUNT; ++j )
             for( int k = 0; k < CUBIE_COUNT; ++k )
                 m_cubie[ i ][ j ][ k ] = new Cubie();
 
-    // initialize rings
+    // initialize rings in order
+    //  2 3 4
+    //  1 X 5
+    //  0 7 6
+    // 3 rings (consistion of 8 cubies) for each of the 3 axis, but only 26 cubies in total
     for ( int i = 0; i < CUBIE_COUNT; ++i )
     {
         for ( int j = 0; j < c; ++j )

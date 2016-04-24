@@ -18,7 +18,7 @@ public:
     RC::TT setTurnByCoords( const glm::vec3 & pBeg, const glm::vec3 & pEnd );
     bool isTurning() const { return ( m_turnMix >= 0 ); }
     void update();
-    void incCurScheme() { m_texCurScheme = ( m_texCurScheme + 1 ) % m_texCount; };
+    void incCurScheme() { m_texCurScheme = ( m_texCurScheme + 1 ) % m_texCount; }
     void reset();
 
 protected:

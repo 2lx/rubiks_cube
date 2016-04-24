@@ -1,13 +1,29 @@
 #include "all.h"
 
 #include "rcubeparams.h"
-#include <map>
+#include <unordered_map>
 #include <tuple>
 
 using namespace RC;
 
+class EnumHash
+{
+public:
+    template <typename T>
+    size_t operator () (const T& x) const {
+        return getResult<T>( x, std::is_enum<T>() );
+    }
+
+private:
+    template <typename T>
+    size_t getResult( const T& x, std::true_type ) const {
+        using utype = typename std::underlying_type<T>::type;
+        return std::hash<utype>()( static_cast<utype>( x ) );
+    }
+};
+
 // RotAxis params
-const std::map< const RA, const glm::vec3 > p_RAPar {
+const std::unordered_map< RA, const glm::vec3, EnumHash > p_RAPar {
     { RA::X, glm::vec3( 1.0f, 0.0f, 0.0f ) },
     { RA::Y, glm::vec3( 0.0f, 1.0f, 0.0f ) },
     { RA::Z, glm::vec3( 0.0f, 0.0f, 1.0f ) }
@@ -40,9 +56,9 @@ RA RC::RAPar::closestRA( glm::vec3 vec )
 }
 
 // RotateType params
-typedef std::pair< const RA, const bool > RTPair;
+typedef std::pair< RA, const bool > RTPair;
 
-const std::map< const RT, const RTPair > p_RTPar {
+const std::unordered_map< const RT, const RTPair, EnumHash > p_RTPar {
     { RT::Up,    std::make_pair( RA::X, true ) },
     { RT::Down,  std::make_pair( RA::X, false ) },
     { RT::Left,  std::make_pair( RA::Y, true ) },
@@ -82,7 +98,7 @@ RT RC::RTPar::equalRT( const RA ra, const bool cw )
 const int ll = CUBIE_COUNT - 1;
 typedef std::tuple< const RA, const int, const bool > TTTuple;
 
-const std::map< const TT, const TTTuple > p_TTPar {
+const std::unordered_map< TT, const TTTuple, EnumHash > p_TTPar {
     { TT::F,    TTTuple( RA::Z, ll, true  ) },
     { TT::FI,   TTTuple( RA::Z, ll, false ) },
     { TT::B,    TTTuple( RA::Z,  0, false ) },
@@ -273,7 +289,7 @@ RC::GK RC::GKPar::prevGK( const RC::GK gk )
     }
 }
 
-const std::map< const GK, const std::string > p_GKPar {
+const std::unordered_map< GK, const std::string, EnumHash > p_GKPar {
     { GK::TurnF,    "F" },
     { GK::TurnFI,   "F'" },
     { GK::TurnB,    "B" },
