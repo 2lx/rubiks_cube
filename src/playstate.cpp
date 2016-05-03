@@ -5,6 +5,7 @@
 #include "rcubeobject.h"
 #include "shader.h"
 #include "shaderprogram.h"
+#include <random>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -390,23 +391,23 @@ void PlayState::update( GameEngine * game )
                 m_needRedraw = true;
                 break;
             case RC::GK::GameMix:
-                {
-                    srand( time( 0 ) );
-                    const int mCount = 60;
+            {
+                static std::default_random_engine dre(time(0));
+                std::uniform_int_distribution<int> distType(0, 10),
+                            distRT(0, int( RC::RT::Count ) - 1),
+                            distTT(0, int( RC::TT::Count ) - 1);
 
-                for ( int i = 0; i < mCount; i++ )
+                for ( int i = 0; i < 60; i++ )
                 {
-                    if ( rand() % 10 > 6 )
+                    if ( distType(dre) > 6 )
                     {
-                        const int rRand = rand() % int( RC::RT::Count );
-                        if ( RC::RTPar::isRT( rRand ) )
-                            m_keyQ.qPushKey( RC::GKPar::fromRT( RC::RT( rRand ) ) );
+                        const RC::RT rRand = RC::RT( distRT(dre) );
+                        m_keyQ.qPushKey( RC::GKPar::fromRT( rRand ) );
                     }
                     else
                     {
-                        const int mRand = rand() % int( RC::TT::Count );
-                        if ( RC::TTPar::isTT( mRand ) )
-                            m_keyQ.qPushKey( RC::GKPar::fromTT( RC::TT( mRand ) ) );
+                        const RC::TT tRand = RC::TT( distTT(dre) );
+                        m_keyQ.qPushKey( RC::GKPar::fromTT( tRand ) );
                     }
                 }
 
