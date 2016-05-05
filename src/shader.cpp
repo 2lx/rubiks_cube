@@ -13,42 +13,33 @@ Shader::Shader( const GLenum & type ) : m_shType ( type )
 
 void Shader::loadFromFile( const string & filename ) const
 {
-    std::ifstream file;
+    std::ifstream file(filename, std::ifstream::ate);
 
-    file.open( filename.c_str() );
     if ( file.fail() )
-    {
         throw std::runtime_error( "Shader::loadFromFile(): Error opening file " + filename );
-        return;
-    }
 
-    file.seekg ( 0, ios::end );
-    int length = file.tellg();
+    string source;
+    source.reserve( file.tellg() );
+
     file.seekg ( 0, ios::beg );
-
-    char * source = new char[ length + 1 ];
-    source[ length ] = '\0';
-    file.read ( source, length );
+    source.assign( std::istreambuf_iterator<char>(file),
+                    std::istreambuf_iterator<char>() );
     file.close();
 
-    if ( source == NULL )
-    {
+    if ( source.length() == 0 )
         throw std::runtime_error( "Shader::loadFromFile(): Error loading data from file" );
-        return;
-    }
 
     // GLSL version
-    const char * version;
     int profile;
     SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &profile );
 
+    string version;
     if ( profile == SDL_GL_CONTEXT_PROFILE_ES )
-        version = "#version 100\n";  // OpenGL ES 2.0
-    else
-        version = "#version 120\n";  // OpenGL 2.1
+         version = "#version 100\n";  // OpenGL ES 2.0
+    else version = "#version 120\n";  // OpenGL 2.1
 
     // GLES2 precision specifiers
-    const char * precision =
+    const string precision =
         "#ifdef GL_ES                        \n"
         "#  ifdef GL_FRAGMENT_PRECISION_HIGH \n"
         "     precision highp float;         \n"
@@ -64,17 +55,15 @@ void Shader::loadFromFile( const string & filename ) const
         "#endif                              \n";
 
     const GLchar * sources[] = {
-        version,
-        precision,
-        source
+        version.data(),
+        precision.data(),
+        source.data()
     };
 
     glShaderSource( m_id, 3, sources, NULL );
-    delete [] source;
 }
 
 void Shader::compile() const
-
 {
     glCompileShader( m_id );
     GLint compile_ok = GL_FALSE;
@@ -84,6 +73,7 @@ void Shader::compile() const
     {
         GLint infoLogLength;
         glGetShaderiv( m_id, GL_INFO_LOG_LENGTH, &infoLogLength );
+
         GLchar * strInfoLog = new GLchar[ infoLogLength + 1 ];
         glGetShaderInfoLog( m_id, infoLogLength, NULL, strInfoLog );
 
