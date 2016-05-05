@@ -6,23 +6,9 @@
 
 using namespace RC;
 
-void Cubie::turnCubie( const TT tt )
+void Cubie::rotate( CF f1, CF f2, CF f3, CF f4)
 {
-    CF ft, f1, f2, f3, f4;
-
-    const bool cw = TTPar::clockwise( tt );
-    const RA ra = TTPar::axis( tt );
-
-    if ( ra == RA::Z )
-        if ( cw ) { f1 = CF::Left; f2 = CF::Down;  f3 = CF::Right; f4 = CF::Up; }
-        else      { f1 = CF::Left; f2 = CF::Up;    f3 = CF::Right; f4 = CF::Down; }
-    else if ( ra == RA::Y )
-        if ( cw ) { f1 = CF::Left; f2 = CF::Front; f3 = CF::Right; f4 = CF::Back; }
-        else      { f1 = CF::Left; f2 = CF::Back;  f3 = CF::Right; f4 = CF::Front; }
-    else if ( ra == RA::X )
-        if ( cw ) { f1 = CF::Back; f2 = CF::Up;    f3 = CF::Front; f4 = CF::Down; }
-        else      { f1 = CF::Back; f2 = CF::Down;  f3 = CF::Front; f4 = CF::Up; }
-    else return;
+    CF ft;
 
 /*    std::swap( m_colourInd[ ( int ) f1 ], m_colourInd[ ( int ) f2 ] );
     std::swap( m_colourInd[ ( int ) f2 ], m_colourInd[ ( int ) f3 ] );
@@ -33,6 +19,23 @@ void Cubie::turnCubie( const TT tt )
     m_colourInd[ ( int ) f2 ] = m_colourInd[ ( int ) f3 ];
     m_colourInd[ ( int ) f3 ] = m_colourInd[ ( int ) f4 ];
     m_colourInd[ ( int ) f4 ] = ft;
+}
+
+void Cubie::turnCubie( const TT tt )
+{
+    const bool cw = TTPar::clockwise( tt );
+    const RA ra = TTPar::axis( tt );
+
+    if ( ra == RA::Z )
+        if ( cw ) rotate(CF::Left, CF::Down, CF::Right, CF::Up);
+        else      rotate(CF::Left, CF::Up,   CF::Right, CF::Down);
+    else if ( ra == RA::Y )
+        if ( cw ) rotate(CF::Left, CF::Front,CF::Right, CF::Back);
+        else      rotate(CF::Left, CF::Back, CF::Right, CF::Front);
+    else if ( ra == RA::X )
+        if ( cw ) rotate(CF::Back, CF::Up,   CF::Front, CF::Down);
+        else      rotate(CF::Back, CF::Down, CF::Front, CF::Up);
+    else return;
 }
 
 CubeModel::CubeModel()

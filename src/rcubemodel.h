@@ -21,6 +21,7 @@ namespace RC
         }
 
     private:
+        void rotate( CF f1, CF f2, CF f3, CF f4);
         CF m_colourInd[ ( int ) CF::Count ] = { CF::None, CF::None, CF::None, CF::None, CF::None, CF::None };
     };
 
