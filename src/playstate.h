@@ -1,6 +1,7 @@
 #ifndef PLAYSTATE_H
 #define PLAYSTATE_H
 
+#include <memory>
 #include "gamestate.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "keystate.h"
@@ -23,7 +24,7 @@ public:
     static PlayState * instance() { return &m_PlayState; }
 
 protected:
-    PlayState() { }
+    PlayState();
 
 private:
     // projection type
@@ -34,22 +35,22 @@ private:
     };
 
     static PlayState m_PlayState;
-    RCubeObject * m_RCube;
+    std::unique_ptr< RCubeObject > m_RCube;
+    std::unique_ptr< ShaderProgram > m_shaderPr;
+
+    KeyQueue m_keyQ;
     bool m_needRedraw = { true };
     bool m_trBG = { true };
-    KeyQueue m_keyQ;
     PT m_prType = { PT::Isometric };
     glm::vec3 m_pMBegin, m_pMEnd;
     glm::vec3 m_pRBegin, m_pREnd;
     glm::mat4 m_matrCamera;
     glm::dmat4 m_mProjection, m_mModel, m_mView;
-    int m_screenWidth = 800, m_screenHeight = 600;
+    int m_screenWidth, m_screenHeight;
 
     void drawBackground();
     void setProjection( const PT pt );
     glm::vec3 getGLPos( const int mX, const int mY ) const;
-
-    ShaderProgram * m_shaderPr;
 
     GLuint m_VBOScreenVertices;
     GLuint m_attrScreenVertices;

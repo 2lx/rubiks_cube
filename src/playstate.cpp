@@ -6,10 +6,19 @@
 #include "shader.h"
 #include "shaderprogram.h"
 #include <random>
+#include <memory>
 
 #include <glm/gtc/matrix_transform.hpp>
 
 PlayState PlayState::m_PlayState;
+
+PlayState::PlayState()
+    :
+      m_screenWidth( INIT_SCREEN_WIDTH ),
+      m_screenHeight( INIT_SCREEN_HEIGHT )
+{
+
+}
 
 void PlayState::init()
 {
@@ -22,12 +31,12 @@ void PlayState::init()
     fragmentShader.loadFromFile( "glsl/shader.f.glsl" );
     fragmentShader.compile();
 
-    m_shaderPr = new ShaderProgram();
+    m_shaderPr = std::unique_ptr<ShaderProgram>( new ShaderProgram() );
     m_shaderPr->attachShader( vertexShader );
     m_shaderPr->attachShader( fragmentShader );
     m_shaderPr->linkProgram();
 
-    m_RCube = new RCubeObject( m_shaderPr );
+    m_RCube = std::unique_ptr<RCubeObject>( new RCubeObject( m_shaderPr.get() ) );
 
     glGenBuffers( 1, &m_VBOScreenVertices );
     glBindBuffer( GL_ARRAY_BUFFER, m_VBOScreenVertices );
@@ -46,8 +55,7 @@ void PlayState::init()
 
 void PlayState::cleanup()
 {
-    delete m_RCube;
-    delete m_shaderPr;
+
 }
 
 void PlayState::setProjection( const PT pt )
@@ -72,7 +80,7 @@ void PlayState::setProjection( const PT pt )
             0.0f,     0.0f, 0.0f, 1.0f
     };
 
-    m_matrCamera = m_mProjection *  m_mModel * m_mView;
+    m_matrCamera = m_mProjection * m_mModel * m_mView;
 }
 
 void PlayState::pause()
