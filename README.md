@@ -22,14 +22,14 @@ Turn counter-clockwise:
 - left mouse button.
 
 Rotates the entire cube:
-- **Up, Down** - around X axis,
-- **Left, Right** - around Y axis,
-- **Delete, PgDown** - around Z axis,
+- **Up, Down** - about X axis,
+- **Left, Right** - about Y axis,
+- **Delete, PgDown** - about Z axis,
 - right mouse button.
 
 Game:
-- **F1** - reset cube,
-- **F4** - mix up the colours,
+- **F1** - reset cube state,
+- **F4** - mix up the colors,
 - **F5** - enable/disable background effects,
 - **F6** - change projection (dimetric or isometric),
 - **F7** - change textures,
